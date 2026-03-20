@@ -63,19 +63,7 @@ body {
   margin-right: 36px;
   flex-shrink: 0;
 }
-.logo-mark {
-  width: 32px;
-  height: 32px;
-  background: var(--blue);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 15px;
-  color: white;
-  letter-spacing: -0.5px;
-}
+.logo-badge svg { display: block; }
 .logo-text {
   color: var(--white);
   font-size: 15px;
@@ -436,6 +424,10 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
 
 /* ── TAB 1: ITEM MASTER ── */
 .sku-count {
@@ -558,6 +550,68 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   border-radius: 20px;
   border: 1px solid var(--border);
 }
+
+/* ── SCAN TIMESTAMP ── */
+.scan-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+.scan-time { font-size: 12px; color: var(--gray-dark); display: flex; align-items: center; gap: 5px; }
+.scan-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+/* ── BEST PRICE HIGHLIGHT ── */
+.best-price {
+  background: var(--green-light);
+  color: #065F46;
+  font-weight: 700;
+  border-radius: 5px;
+  padding: 3px 7px;
+  display: inline-block;
+  font-size: 12px;
+}
+.best-price-marker { font-size: 10px; margin-left: 2px; }
+
+/* ── PDF DOWNLOAD BAR ── */
+.pdf-bar {
+  background: linear-gradient(135deg, var(--navy) 0%, #243a52 100%);
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  flex-wrap: wrap;
+}
+.pdf-bar-text { color: rgba(255,255,255,0.85); font-size: 13px; }
+.pdf-bar-text strong { color: white; font-weight: 700; display: block; font-size: 15px; margin-bottom: 2px; }
+.btn-pdf {
+  background: white;
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 800;
+  padding: 12px 24px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+.btn-pdf:hover { background: var(--blue-light); color: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.18); }
+.btn-pdf:active { transform: scale(0.98); }
+
+/* ── LAST UPDATED BADGE ── */
+.updated-ago { font-size: 11px; color: var(--gray-mid); white-space: nowrap; }
+.updated-ago.stale { color: var(--amber); }
 
 /* ── TAB 3: BRAND PRICE SHEET ── */
 .brand-picker {
@@ -712,7 +766,23 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 <!-- ══ TOP NAV ══ -->
 <nav class="nav">
   <div class="logo">
-    <div class="logo-mark">IHS</div>
+    <div class="logo-badge">
+      <!-- IHS badge: circular border + house + lettering -->
+      <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer circle -->
+        <circle cx="21" cy="21" r="20" stroke="#29ABE2" stroke-width="2" fill="none"/>
+        <!-- Inner fill -->
+        <circle cx="21" cy="21" r="17.5" fill="#29ABE2" fill-opacity="0.12"/>
+        <!-- House shape -->
+        <path d="M21 9 L32 18.5 L32 33 L10 33 L10 18.5 Z" fill="none" stroke="#29ABE2" stroke-width="1.6" stroke-linejoin="round"/>
+        <!-- Roof peak -->
+        <path d="M8.5 19.5 L21 8 L33.5 19.5" fill="none" stroke="#29ABE2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Door -->
+        <rect x="17.5" y="25" width="7" height="8" rx="1" fill="#29ABE2" fill-opacity="0.5" stroke="#29ABE2" stroke-width="1"/>
+        <!-- IHS text inside house -->
+        <text x="21" y="23" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-weight="800" font-size="7.5" fill="#29ABE2" letter-spacing="0.5">IHS</text>
+      </svg>
+    </div>
     <div class="logo-text">Data <span>Hub</span></div>
   </div>
   <div class="nav-tabs">
@@ -776,15 +846,16 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
               <th>Floor</th>
               <th>Ceiling</th>
               <th>GM %</th>
+              <th>Last Updated</th>
             </tr>
           </thead>
           <tbody id="sku-tbody">
             <!-- skeleton -->
-            <tr><td><span class="skeleton-cell" style="width:170px"></span></td><td><span class="skeleton-cell" style="width:80px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:60px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:45px"></span></td></tr>
-            <tr><td><span class="skeleton-cell" style="width:150px"></span></td><td><span class="skeleton-cell" style="width:70px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:60px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:45px"></span></td></tr>
-            <tr><td><span class="skeleton-cell" style="width:190px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:60px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:45px"></span></td></tr>
-            <tr><td><span class="skeleton-cell" style="width:160px"></span></td><td><span class="skeleton-cell" style="width:85px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:60px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:45px"></span></td></tr>
-            <tr><td><span class="skeleton-cell" style="width:180px"></span></td><td><span class="skeleton-cell" style="width:75px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:60px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:45px"></span></td></tr>
+            <tr><td><span class="skeleton-cell" style="width:170px"></span></td><td><span class="skeleton-cell" style="width:80px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:60px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:45px"></span></td><td><span class="skeleton-cell" style="width:70px"></span></td></tr>
+            <tr><td><span class="skeleton-cell" style="width:150px"></span></td><td><span class="skeleton-cell" style="width:70px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:60px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:45px"></span></td><td><span class="skeleton-cell" style="width:70px"></span></td></tr>
+            <tr><td><span class="skeleton-cell" style="width:190px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:60px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:45px"></span></td><td><span class="skeleton-cell" style="width:70px"></span></td></tr>
+            <tr><td><span class="skeleton-cell" style="width:160px"></span></td><td><span class="skeleton-cell" style="width:85px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:60px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:45px"></span></td><td><span class="skeleton-cell" style="width:70px"></span></td></tr>
+            <tr><td><span class="skeleton-cell" style="width:180px"></span></td><td><span class="skeleton-cell" style="width:75px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:90px"></span></td><td><span class="skeleton-cell" style="width:60px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:55px"></span></td><td><span class="skeleton-cell" style="width:45px"></span></td><td><span class="skeleton-cell" style="width:70px"></span></td></tr>
           </tbody>
         </table>
       </div>
@@ -797,8 +868,14 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
     <div class="page-header">
       <div>
         <div class="page-title">Anomaly Dashboard</div>
-        <div class="page-subtitle">Pricing deviations flagged for review across all brands</div>
+        <div class="scan-meta">
+          <span class="scan-time"><span class="scan-dot"></span> Last scanned: <span id="last-scan-time">—</span></span>
+        </div>
       </div>
+      <button class="btn btn-secondary" onclick="runNewScan()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Run New Scan
+      </button>
     </div>
     <div class="summary-bar" id="anomaly-summary"></div>
     <div class="section-divider" id="active-divider">Needs Attention <span class="count-chip" id="active-count">0</span></div>
@@ -812,12 +889,8 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
     <div class="page-header">
       <div>
         <div class="page-title">Brand Price Sheet</div>
-        <div class="page-subtitle">Per-brand view of all products and governed margins</div>
+        <div class="page-subtitle">Distributor cost comparison · Best price highlighted green</div>
       </div>
-      <button class="btn btn-primary btn-lg" onclick="window.print()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        Export PDF
-      </button>
     </div>
     <div class="brand-picker">
       <label>Select Brand:</label>
@@ -829,7 +902,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       <div class="empty-state">
         <div class="empty-icon">📋</div>
         <div class="empty-title" style="color:var(--gray-dark)">Select a brand above</div>
-        <div class="empty-subtitle">The price sheet will appear here</div>
+        <div class="empty-subtitle">Side-by-side distributor costs will appear here</div>
       </div>
     </div>
   </div>
@@ -987,21 +1060,21 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 // ════════════════════════════════════════════════════════════
 const DEFAULT = {
   skus: [
-    { id:"sku-001", name:"GAF Timberline HDZ Shingles — Charcoal",        manufacturer:"GAF", category:"Shingles",    abc_code:"ABC-TL-4210",  qxo_code:"QXO-GAF-CC01",  srs_code:"SRS-0042110", abc_description:"Timberline HDZ 33.3 sq ft/bundle, Charcoal",             qxo_description:"GAF Timberline HDZ Architectural Shingle Charcoal",      srs_description:"GAFTLHDZ-CHR 30YR SHG CHAR",          governed_price:42.50, floor_price:38.00, ceiling_price:48.00, gm_threshold:35 },
-    { id:"sku-002", name:"GAF Timberline HDZ Shingles — Weathered Wood",   manufacturer:"GAF", category:"Shingles",    abc_code:"ABC-TL-4211",  qxo_code:"QXO-GAF-WW02",  srs_code:"SRS-0042111", abc_description:"Timberline HDZ 33.3 sq ft/bundle, Weathered Wood",       qxo_description:"GAF Timberline HDZ Architectural Shingle Weathered Wood",srs_description:"GAFTLHDZ-WW 30YR SHG WWOOD",          governed_price:42.50, floor_price:38.00, ceiling_price:48.00, gm_threshold:35 },
-    { id:"sku-003", name:"GAF Timberline HDZ Shingles — Pewter Gray",      manufacturer:"GAF", category:"Shingles",    abc_code:"ABC-TL-4212",  qxo_code:"QXO-GAF-PG03",  srs_code:"SRS-0042112", abc_description:"Timberline HDZ 33.3 sq ft/bundle, Pewter Gray",           qxo_description:"GAF Timberline HDZ Architectural Shingle Pewter Gray",   srs_description:"GAFTLHDZ-PG 30YR SHG PEWGR",          governed_price:42.50, floor_price:38.00, ceiling_price:48.00, gm_threshold:35 },
-    { id:"sku-004", name:"GAF Timberline CS Shingles — Charcoal",          manufacturer:"GAF", category:"Shingles",    abc_code:"ABC-CS-3310",  qxo_code:"QXO-GAF-CS04",  srs_code:"SRS-0033101", abc_description:"Timberline CS Cool Series 33.3 sq ft, Charcoal",          qxo_description:"GAF Timberline CS Architectural Cool Shingle Charcoal",  srs_description:"GAFTLCS-CHR COOL SHG CHAR",           governed_price:52.00, floor_price:46.00, ceiling_price:58.00, gm_threshold:36 },
-    { id:"sku-005", name:"GAF Camelot II Shingles — Royal Slate",          manufacturer:"GAF", category:"Shingles",    abc_code:"ABC-CAM-5501", qxo_code:"QXO-GAF-C205",  srs_code:"SRS-0055015", abc_description:"Camelot II Lifetime Designer Shingle, Royal Slate",       qxo_description:"GAF Camelot II Designer Shingle Royal Slate",             srs_description:"GAFCAM2-RS LIFETIME DSGNR",            governed_price:78.00, floor_price:68.00, ceiling_price:88.00, gm_threshold:38 },
-    { id:"sku-006", name:"GAF Royal Sovereign 3-Tab Shingles — White",     manufacturer:"GAF", category:"Shingles",    abc_code:"ABC-RS-1100",  qxo_code:"QXO-GAF-RS06",  srs_code:"SRS-0011005", abc_description:"Royal Sovereign 3-Tab Shingle White 33.3 sq ft",          qxo_description:"GAF Royal Sovereign 3-Tab Shingle White",                srs_description:"GAFROYSOVRN-WHT 3TAB",                governed_price:28.00, floor_price:24.00, ceiling_price:32.00, gm_threshold:30 },
-    { id:"sku-007", name:"GAF FeltBuster Synthetic Underlayment",          manufacturer:"GAF", category:"Underlayment", abc_code:"ABC-FB-2201",  qxo_code:"QXO-GAF-FB07",  srs_code:"SRS-0022011", abc_description:"FeltBuster Synthetic Roofing Felt 10 sq roll",            qxo_description:"GAF FeltBuster Synthetic Roofing Underlayment 10sq",     srs_description:"GAFFLTBST 10SQ SYNTH UNDRLY",          governed_price:65.00, floor_price:58.00, ceiling_price:74.00, gm_threshold:32 },
-    { id:"sku-008", name:"GAF Tiger Paw Underlayment",                     manufacturer:"GAF", category:"Underlayment", abc_code:"ABC-TP-2202",  qxo_code:"QXO-GAF-TP08",  srs_code:"SRS-0022022", abc_description:"Tiger Paw Synthetic Underlayment 10 sq roll",             qxo_description:"GAF Tiger Paw High-Performance Underlayment 10sq",       srs_description:"GAFTIGPAW 10SQ SYNTH UNDRLY",          governed_price:72.00, floor_price:64.00, ceiling_price:80.00, gm_threshold:33 },
-    { id:"sku-009", name:"GAF WeatherWatch Ice & Water Shield",            manufacturer:"GAF", category:"Underlayment", abc_code:"ABC-WW-2301",  qxo_code:"QXO-GAF-WW09",  srs_code:"SRS-0023015", abc_description:"WeatherWatch Mineral Surfaced Leak Barrier 2 sq roll",   qxo_description:"GAF WeatherWatch Ice & Water Shield 2sq",                srs_description:"GAFWTCHWCH 2SQ ICE/WTR",               governed_price:95.00, floor_price:84.00, ceiling_price:108.00,gm_threshold:34 },
-    { id:"sku-010", name:"GAF StormGuard Film Surface Leak Barrier",       manufacturer:"GAF", category:"Underlayment", abc_code:"ABC-SG-2302",  qxo_code:"QXO-GAF-SG10",  srs_code:"SRS-0023025", abc_description:"StormGuard Film Surface Leak Barrier 2 sq roll",         qxo_description:"GAF StormGuard Film Ice & Water Barrier 2sq",            srs_description:"GAFSTMGRD 2SQ FILM LEAK BAR",          governed_price:85.00, floor_price:76.00, ceiling_price:95.00, gm_threshold:33 },
-    { id:"sku-011", name:"GAF Seal-A-Ridge Cap Shingles — Charcoal",       manufacturer:"GAF", category:"Ridge Cap",    abc_code:"ABC-SAR-3101", qxo_code:"QXO-GAF-SAR11", srs_code:"SRS-0031015", abc_description:"Seal-A-Ridge 25 LF/bundle Cap Shingles Charcoal",        qxo_description:"GAF Seal-A-Ridge Ridge Cap Shingles Charcoal",           srs_description:"GAFSALRDG-CHR 25LF CAP",               governed_price:58.00, floor_price:52.00, ceiling_price:66.00, gm_threshold:36 },
-    { id:"sku-012", name:"GAF TimberTex Premium Ridge Cap — Charcoal",     manufacturer:"GAF", category:"Ridge Cap",    abc_code:"ABC-TT-3201",  qxo_code:"QXO-GAF-TT12",  srs_code:"SRS-0032015", abc_description:"TimberTex Premium Double-Layer Ridge Cap Charcoal",      qxo_description:"GAF TimberTex Premium Ridge Cap Shingles Charcoal",      srs_description:"GAFTIMTEX-CHR PREM DBLYR CAP",         governed_price:72.00, floor_price:64.00, ceiling_price:80.00, gm_threshold:37 },
-    { id:"sku-013", name:"GAF Pro-Start Starter Strip Shingles",           manufacturer:"GAF", category:"Accessories",  abc_code:"ABC-PS-4101",  qxo_code:"QXO-GAF-PS13",  srs_code:"SRS-0041015", abc_description:"Pro-Start Eave/Rake Starter Strip 120 LF bundle",        qxo_description:"GAF Pro-Start Starter Strip 120 Linear Feet",            srs_description:"GAFPRST 120LF STRT STRP",              governed_price:45.00, floor_price:40.00, ceiling_price:52.00, gm_threshold:32 },
-    { id:"sku-014", name:"GAF Cobra Snow Country Ridge Vent",              manufacturer:"GAF", category:"Accessories",  abc_code:"ABC-CV-4201",  qxo_code:"QXO-GAF-CV14",  srs_code:"SRS-0042025", abc_description:"Cobra Snow Country 4' section ridge vent",               qxo_description:"GAF Cobra Snow Country Exhaust Ridge Vent 4ft",          srs_description:"GAFCOBSNW 4FT RIDGE VENT",             governed_price:12.50, floor_price:11.00, ceiling_price:14.50, gm_threshold:28 },
-    { id:"sku-015", name:"GAF Deck-Armor Premium Breathable Underlayment", manufacturer:"GAF", category:"Underlayment", abc_code:"ABC-DA-2401",  qxo_code:"QXO-GAF-DA15",  srs_code:"SRS-0024015", abc_description:"Deck-Armor Breathable Synthetic Underlayment 10 sq",     qxo_description:"GAF Deck-Armor Premium Breathable Underlayment 10sq",   srs_description:"GAFDKARMR 10SQ BREATH UNDRLY",         governed_price:88.00, floor_price:78.00, ceiling_price:98.00, gm_threshold:34 }
+    { id:"sku-001", name:"GAF Timberline HDZ Shingles — Charcoal",        manufacturer:"GAF", category:"Shingles",    abc_code:"ABC-TL-4210",  qxo_code:"QXO-GAF-CC01",  srs_code:"SRS-0042110", abc_description:"Timberline HDZ 33.3 sq ft/bundle, Charcoal",             qxo_description:"GAF Timberline HDZ Architectural Shingle Charcoal",      srs_description:"GAFTLHDZ-CHR 30YR SHG CHAR",          governed_price:42.50, floor_price:38.00, ceiling_price:48.00, gm_threshold:35, cost_pct:0.61, last_updated:"2026-03-18T10:22:00Z" },
+    { id:"sku-002", name:"GAF Timberline HDZ Shingles — Weathered Wood",   manufacturer:"GAF", category:"Shingles",    abc_code:"ABC-TL-4211",  qxo_code:"QXO-GAF-WW02",  srs_code:"SRS-0042111", abc_description:"Timberline HDZ 33.3 sq ft/bundle, Weathered Wood",       qxo_description:"GAF Timberline HDZ Architectural Shingle Weathered Wood",srs_description:"GAFTLHDZ-WW 30YR SHG WWOOD",          governed_price:42.50, floor_price:38.00, ceiling_price:48.00, gm_threshold:35, cost_pct:0.62, last_updated:"2026-03-18T10:22:00Z" },
+    { id:"sku-003", name:"GAF Timberline HDZ Shingles — Pewter Gray",      manufacturer:"GAF", category:"Shingles",    abc_code:"ABC-TL-4212",  qxo_code:"QXO-GAF-PG03",  srs_code:"SRS-0042112", abc_description:"Timberline HDZ 33.3 sq ft/bundle, Pewter Gray",           qxo_description:"GAF Timberline HDZ Architectural Shingle Pewter Gray",   srs_description:"GAFTLHDZ-PG 30YR SHG PEWGR",          governed_price:42.50, floor_price:38.00, ceiling_price:48.00, gm_threshold:35, cost_pct:0.60, last_updated:"2026-03-17T14:05:00Z" },
+    { id:"sku-004", name:"GAF Timberline CS Shingles — Charcoal",          manufacturer:"GAF", category:"Shingles",    abc_code:"ABC-CS-3310",  qxo_code:"QXO-GAF-CS04",  srs_code:"SRS-0033101", abc_description:"Timberline CS Cool Series 33.3 sq ft, Charcoal",          qxo_description:"GAF Timberline CS Architectural Cool Shingle Charcoal",  srs_description:"GAFTLCS-CHR COOL SHG CHAR",           governed_price:52.00, floor_price:46.00, ceiling_price:58.00, gm_threshold:36, cost_pct:0.63, last_updated:"2026-03-15T09:00:00Z" },
+    { id:"sku-005", name:"GAF Camelot II Shingles — Royal Slate",          manufacturer:"GAF", category:"Shingles",    abc_code:"ABC-CAM-5501", qxo_code:"QXO-GAF-C205",  srs_code:"SRS-0055015", abc_description:"Camelot II Lifetime Designer Shingle, Royal Slate",       qxo_description:"GAF Camelot II Designer Shingle Royal Slate",             srs_description:"GAFCAM2-RS LIFETIME DSGNR",            governed_price:78.00, floor_price:68.00, ceiling_price:88.00, gm_threshold:38, cost_pct:0.64, last_updated:"2026-03-10T11:30:00Z" },
+    { id:"sku-006", name:"GAF Royal Sovereign 3-Tab Shingles — White",     manufacturer:"GAF", category:"Shingles",    abc_code:"ABC-RS-1100",  qxo_code:"QXO-GAF-RS06",  srs_code:"SRS-0011005", abc_description:"Royal Sovereign 3-Tab Shingle White 33.3 sq ft",          qxo_description:"GAF Royal Sovereign 3-Tab Shingle White",                srs_description:"GAFROYSOVRN-WHT 3TAB",                governed_price:28.00, floor_price:24.00, ceiling_price:32.00, gm_threshold:30, cost_pct:0.68, last_updated:"2026-02-28T16:00:00Z" },
+    { id:"sku-007", name:"GAF FeltBuster Synthetic Underlayment",          manufacturer:"GAF", category:"Underlayment", abc_code:"ABC-FB-2201",  qxo_code:"QXO-GAF-FB07",  srs_code:"SRS-0022011", abc_description:"FeltBuster Synthetic Roofing Felt 10 sq roll",            qxo_description:"GAF FeltBuster Synthetic Roofing Underlayment 10sq",     srs_description:"GAFFLTBST 10SQ SYNTH UNDRLY",          governed_price:65.00, floor_price:58.00, ceiling_price:74.00, gm_threshold:32, cost_pct:0.61, last_updated:"2026-03-19T08:45:00Z" },
+    { id:"sku-008", name:"GAF Tiger Paw Underlayment",                     manufacturer:"GAF", category:"Underlayment", abc_code:"ABC-TP-2202",  qxo_code:"QXO-GAF-TP08",  srs_code:"SRS-0022022", abc_description:"Tiger Paw Synthetic Underlayment 10 sq roll",             qxo_description:"GAF Tiger Paw High-Performance Underlayment 10sq",       srs_description:"GAFTIGPAW 10SQ SYNTH UNDRLY",          governed_price:72.00, floor_price:64.00, ceiling_price:80.00, gm_threshold:33, cost_pct:0.62, last_updated:"2026-03-12T13:20:00Z" },
+    { id:"sku-009", name:"GAF WeatherWatch Ice & Water Shield",            manufacturer:"GAF", category:"Underlayment", abc_code:"ABC-WW-2301",  qxo_code:"QXO-GAF-WW09",  srs_code:"SRS-0023015", abc_description:"WeatherWatch Mineral Surfaced Leak Barrier 2 sq roll",   qxo_description:"GAF WeatherWatch Ice & Water Shield 2sq",                srs_description:"GAFWTCHWCH 2SQ ICE/WTR",               governed_price:95.00, floor_price:84.00, ceiling_price:108.00,gm_threshold:34, cost_pct:0.67, last_updated:"2026-03-01T09:00:00Z" },
+    { id:"sku-010", name:"GAF StormGuard Film Surface Leak Barrier",       manufacturer:"GAF", category:"Underlayment", abc_code:"ABC-SG-2302",  qxo_code:"QXO-GAF-SG10",  srs_code:"SRS-0023025", abc_description:"StormGuard Film Surface Leak Barrier 2 sq roll",         qxo_description:"GAF StormGuard Film Ice & Water Barrier 2sq",            srs_description:"GAFSTMGRD 2SQ FILM LEAK BAR",          governed_price:85.00, floor_price:76.00, ceiling_price:95.00, gm_threshold:33, cost_pct:0.71, last_updated:"2026-02-20T10:00:00Z" },
+    { id:"sku-011", name:"GAF Seal-A-Ridge Cap Shingles — Charcoal",       manufacturer:"GAF", category:"Ridge Cap",    abc_code:"ABC-SAR-3101", qxo_code:"QXO-GAF-SAR11", srs_code:"SRS-0031015", abc_description:"Seal-A-Ridge 25 LF/bundle Cap Shingles Charcoal",        qxo_description:"GAF Seal-A-Ridge Ridge Cap Shingles Charcoal",           srs_description:"GAFSALRDG-CHR 25LF CAP",               governed_price:58.00, floor_price:52.00, ceiling_price:66.00, gm_threshold:36, cost_pct:0.60, last_updated:"2026-03-16T15:10:00Z" },
+    { id:"sku-012", name:"GAF TimberTex Premium Ridge Cap — Charcoal",     manufacturer:"GAF", category:"Ridge Cap",    abc_code:"ABC-TT-3201",  qxo_code:"QXO-GAF-TT12",  srs_code:"SRS-0032015", abc_description:"TimberTex Premium Double-Layer Ridge Cap Charcoal",      qxo_description:"GAF TimberTex Premium Ridge Cap Shingles Charcoal",      srs_description:"GAFTIMTEX-CHR PREM DBLYR CAP",         governed_price:72.00, floor_price:64.00, ceiling_price:80.00, gm_threshold:37, cost_pct:0.63, last_updated:"2026-03-14T11:00:00Z" },
+    { id:"sku-013", name:"GAF Pro-Start Starter Strip Shingles",           manufacturer:"GAF", category:"Accessories",  abc_code:"ABC-PS-4101",  qxo_code:"QXO-GAF-PS13",  srs_code:"SRS-0041015", abc_description:"Pro-Start Eave/Rake Starter Strip 120 LF bundle",        qxo_description:"GAF Pro-Start Starter Strip 120 Linear Feet",            srs_description:"GAFPRST 120LF STRT STRP",              governed_price:45.00, floor_price:40.00, ceiling_price:52.00, gm_threshold:32, cost_pct:0.70, last_updated:"2026-03-05T08:00:00Z" },
+    { id:"sku-014", name:"GAF Cobra Snow Country Ridge Vent",              manufacturer:"GAF", category:"Accessories",  abc_code:"ABC-CV-4201",  qxo_code:"QXO-GAF-CV14",  srs_code:"SRS-0042025", abc_description:"Cobra Snow Country 4' section ridge vent",               qxo_description:"GAF Cobra Snow Country Exhaust Ridge Vent 4ft",          srs_description:"GAFCOBSNW 4FT RIDGE VENT",             governed_price:12.50, floor_price:11.00, ceiling_price:14.50, gm_threshold:28, cost_pct:0.76, last_updated:"2026-01-15T12:00:00Z" },
+    { id:"sku-015", name:"GAF Deck-Armor Premium Breathable Underlayment", manufacturer:"GAF", category:"Underlayment", abc_code:"ABC-DA-2401",  qxo_code:"QXO-GAF-DA15",  srs_code:"SRS-0024015", abc_description:"Deck-Armor Breathable Synthetic Underlayment 10 sq",     qxo_description:"GAF Deck-Armor Premium Breathable Underlayment 10sq",   srs_description:"GAFDKARMR 10SQ BREATH UNDRLY",         governed_price:88.00, floor_price:78.00, ceiling_price:98.00, gm_threshold:34, cost_pct:0.62, last_updated:"2026-03-19T07:30:00Z" }
   ],
   brands: ["Interstate Roofing","Skywalker Roofing","Exterior Medics","Franzoso Contracting","High Point Roofing"],
   distributors: ["ABC Supply","QXO","SRS/BMCA"],
@@ -1070,7 +1143,7 @@ function switchTab(tab, btn) {
   if (btn) btn.classList.add('active');
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
-  if (tab === 'anomaly')      renderAnomalyDashboard();
+  if (tab === 'anomaly')      { renderAnomalyDashboard(); updateScanTimestamp(); }
   if (tab === 'price-sheet')  renderBrandDropdown();
   if (tab === 'settings')     renderSettings();
 }
@@ -1110,6 +1183,31 @@ function getSKU(id) { return S.skus.find(function(s){ return s.id === id; }) || 
 function fmt$(n)  { return '$' + parseFloat(n).toFixed(2); }
 function fmtPct(n){ return parseFloat(n).toFixed(1) + '%'; }
 
+function relativeTime(isoStr) {
+  if (!isoStr) return '—';
+  var then  = new Date(isoStr);
+  var now   = new Date();
+  var diffMs = now - then;
+  var diffDays = Math.floor(diffMs / 86400000);
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7)  return diffDays + ' days ago';
+  if (diffDays < 14) return '1 week ago';
+  if (diffDays < 30) return Math.floor(diffDays/7) + ' weeks ago';
+  if (diffDays < 60) return '1 month ago';
+  return Math.floor(diffDays/30) + ' months ago';
+}
+
+function isStale(isoStr) {
+  if (!isoStr) return false;
+  return (new Date() - new Date(isoStr)) > 30 * 86400000; // >30 days
+}
+
+function fmtScanTime(d) {
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric' }) + ' at ' +
+    d.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', hour12:true });
+}
+
 // ════════════════════════════════════════════════════════════
 //  TAB 1 — ITEM MASTER
 // ════════════════════════════════════════════════════════════
@@ -1147,6 +1245,7 @@ function renderSKUTable() {
       editCell(sku.id, 'floor_price',    fmt$(sku.floor_price)) +
       editCell(sku.id, 'ceiling_price',  fmt$(sku.ceiling_price)) +
       editCell(sku.id, 'gm_threshold',   sku.gm_threshold + '%') +
+      '<td><span class="updated-ago' + (isStale(sku.last_updated) ? ' stale' : '') + '" title="' + (sku.last_updated ? new Date(sku.last_updated).toLocaleString() : '') + '">' + relativeTime(sku.last_updated) + '</span></td>' +
     '</tr>';
   }).join('');
 
@@ -1185,6 +1284,7 @@ function startEdit(cell) {
     var v = parseFloat(inp.value);
     if (!isNaN(v) && v !== orig) {
       sku[field] = v;
+      sku.last_updated = new Date().toISOString();
       persist();
       toast('Saved — ' + field.replace(/_/g,' '));
     }
@@ -1223,7 +1323,9 @@ function saveNewSKU() {
     governed_price:   parseFloat(document.getElementById('f-governed').value) || 0,
     floor_price:      parseFloat(document.getElementById('f-floor').value)    || 0,
     ceiling_price:    parseFloat(document.getElementById('f-ceiling').value)  || 0,
-    gm_threshold:     parseFloat(document.getElementById('f-gm').value)       || 35
+    gm_threshold:     parseFloat(document.getElementById('f-gm').value)       || 35,
+    cost_pct:         0.65,
+    last_updated:     new Date().toISOString()
   });
 
   persist();
@@ -1250,6 +1352,34 @@ function exportCSV() {
 // ════════════════════════════════════════════════════════════
 //  TAB 2 — ANOMALY DASHBOARD
 // ════════════════════════════════════════════════════════════
+var lastScanDate = null;
+
+function updateScanTimestamp() {
+  var el = document.getElementById('last-scan-time');
+  if (!el) return;
+  if (!lastScanDate) {
+    el.textContent = '—';
+  } else {
+    el.textContent = fmtScanTime(lastScanDate);
+  }
+}
+
+function runNewScan() {
+  var btn = document.querySelector('[onclick="runNewScan()"]');
+  var origText = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.8s linear infinite"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Scanning…';
+    btn.disabled = true;
+  }
+  setTimeout(function() {
+    lastScanDate = new Date();
+    updateScanTimestamp();
+    if (btn) { btn.innerHTML = origText; btn.disabled = false; }
+    toast('Scan complete — ' + S.anomalies.filter(function(a){ return a.status==='flagged'||a.status==='reviewed'; }).length + ' active flags found');
+    renderAnomalyDashboard();
+  }, 1400);
+}
+
 function renderAnomalyDashboard() {
   var active   = S.anomalies.filter(function(a){ return a.status === 'flagged' || a.status === 'reviewed'; });
   var resolved = S.anomalies.filter(function(a){ return a.status === 'approved'; });
@@ -1365,49 +1495,96 @@ function renderPriceSheet() {
   var content = document.getElementById('price-sheet-content');
 
   if (!brand) {
-    content.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title" style="color:var(--gray-dark)">Select a brand above</div><div class="empty-subtitle">The price sheet will appear here</div></div>';
+    content.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title" style="color:var(--gray-dark)">Select a brand above</div><div class="empty-subtitle">Side-by-side distributor costs will appear here</div></div>';
     return;
   }
 
-  var rows = [];
-  S.skus.forEach(function(sku) {
-    S.distributors.forEach(function(dist) {
-      var costPct = dist === 'ABC Supply' ? 0.72 : dist === 'QXO' ? 0.73 : 0.74;
-      var cost    = sku.governed_price * costPct;
-      var gm      = (sku.governed_price - cost) / sku.governed_price * 100;
-      rows.push({ sku:sku, dist:dist, cost:cost, gm:gm });
-    });
+  var today = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+  // Build one row per SKU with costs from each distributor
+  var rows = S.skus.map(function(sku) {
+    var basePct = sku.cost_pct || 0.65;
+    // Small variation per distributor (-2%, 0%, +2%)
+    var abcCost = sku.governed_price * (basePct - 0.02);
+    var qxoCost = sku.governed_price * basePct;
+    var srsCost = sku.governed_price * (basePct + 0.02);
+    var bestCost = Math.min(abcCost, qxoCost, srsCost);
+    var bestDist = abcCost <= qxoCost && abcCost <= srsCost ? 'abc'
+                  : qxoCost <= srsCost ? 'qxo' : 'srs';
+    // GM uses best-case cost
+    var gm = (sku.governed_price - bestCost) / sku.governed_price * 100;
+    return { sku:sku, abcCost:abcCost, qxoCost:qxoCost, srsCost:srsCost, bestCost:bestCost, bestDist:bestDist, gm:gm };
   });
 
-  var avgGM    = rows.reduce(function(s,r){ return s+r.gm; },0) / rows.length;
-  var today    = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+  var totalSKUs   = rows.length;
+  var avgGM       = rows.reduce(function(s,r){ return s+r.gm; },0) / rows.length;
+  var bestABC     = rows.filter(function(r){ return r.bestDist==='abc'; }).length;
+  var bestQXO     = rows.filter(function(r){ return r.bestDist==='qxo'; }).length;
+  var bestSRS     = rows.filter(function(r){ return r.bestDist==='srs'; }).length;
+
+  function costCell(cost, isBest) {
+    if (isBest) {
+      return '<td><span class="best-price">' + fmt$(cost) + ' <span class="best-price-marker">★</span></span></td>';
+    }
+    return '<td style="color:var(--gray-dark);">' + fmt$(cost) + '</td>';
+  }
 
   content.innerHTML =
-    '<div class="card">' +
-      '<div class="card-header">' +
-        '<div>' +
-          '<div class="card-title" style="font-size:16px;">' + esc(brand) + '</div>' +
-          '<div class="card-subtitle">All products · All distributors · Generated ' + today + '</div>' +
-        '</div>' +
+    // Prominent PDF download bar
+    '<div class="pdf-bar">' +
+      '<div class="pdf-bar-text">' +
+        '<strong>' + esc(brand) + ' — Price Sheet</strong>' +
+        'Generated ' + today + ' · ' + totalSKUs + ' SKUs · Avg GM ' + fmtPct(avgGM) +
       '</div>' +
+      '<button class="btn-pdf" onclick="window.print()">' +
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>' +
+        'Download PDF' +
+      '</button>' +
+    '</div>' +
+    // Best price summary chips
+    '<div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">' +
+      '<div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:12px;">' +
+        '<span style="color:var(--gray-dark);">Best price from ABC Supply: </span><strong>' + bestABC + ' SKUs</strong>' +
+      '</div>' +
+      '<div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:12px;">' +
+        '<span style="color:var(--gray-dark);">Best price from QXO: </span><strong>' + bestQXO + ' SKUs</strong>' +
+      '</div>' +
+      '<div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:12px;">' +
+        '<span style="color:var(--gray-dark);">Best price from SRS/BMCA: </span><strong>' + bestSRS + ' SKUs</strong>' +
+      '</div>' +
+    '</div>' +
+    // Comparison table
+    '<div class="card">' +
       '<div class="table-wrapper"><table>' +
-        '<thead><tr><th>Product</th><th>Category</th><th>Distributor</th><th>Our Cost</th><th>Governed Retail</th><th>GM %</th></tr></thead>' +
+        '<thead><tr>' +
+          '<th>Product</th>' +
+          '<th>Category</th>' +
+          '<th>Governed Retail</th>' +
+          '<th>ABC Supply Cost</th>' +
+          '<th>QXO Cost</th>' +
+          '<th>SRS/BMCA Cost</th>' +
+          '<th>Best Price</th>' +
+          '<th>Best GM %</th>' +
+        '</tr></thead>' +
         '<tbody>' +
           rows.map(function(r){
             var gmBadge = r.gm >= 35 ? 'badge-green' : r.gm >= 28 ? 'badge-amber' : 'badge-red';
             return '<tr>' +
-              '<td style="font-weight:500;max-width:260px;">' + esc(r.sku.name) + '</td>' +
+              '<td style="font-weight:600;font-size:12.5px;max-width:220px;">' + esc(r.sku.name) + '</td>' +
               '<td><span class="badge badge-blue">' + esc(r.sku.category) + '</span></td>' +
-              '<td>' + esc(r.dist) + '</td>' +
-              '<td>' + fmt$(r.cost) + '</td>' +
               '<td style="font-weight:600;">' + fmt$(r.sku.governed_price) + '</td>' +
+              costCell(r.abcCost, r.bestDist==='abc') +
+              costCell(r.qxoCost, r.bestDist==='qxo') +
+              costCell(r.srsCost, r.bestDist==='srs') +
+              '<td><span class="best-price">' + fmt$(r.bestCost) + '</span></td>' +
               '<td><span class="badge ' + gmBadge + '">' + fmtPct(r.gm) + '</span></td>' +
             '</tr>';
           }).join('') +
         '</tbody>' +
         '<tfoot>' +
           '<tr class="ps-summary-row">' +
-            '<td colspan="5">Summary — ' + rows.length + ' line items · ' + S.skus.length + ' SKUs</td>' +
+            '<td colspan="6">Summary — ' + totalSKUs + ' SKUs · ★ = lowest cost distributor per SKU</td>' +
+            '<td></td>' +
             '<td>Avg ' + fmtPct(avgGM) + '</td>' +
           '</tr>' +
         '</tfoot>' +
@@ -1544,6 +1721,8 @@ document.getElementById('new-dist-input').addEventListener('keydown',  function(
 // ════════════════════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', function() {
   loadState();
+  // Set initial scan time to simulate a recent scan
+  lastScanDate = new Date(Date.now() - 47 * 60 * 1000); // 47 minutes ago
   // Short skeleton delay, then render
   setTimeout(function() {
     renderSKUTable();
@@ -1551,6 +1730,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var active = S.anomalies.filter(function(a){ return a.status==='flagged'||a.status==='reviewed'; });
     var badge  = document.getElementById('anomaly-badge');
     if (active.length > 0) { badge.textContent = active.length; badge.style.display = 'inline-block'; }
+    updateScanTimestamp();
   }, 500);
 });
 </script>
