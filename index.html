@@ -2564,7 +2564,8 @@ function toggleDark() {
   const next = current === 'light' ? 'dark' : 'light';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('ihs-theme', next);
-  document.getElementById('dark-label').textContent = next === 'dark' ? 'Light Mode' : 'Dark Mode';
+  const dl = document.getElementById('dark-label');
+  if (dl) dl.textContent = next === 'dark' ? 'Light Mode' : 'Dark Mode';
 }
 
 function copyToClipboard(text) {
@@ -2736,7 +2737,8 @@ document.addEventListener('DOMContentLoaded', () => {
   loadState();
   const theme = localStorage.getItem('ihs-theme') || 'light';
   document.documentElement.setAttribute('data-theme', theme);
-  document.getElementById('dark-label').textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+  const darkLabel = document.getElementById('dark-label');
+  if (darkLabel) darkLabel.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
 
   renderItemMaster();
   updateCompassSuggestions('dashboard');
