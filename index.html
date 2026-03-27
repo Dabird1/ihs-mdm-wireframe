@@ -317,33 +317,6 @@ body {
   color: rgba(255,255,255,0.85);
 }
 
-.compass-float-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 24px;
-  background: var(--accent-blue);
-  color: white;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-md);
-  margin-bottom: 12px;
-  position: relative;
-}
-
-.compass-float-btn:hover {
-  background: var(--accent-blue-dark);
-  box-shadow: var(--shadow-lg);
-  transform: scale(1.05);
-}
-
-.compass-float-btn .nav-icon {
-  width: 24px;
-  height: 24px;
-}
 
 .user-info {
   display: flex;
@@ -1600,22 +1573,28 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   align-items: center;
 }
 
-/* ── ROLE BANNER ── */
-.role-banner {
-  background: var(--accent-blue);
-  color: white;
-  padding: 10px 20px;
-  font-size: 12px;
+/* ── ROLE CHIP ── */
+.role-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
   font-weight: 600;
-  text-align: center;
-  display: none;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: rgba(59,130,246,0.15);
+  color: var(--accent-blue);
+  letter-spacing: 0.03em;
 }
-
-.role-banner.show { display: block; }
-
-[data-role="analyst"] .role-banner { background: var(--accent-amber); }
-[data-role="viewer"] .role-banner { background: var(--accent-gray); }
+.role-chip::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+[data-role="analyst"] .role-chip { background: rgba(245,158,11,0.15); color: var(--accent-amber); }
+[data-role="viewer"] .role-chip { background: rgba(100,116,139,0.15); color: var(--text-secondary); }
 
 /* ── ROLE-HIDDEN ── */
 .role-admin-only { }
@@ -1652,6 +1631,10 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm0 2c-2.209 0-4 1.791-4 4 0 .891.328 1.711.887 2.35H6a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2h-2.887c.559-.639.887-1.459.887-2.35 0-2.209-1.791-4-4-4z"/></svg>
       <span>Brand Price Sheet</span>
     </button>
+    <button class="nav-item" data-tooltip="Executive brand performance summary and pricing intelligence" onclick="switchTab('brand-dashboard', this)">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+      <span>Brand Dashboard</span>
+    </button>
     <button class="nav-item" data-tooltip="Review and resolve pricing anomalies across brands" onclick="switchTab('anomaly', this)">
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4v2m1.581-12.464a2 2 0 0 0-3.162 0l-9.183 15.986a2 2 0 0 0 1.581 3.038h18.366a2 2 0 0 0 1.581-3.038l-9.183-15.986z"/></svg>
       <span>Anomaly Dashboard</span>
@@ -1670,12 +1653,13 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><path d="M12 8v-2m0 10v2M16 12h2m-10 0H4m12.95-2.95l1.414-1.414M9.05 18.95l1.414-1.414m7.07-7.07l1.414 1.414M9.05 9.05L7.636 7.636M18 12a6 6 0 1 1-12 0 6 6 0 0 1 12 0z"/></svg>
       <span>Rules & Thresholds</span>
     </button>
+    <div style="border-top:1px solid rgba(255,255,255,0.06); margin:8px 0;"></div>
+    <button class="nav-item" data-tooltip="AI-powered assistant for data insights" onclick="switchTab('compass', this)">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+      <span>Compass AI</span>
+    </button>
   </nav>
   </div>
-
-  <button class="compass-float-btn" data-tooltip="AI-powered assistant for data insights" onclick="switchTab('compass', this)" title="Compass AI">
-    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-  </button>
 
   <div class="purpose-strip">
     <div class="label">Our Purpose</div>
@@ -1715,6 +1699,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       </div>
     </div>
     <div class="header-actions" id="header-actions">
+      <span id="role-chip" class="role-chip">Admin</span>
       <button class="gear-btn" onclick="openUserSettingsPanel()" title="User Settings">
         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="1"/><path d="M12 8v-2m0 10v2M16 12h2m-10 0H4m12.95-2.95l1.414-1.414M9.05 18.95l1.414-1.414m7.07-7.07l1.414 1.414M9.05 9.05L7.636 7.636M18 12a6 6 0 1 1-12 0 6 6 0 0 1 12 0z"/>
@@ -1722,9 +1707,6 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       </button>
     </div>
   </div>
-
-  <!-- ROLE BANNER -->
-  <div id="role-banner" class="role-banner"></div>
 
   <!-- CONTENT -->
   <div class="content" id="content">
@@ -1861,7 +1843,30 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
     <div id="price-sheet-content"></div>
   </div>
 
-  <!-- TAB 5: SETTINGS -->
+  <!-- TAB 5: BRAND DASHBOARD -->
+  <div id="tab-brand-dashboard" class="tab-panel">
+    <div class="toolbar" style="margin-bottom:20px; display:flex; gap:12px; align-items:center;">
+      <select class="filter-select" id="brand-dash-selector" onchange="renderBrandDashboard(this.value)" style="min-width:200px;">
+        <option value="">Select a Brand...</option>
+      </select>
+      <select class="filter-select" id="brand-dash-period" onchange="renderBrandDashboard(document.getElementById('brand-dash-selector').value)">
+        <option value="30d">Last 30 Days</option>
+        <option value="qtd">Quarter to Date</option>
+        <option value="ytd">Year to Date</option>
+        <option value="mtd" selected>This Month</option>
+      </select>
+      <button class="btn btn-secondary" onclick="exportBrandDashboard()">↓ Export</button>
+    </div>
+    <div id="brand-dash-content">
+      <div style="text-align:center; padding:80px 20px; color:var(--text-tertiary);">
+        <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom:12px; opacity:0.5;"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        <div style="font-size:16px; font-weight:600; margin-bottom:4px;">Select a brand to view their dashboard</div>
+        <div style="font-size:13px;">Choose a brand from the dropdown above to see performance, pricing, and insights</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 6: SETTINGS -->
   <div id="tab-settings" class="tab-panel">
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
       <!-- GM Thresholds by Category -->
@@ -2478,6 +2483,18 @@ function switchTab(tabName, navItem) {
       if (pills[0]) pills[0].classList.add('active');
     }
     else if (tabName === 'price-sheet') renderPriceSheetInit();
+    else if (tabName === 'brand-dashboard') {
+      // Populate brand selector if empty
+      const sel = document.getElementById('brand-dash-selector');
+      if (sel && sel.options.length <= 1) {
+        state.brands.forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b;
+          opt.textContent = b;
+          sel.appendChild(opt);
+        });
+      }
+    }
     else if (tabName === 'audit-log') renderAuditLog();
   });
 }
@@ -2522,6 +2539,7 @@ function updatePageHeader(tabName) {
     'item-master': { title: 'Item Master', subtitle: 'Browse and manage all governed product SKUs' },
     anomaly: { title: 'Anomaly Dashboard', subtitle: 'Review and resolve pricing anomalies' },
     'price-sheet': { title: 'Brand Price Sheet', subtitle: 'Compare distributor pricing by brand' },
+    'brand-dashboard': { title: 'Brand Dashboard', subtitle: 'Executive brand performance and pricing intelligence' },
     settings: { title: 'Rules & Thresholds', subtitle: 'Configure governance thresholds and notifications' },
     'audit-log': { title: 'Audit Log', subtitle: 'Track all system changes and user actions' },
     compass: { title: 'Compass AI', subtitle: 'AI-powered assistant for data insights' },
@@ -2974,6 +2992,237 @@ function runNewScan() {
     if (lastScanned) lastScanned.textContent = 'Last scanned: just now';
     showToast('Scan complete — found ' + state.anomalies.filter(a => a.status === 'active').length + ' anomalies', 'success');
   }, 1500);
+}
+
+function renderBrandDashboard(brand) {
+  const content = document.getElementById('brand-dash-content');
+  if (!brand) {
+    content.innerHTML = `<div style="text-align:center; padding:80px 20px; color:var(--text-tertiary);">
+      <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom:12px; opacity:0.5;"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+      <div style="font-size:16px; font-weight:600; margin-bottom:4px;">Select a brand to view their dashboard</div>
+      <div style="font-size:13px;">Choose a brand from the dropdown above</div>
+    </div>`;
+    return;
+  }
+
+  const products = state.products.filter(p => p.brand === brand);
+  const anomalies = state.anomalies.filter(a => a.brand === brand);
+  const activeAnoms = anomalies.filter(a => a.status === 'active');
+  const avgGM = products.length ? (products.reduce((s, p) => s + p.gm_pct, 0) / products.length).toFixed(1) : 0;
+  const healthScore = Math.max(0, 100 - activeAnoms.length * 15 - Math.floor(Math.random() * 10));
+  const healthColor = healthScore >= 70 ? 'var(--accent-green)' : healthScore >= 40 ? 'var(--accent-amber)' : 'var(--accent-red)';
+
+  // Distributor analysis
+  let abcBest = 0, qxoBest = 0, srsBest = 0;
+  let abcTotal = 0, qxoTotal = 0, srsTotal = 0;
+  products.forEach(p => {
+    abcTotal += p.abc_price;
+    qxoTotal += p.qxo_price;
+    srsTotal += p.srs_price;
+    const best = Math.min(p.abc_price, p.qxo_price, p.srs_price);
+    if (best === p.abc_price) abcBest++;
+    else if (best === p.qxo_price) qxoBest++;
+    else srsBest++;
+  });
+  const abcAvg = products.length ? (abcTotal / products.length).toFixed(2) : 0;
+  const qxoAvg = products.length ? (qxoTotal / products.length).toFixed(2) : 0;
+  const srsAvg = products.length ? (srsTotal / products.length).toFixed(2) : 0;
+  const govTotal = products.reduce((s, p) => s + p.governed_price, 0);
+  const simulatedRevenue = (products.length * (28000 + Math.floor(Math.random() * 15000))).toLocaleString();
+
+  // Category breakdown
+  const categories = {};
+  products.forEach(p => {
+    if (!categories[p.category]) categories[p.category] = { count: 0, gmSum: 0, anomalies: 0 };
+    categories[p.category].count++;
+    categories[p.category].gmSum += p.gm_pct;
+  });
+  activeAnoms.forEach(a => {
+    const prod = products.find(p => p.sku === a.sku);
+    if (prod && categories[prod.category]) categories[prod.category].anomalies++;
+  });
+
+  // GM trend (simulated 6 months)
+  const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+  const gmTrend = months.map(m => {
+    const base = parseFloat(avgGM) + (Math.random() - 0.5) * 8;
+    return { month: m, gm: Math.max(10, Math.min(50, base)).toFixed(1) };
+  });
+  const maxGMTrend = Math.max(...gmTrend.map(g => parseFloat(g.gm)));
+
+  // Worst SKUs (lowest GM or highest variance)
+  const watchList = [...products].sort((a, b) => a.gm_pct - b.gm_pct).slice(0, 5);
+
+  // Pending approvals for brand
+  const brandApprovals = (state.pendingApprovals || []).filter(a => {
+    const prod = state.products.find(p => p.sku === a.sku);
+    return prod && prod.brand === brand;
+  });
+
+  content.innerHTML = `
+    <!-- Brand Header -->
+    <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+      <h2 style="font-size:22px; font-weight:800; color:var(--text-primary); margin:0;">${brand}</h2>
+      <span style="display:inline-flex; align-items:center; gap:6px; padding:5px 14px; border-radius:20px; font-size:12px; font-weight:700; background:${healthColor}20; color:${healthColor};">
+        <span style="width:8px; height:8px; border-radius:50%; background:${healthColor};"></span>
+        Health ${healthScore}
+      </span>
+    </div>
+
+    <!-- Hero KPI Row -->
+    <div class="kpi-grid" style="grid-template-columns:repeat(5,1fr); margin-bottom:20px;">
+      <div class="stat-card">
+        <div class="stat-value">${products.length}</div>
+        <div class="stat-label">Governed SKUs</div>
+      </div>
+      <div class="stat-card ${parseFloat(avgGM) >= 30 ? 'green' : parseFloat(avgGM) >= 20 ? '' : 'red'}">
+        <div class="stat-value">${avgGM}%</div>
+        <div class="stat-label">Avg Gross Margin</div>
+      </div>
+      <div class="stat-card ${activeAnoms.length === 0 ? 'green' : 'red'}">
+        <div class="stat-value">${activeAnoms.length}</div>
+        <div class="stat-label">Active Anomalies</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">$${simulatedRevenue}</div>
+        <div class="stat-label">Est. Monthly Volume</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-value">$${govTotal.toFixed(0)}</div>
+        <div class="stat-label">Total Governed Value</div>
+      </div>
+    </div>
+
+    <!-- Row 2: Category Performance + GM Trend -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+      <!-- Category Performance -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Category Performance</span></div>
+        <div class="card-body" style="padding:0;">
+          ${Object.entries(categories).map(([cat, data]) => {
+            const catGM = (data.gmSum / data.count).toFixed(1);
+            const gmColor = parseFloat(catGM) >= 30 ? 'var(--accent-green)' : parseFloat(catGM) >= 20 ? 'var(--accent-amber)' : 'var(--accent-red)';
+            const healthDot = data.anomalies > 0 ? 'var(--accent-red)' : 'var(--accent-green)';
+            return `<div style="padding:12px 16px; border-bottom:1px solid var(--border-primary); display:flex; align-items:center; gap:12px;">
+              <span style="width:8px; height:8px; border-radius:50%; background:${healthDot}; flex-shrink:0;"></span>
+              <div style="flex:1;">
+                <div style="font-weight:600; font-size:13px; color:var(--text-primary);">${cat}</div>
+                <div style="font-size:11px; color:var(--text-tertiary);">${data.count} SKUs${data.anomalies > 0 ? ' · ' + data.anomalies + ' anomal' + (data.anomalies > 1 ? 'ies' : 'y') : ''}</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-weight:700; font-size:14px; color:${gmColor};">${catGM}%</div>
+                <div style="font-size:10px; color:var(--text-tertiary);">GM%</div>
+              </div>
+              <div style="width:60px; height:6px; background:var(--bg-tertiary); border-radius:3px; overflow:hidden;">
+                <div style="height:100%; width:${Math.min(100, parseFloat(catGM) * 2)}%; background:${gmColor}; border-radius:3px;"></div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- GM% Trend -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">GM% Trend (6 Months)</span></div>
+        <div class="card-body" style="padding:16px;">
+          <div style="display:flex; align-items:flex-end; gap:10px; height:140px;">
+            ${gmTrend.map(g => {
+              const pct = (parseFloat(g.gm) / maxGMTrend) * 100;
+              const color = parseFloat(g.gm) >= 30 ? 'var(--accent-green)' : parseFloat(g.gm) >= 20 ? 'var(--accent-amber)' : 'var(--accent-red)';
+              return `<div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                <span style="font-size:11px; font-weight:700; color:${color};">${g.gm}%</span>
+                <div style="width:100%; height:${pct}%; background:${color}; border-radius:4px 4px 0 0; min-height:8px; opacity:0.85;"></div>
+                <span style="font-size:10px; color:var(--text-tertiary);">${g.month}</span>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Distributor Scorecard + SKU Watch List -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+      <!-- Distributor Scorecard -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Distributor Scorecard</span></div>
+        <div class="card-body" style="padding:0;">
+          <table style="width:100%;">
+            <thead><tr>
+              <th>Distributor</th>
+              <th>Best Price Wins</th>
+              <th>Avg Cost</th>
+              <th>Sync</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:600;">ABC Supply</td>
+                <td><span style="font-weight:700; color:var(--accent-blue);">${abcBest}</span> of ${products.length}</td>
+                <td>$${abcAvg}</td>
+                <td><span class="badge badge-green" style="font-size:10px;">Connected</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;">QXO</td>
+                <td><span style="font-weight:700; color:var(--accent-green);">${qxoBest}</span> of ${products.length}</td>
+                <td>$${qxoAvg}</td>
+                <td><span class="badge badge-green" style="font-size:10px;">Connected</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;">SRS/BMCA</td>
+                <td><span style="font-weight:700; color:var(--accent-purple);">${srsBest}</span> of ${products.length}</td>
+                <td>$${srsAvg}</td>
+                <td><span class="badge badge-red" style="font-size:10px;">Failed</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SKU Watch List -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">SKU Watch List</span>
+          <span style="font-size:11px; color:var(--text-tertiary);">Lowest GM%</span>
+        </div>
+        <div class="card-body" style="padding:0;">
+          ${watchList.map(p => {
+            const gmColor = p.gm_pct >= 30 ? 'var(--accent-green)' : p.gm_pct >= 20 ? 'var(--accent-amber)' : 'var(--accent-red)';
+            const hasAnomaly = activeAnoms.some(a => a.sku === p.sku);
+            return `<div style="padding:10px 16px; border-bottom:1px solid var(--border-primary); display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="switchTab('item-master', document.querySelector('.nav-item:nth-child(2)'))">
+              ${hasAnomaly ? '<span style="width:8px; height:8px; border-radius:50%; background:var(--accent-red); flex-shrink:0;" title="Active anomaly"></span>' : '<span style="width:8px; height:8px; border-radius:50%; background:transparent; flex-shrink:0;"></span>'}
+              <div style="flex:1; min-width:0;">
+                <div style="font-weight:600; font-size:12px; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</div>
+                <div style="font-size:10px; color:var(--text-tertiary);">${p.sku} · ${p.category}</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-weight:700; font-size:13px; color:${gmColor};">${p.gm_pct}%</div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 4: Price Change Activity -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Recent Price Activity</span>
+        <button class="btn btn-sm btn-secondary" onclick="switchTab('audit-log', document.querySelectorAll('.nav-item')[4])">View Full Audit Log</button>
+      </div>
+      <div class="card-body" style="padding:0;">
+        ${(() => {
+          const brandAudits = state.auditLog.filter(a => {
+            return products.some(p => a.entity.includes(p.sku)) || a.entity.includes(brand);
+          }).slice(0, 5);
+          if (brandAudits.length === 0) return '<div style="padding:20px; text-align:center; color:var(--text-tertiary); font-size:13px;">No recent price activity for this brand</div>';
+          return brandAudits.map(a => '<div style="padding:10px 16px; border-bottom:1px solid var(--border-primary); display:flex; justify-content:space-between; align-items:center; font-size:12px;"><div><span style="font-weight:600; color:var(--text-primary);">' + a.action + '</span> <span style="color:var(--text-secondary);">' + a.entity + '</span>' + (a.field !== '—' ? ' · ' + a.field + ': ' + a.prev + ' → ' + a.next : '') + '</div><span style="color:var(--text-tertiary); font-size:11px;">' + a.timestamp + '</span></div>').join('');
+        })()}
+      </div>
+    </div>
+  `;
+}
+
+function exportBrandDashboard() {
+  showToast('Brand dashboard exported', 'success');
 }
 
 function renderPriceSheetInit() {
@@ -3619,12 +3868,11 @@ function confirmDeleteProduct() {
   logAudit('DELETE', p.sku, 'Status', 'Active', 'Inactive');
 }
 
-function updateRoleBanner() {
-  const banner = document.getElementById('role-banner');
-  const roleNames = { admin: 'Administrator', analyst: 'Pricing Analyst', viewer: 'Viewer' };
-  if (banner) {
-    banner.textContent = `Viewing as: ${roleNames[state.currentRole] || 'Unknown'}`;
-    banner.classList.add('show');
+function updateRoleChip() {
+  const chip = document.getElementById('role-chip');
+  const roleNames = { admin: 'Admin', analyst: 'Analyst', viewer: 'Viewer' };
+  if (chip) {
+    chip.textContent = roleNames[state.currentRole] || 'Admin';
   }
 }
 
@@ -3637,7 +3885,7 @@ function switchRole(role) {
   const roleAvatars = { admin: 'AB', analyst: 'PA', viewer: 'VW' };
   if (nameDisplay) nameDisplay.textContent = roleNames[role] || 'Admin User';
   if (avatarDisplay) avatarDisplay.textContent = roleAvatars[role] || 'AB';
-  updateRoleBanner();
+  updateRoleChip();
   showToast('Switched to ' + (roleNames[role] || role) + ' role', 'info');
 }
 
@@ -4002,7 +4250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Set initial role
   document.body.setAttribute('data-role', state.currentRole || 'admin');
-  updateRoleBanner();
+  updateRoleChip();
 
   populateBrandFilters();
   updateApprovalsBadge();
