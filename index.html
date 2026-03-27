@@ -1297,6 +1297,259 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   background: var(--accent-blue);
   color: white;
 }
+
+/* ── PAGINATION ── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.pagination-controls { display: flex; gap: 6px; align-items: center; }
+.pagination-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.pagination-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+.pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.pagination-btn:disabled:hover { border-color: var(--border-primary); color: var(--text-primary); }
+
+/* ── PROGRESS BAR ── */
+.progress-bar-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.progress-track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--gradient-blue);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+.progress-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.progress-pct {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-blue);
+  white-space: nowrap;
+}
+
+/* ── CLICKABLE KPI ── */
+.stat-card.clickable { cursor: pointer; transition: all 0.2s ease; }
+.stat-card.clickable:hover { transform: translateY(-2px); box-shadow: var(--shadow-card-hover); }
+.stat-card.clickable::after {
+  content: '→';
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 14px;
+  color: var(--text-tertiary);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.stat-card.clickable:hover::after { opacity: 1; }
+.stat-card { position: relative; }
+
+/* ── ROLE SWITCHER ── */
+.role-switcher {
+  padding: 6px 10px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.7);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 6px;
+  transition: border-color 0.15s;
+}
+.role-switcher:hover { border-color: rgba(255,255,255,0.3); }
+.role-switcher option { background: var(--bg-card); color: var(--text-primary); }
+
+/* ── ACTION BADGES ── */
+.badge-approve { background: var(--tint-green); color: #065f46; }
+.badge-escalate { background: #fef3c7; color: #92400e; }
+.badge-edit { background: #dbeafe; color: #1d4ed8; }
+.badge-add { background: #fee2e2; color: #991b1b; }
+.badge-resolve { background: var(--accent-purple-light); color: #6d28d9; }
+.badge-delete { background: #fce7f3; color: #9d174d; }
+
+/* ── SYNC STATUS ── */
+.sync-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.sync-badge.success { background: var(--tint-green); color: #065f46; }
+.sync-badge.failed { background: #fee2e2; color: #991b1b; }
+.sync-badge.pending { background: #fef3c7; color: #92400e; }
+
+/* ── SETTINGS TABLES ── */
+.settings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.settings-table th {
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
+}
+.settings-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-primary);
+}
+.settings-table input {
+  width: 80px;
+  padding: 5px 8px;
+  border: 1px solid var(--border-primary);
+  border-radius: 5px;
+  font-size: 12px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* ── BRAND TAG LIST ── */
+.brand-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.brand-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 16px;
+  font-size: 11px;
+  color: var(--text-primary);
+}
+.brand-tag .remove-brand {
+  cursor: pointer;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  margin-left: 2px;
+}
+.brand-tag .remove-brand:hover { color: var(--accent-red); }
+
+/* ── RESOLVED SECTION ── */
+.resolved-section {
+  margin-top: 24px;
+  border-top: 2px solid var(--border-primary);
+  padding-top: 16px;
+}
+.resolved-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  padding: 0;
+}
+.resolved-toggle:hover { color: var(--text-primary); }
+.resolved-grid { display: none; }
+.resolved-grid.show { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
+
+/* ── SUMMARY STATS ROW ── */
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.summary-stat {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  text-align: center;
+}
+.summary-stat-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.summary-stat-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── REPORT OUTPUT ── */
+.report-output-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.report-output-header {
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-primary);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ── ROLE-HIDDEN ── */
+.role-admin-only { }
+.role-analyst-hide { }
+[data-role="viewer"] .role-admin-only,
+[data-role="viewer"] .role-analyst-only,
+[data-role="analyst"] .role-admin-only { display: none !important; }
 </style>
 </head>
 <body data-theme="dark">
@@ -1361,10 +1614,15 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       <span id="dark-label">Dark Mode</span>
     </button>
     <div class="user-info">
-      <div class="user-avatar">AB</div>
+      <div class="user-avatar" id="user-avatar">AB</div>
       <div class="user-text">
-        <div class="user-name">Admin User</div>
+        <div class="user-name" id="user-name-display">Admin User</div>
         <div class="user-role">IHS Data Hub</div>
+        <select class="role-switcher" id="role-switcher" onchange="switchRole(this.value)">
+          <option value="admin">Admin</option>
+          <option value="analyst">Pricing Analyst</option>
+          <option value="viewer">Viewer</option>
+        </select>
       </div>
     </div>
   </div>
@@ -1391,7 +1649,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
     <div class="kpi-grid" id="kpi-grid"></div>
     <div class="dash-grid">
       <div class="dash-card">
-        <div class="dash-card-header">GM% by Category</div>
+        <div class="dash-card-header">Anomalies by Brand</div>
         <div class="dash-card-body" id="dash-bar-chart"></div>
       </div>
       <div class="dash-card">
@@ -1407,6 +1665,11 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 
   <!-- TAB 2: ITEM MASTER -->
   <div id="tab-item-master" class="tab-panel">
+    <div class="progress-bar-container">
+      <div class="progress-text" id="gov-progress-text">125 of ~500 estimated SKUs governed</div>
+      <div class="progress-track"><div class="progress-fill" id="gov-progress-fill" style="width:25%"></div></div>
+      <div class="progress-pct" id="gov-progress-pct">25%</div>
+    </div>
     <div class="toolbar">
       <div class="search-wrap">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1418,14 +1681,12 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
         <option value="Underlayment">Underlayment</option>
         <option value="Ridge Cap">Ridge Cap</option>
         <option value="Accessories">Accessories</option>
-        <option value="Siding">Siding</option>
-        <option value="Gutters">Gutters</option>
       </select>
       <button class="btn btn-secondary" onclick="exportCSV()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Export
       </button>
-      <button class="btn btn-primary" onclick="openAddSKUModal()">
+      <button class="btn btn-primary role-admin-only" onclick="openAddSKUModal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Add Product
       </button>
@@ -1440,6 +1701,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
                 <th>SKU</th>
                 <th>Category</th>
                 <th>Brand</th>
+                <th>Governed</th>
                 <th>ABC Price</th>
                 <th>QXO Price</th>
                 <th>SRS Price</th>
@@ -1450,21 +1712,34 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
             <tbody id="item-tbody"></tbody>
           </table>
         </div>
+        <div class="pagination" id="item-pagination"></div>
       </div>
     </div>
   </div>
 
   <!-- TAB 3: ANOMALY DASHBOARD -->
   <div id="tab-anomaly" class="tab-panel">
+    <div class="kpi-grid" id="anomaly-kpi-grid"></div>
     <div class="toolbar">
       <select class="filter-select" id="anomaly-filter">
         <option value="">All Severities</option>
         <option value="critical">Critical Only</option>
         <option value="warning">Warnings Only</option>
       </select>
-      <button class="btn btn-secondary" id="resolve-btn" onclick="bulkResolveAnomalies()" style="margin-left:auto;">Resolve Selected</button>
+      <span id="last-scanned" style="font-size:12px; color:var(--text-tertiary); margin-left:8px;">Last scanned: 4 min ago</span>
+      <button class="btn btn-primary" onclick="runNewScan()" style="margin-left:auto;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        Run New Scan
+      </button>
+      <button class="btn btn-secondary role-admin-only" id="resolve-btn" onclick="bulkResolveAnomalies()">Resolve All</button>
     </div>
     <div class="anomaly-grid" id="anomaly-grid"></div>
+    <div class="resolved-section">
+      <button class="resolved-toggle" onclick="toggleResolved()">
+        <span id="resolved-arrow">▸</span> Resolved Anomalies (<span id="resolved-count">0</span>)
+      </button>
+      <div class="resolved-grid" id="resolved-grid"></div>
+    </div>
   </div>
 
   <!-- TAB 4: BRAND PRICE SHEET -->
@@ -1488,50 +1763,109 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 
   <!-- TAB 5: SETTINGS -->
   <div id="tab-settings" class="tab-panel">
-    <div class="card">
-      <div class="card-header">Data Governance</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+      <!-- GM Thresholds by Category -->
+      <div class="card">
+        <div class="card-header">GM% Thresholds by Category</div>
+        <div class="card-body">
+          <table class="settings-table">
+            <thead><tr><th>Category</th><th>Min GM%</th><th>Warning GM%</th></tr></thead>
+            <tbody>
+              <tr><td>Shingles</td><td><input type="number" value="25" id="gm-shingles"></td><td><input type="number" value="30"></td></tr>
+              <tr><td>Underlayment</td><td><input type="number" value="20" id="gm-underlayment"></td><td><input type="number" value="25"></td></tr>
+              <tr><td>Ridge Cap</td><td><input type="number" value="22" id="gm-ridgecap"></td><td><input type="number" value="28"></td></tr>
+              <tr><td>Accessories</td><td><input type="number" value="30" id="gm-accessories"></td><td><input type="number" value="35"></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Tolerance Bands -->
+      <div class="card">
+        <div class="card-header">Tolerance Bands by Category</div>
+        <div class="card-body">
+          <table class="settings-table">
+            <thead><tr><th>Category</th><th>Floor %</th><th>Ceiling %</th></tr></thead>
+            <tbody>
+              <tr><td>Shingles</td><td><input type="number" value="-10"></td><td><input type="number" value="10"></td></tr>
+              <tr><td>Underlayment</td><td><input type="number" value="-12"></td><td><input type="number" value="12"></td></tr>
+              <tr><td>Ridge Cap</td><td><input type="number" value="-8"></td><td><input type="number" value="8"></td></tr>
+              <tr><td>Accessories</td><td><input type="number" value="-15"></td><td><input type="number" value="15"></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- General Settings -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-header">General Settings</div>
       <div class="card-body">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
           <div>
-            <div style="margin-bottom:16px;">
-              <label style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:6px;">GM% Threshold (Critical)</label>
-              <input type="number" id="gm-critical" class="form-input" placeholder="15%" value="15" style="width:100%;">
-            </div>
-            <div style="margin-bottom:16px;">
-              <label style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:6px;">GM% Threshold (Warning)</label>
-              <input type="number" id="gm-warning" class="form-input" placeholder="20%" value="20" style="width:100%;">
-            </div>
-            <div style="margin-bottom:16px;">
-              <label style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:6px;">Price Variance Tolerance (%)</label>
-              <input type="number" id="variance-tolerance" class="form-input" placeholder="5%" value="5" style="width:100%;">
-            </div>
+            <label style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:6px;">Data Quality Target (%)</label>
+            <input type="number" id="quality-target" class="form-input" value="95" style="width:100%;">
           </div>
           <div>
-            <div style="margin-bottom:16px;">
-              <label style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:6px;">Data Quality Target (%)</label>
-              <input type="number" id="quality-target" class="form-input" placeholder="95%" value="95" style="width:100%;">
-            </div>
-            <div style="margin-bottom:16px;">
-              <label style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:6px;">Auto-Approval Policy</label>
-              <select id="auto-approval" class="form-input" style="width:100%;">
-                <option>No Auto-Approval</option>
-                <option>Auto-Approve Green</option>
-                <option>Auto-Approve <5% Variance</option>
-              </select>
-            </div>
-            <div style="margin-bottom:16px;">
-              <label style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:6px;">Notification Frequency</label>
-              <select id="notification-freq" class="form-input" style="width:100%;">
-                <option>Daily Digest</option>
-                <option>Real-Time</option>
-                <option>Weekly Summary</option>
-              </select>
-            </div>
+            <label style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:6px;">Auto-Approval Policy</label>
+            <select id="auto-approval" class="form-input" style="width:100%;">
+              <option>No Auto-Approval</option>
+              <option>Auto-Approve Green</option>
+              <option>Auto-Approve &lt;5% Variance</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:6px;">Notification Frequency</label>
+            <select id="notification-freq" class="form-input" style="width:100%;">
+              <option>Daily Digest</option>
+              <option>Real-Time</option>
+              <option>Weekly Summary</option>
+            </select>
           </div>
         </div>
-        <div style="display:flex; gap:10px; margin-top:20px;">
+        <div style="display:flex; gap:10px; margin-top:16px;">
           <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
           <button class="btn btn-secondary" onclick="resetSettings()">Reset to Default</button>
+        </div>
+      </div>
+    </div>
+    <!-- Manage Brands -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div class="card">
+        <div class="card-header">Manage Brands</div>
+        <div class="card-body">
+          <div class="brand-tag-list" id="brand-tag-list"></div>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="new-brand-input" class="form-input" placeholder="Add new brand..." style="flex:1;">
+            <button class="btn btn-primary btn-sm" onclick="addBrand()">Add</button>
+          </div>
+        </div>
+      </div>
+      <!-- Distributor Sync -->
+      <div class="card">
+        <div class="card-header">Distributor Sync Status</div>
+        <div class="card-body">
+          <table class="settings-table" id="sync-table">
+            <thead><tr><th>Distributor</th><th>Last Sync</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:600;">ABC Supply</td>
+                <td style="font-size:12px;">Mar 27, 2026 8:15 AM</td>
+                <td><span class="sync-badge success">● Connected</span></td>
+                <td><button class="btn btn-sm btn-secondary" onclick="syncDistributor('ABC Supply')">Sync Now</button></td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;">QXO</td>
+                <td style="font-size:12px;">Mar 27, 2026 8:10 AM</td>
+                <td><span class="sync-badge success">● Connected</span></td>
+                <td><button class="btn btn-sm btn-secondary" onclick="syncDistributor('QXO')">Sync Now</button></td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;">SRS/BMCA</td>
+                <td style="font-size:12px;">Mar 26, 2026 11:42 PM</td>
+                <td><span class="sync-badge failed">● Failed</span></td>
+                <td><button class="btn btn-sm btn-primary" onclick="syncDistributor('SRS/BMCA')">Retry</button></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -1539,6 +1873,13 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 
   <!-- TAB 6: AUDIT LOG -->
   <div id="tab-audit-log" class="tab-panel">
+    <div class="toolbar">
+      <span style="font-size:13px; color:var(--text-secondary);" id="audit-count-label">Showing 20 entries</span>
+      <button class="btn btn-secondary" onclick="exportAuditLog()" style="margin-left:auto;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+    </div>
     <div class="card">
       <div class="card-body">
         <div class="table-wrapper">
@@ -1549,13 +1890,16 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
                 <th>User</th>
                 <th>Action</th>
                 <th>Entity</th>
-                <th>Details</th>
+                <th>Field</th>
+                <th>Previous Value</th>
+                <th>New Value</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody id="audit-tbody"></tbody>
           </table>
         </div>
+        <div class="pagination" id="audit-pagination"></div>
       </div>
     </div>
   </div>
@@ -1743,6 +2087,118 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   </div>
 </div>
 
+<!-- EDIT PRODUCT MODAL -->
+<div id="edit-product-modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Product</div>
+      <button class="modal-close" onclick="closeModal('edit-product-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">SKU Code</label>
+          <input type="text" id="edit-sku-code" class="form-input" readonly style="opacity:0.6;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Product Name</label>
+          <input type="text" id="edit-product-name" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select id="edit-category" class="form-input">
+            <option>Shingles</option><option>Underlayment</option><option>Ridge Cap</option><option>Accessories</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Governed Price</label>
+          <input type="number" id="edit-governed-price" class="form-input" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ABC Supply Price</label>
+          <input type="number" id="edit-abc-price" class="form-input" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">QXO Price</label>
+          <input type="number" id="edit-qxo-price" class="form-input" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">SRS/BMCA Price</label>
+          <input type="number" id="edit-srs-price" class="form-input" step="0.01">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('edit-product-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditProduct()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROPOSE PRICE CHANGE MODAL -->
+<div id="propose-price-modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Propose Price Change</div>
+      <button class="modal-close" onclick="closeModal('propose-price-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--bg-secondary); padding:12px; border-radius:8px; margin-bottom:16px;">
+        <div style="font-weight:700; margin-bottom:4px;" id="propose-product-name"></div>
+        <div style="font-size:12px; color:var(--text-secondary);" id="propose-product-info"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Current Governed Price</label>
+          <input type="text" id="propose-current-price" class="form-input" readonly style="opacity:0.6;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Proposed New Price</label>
+          <input type="number" id="propose-new-price" class="form-input" step="0.01" placeholder="$0.00">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Reason for Change</label>
+          <textarea id="propose-reason" class="form-input" rows="3" placeholder="Explain the business justification..." style="resize:vertical;"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('propose-price-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitPriceProposal()">Submit Proposal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ANOMALY DETAIL MODAL -->
+<div id="anomaly-detail-modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Anomaly Details</div>
+      <button class="modal-close" onclick="closeModal('anomaly-detail-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="anomaly-detail-body"></div>
+    <div class="modal-footer" id="anomaly-detail-footer"></div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div id="delete-confirm-modal" class="modal-overlay">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <div class="modal-title">Confirm Delete</div>
+      <button class="modal-close" onclick="closeModal('delete-confirm-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px; color:var(--text-secondary);">Are you sure you want to deactivate this product? This is a soft delete — the product will be marked as Inactive but can be restored later.</p>
+      <div id="delete-product-info" style="background:var(--bg-secondary); padding:12px; border-radius:8px; margin-top:12px; font-weight:600;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('delete-confirm-modal')">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDeleteProduct()">Deactivate Product</button>
+    </div>
+  </div>
+</div>
+
 <div id="excel-modal" class="modal-overlay">
   <div class="modal">
     <div class="modal-header">
@@ -1770,7 +2226,8 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 const state = {
   currentTab: 'dashboard',
   products: [],
-  brands: ['GAF', 'Owens Corning', 'CertainTeed', 'Tamko', 'IKO', 'Malarkey', 'Pabco', 'Atlas', 'Elk', 'Shingles USA', 'Celotex', 'Huber', 'Benjamin Moore', 'Boral', 'DaRite', 'Bridger', 'Ply Gem', 'James Hardie', 'LP SmartSide', 'Hardieplank', 'WeatherBest', 'Certainteed Vinyl', 'Alside', 'Azek', 'Versetta Stone'],
+  brands: ['GAF', 'Owens Corning', 'CertainTeed', 'Tamko', 'IKO', 'Malarkey', 'Pabco', 'Atlas', 'BORAL', 'DaVinci', 'EagleView', 'Brava', 'Decra', 'Metro Roof', 'Luma', 'Pinnacle', 'Norandex', 'ABC Private Label', 'QXO Private Label', 'Heritage', 'ProLine', 'RoofTech', 'Summit', 'TrueDefinition', 'WeatherGuard'],
+  currentRole: 'admin',
   anomalies: [],
   auditLog: [],
   settings: {
@@ -1785,16 +2242,26 @@ const state = {
 function generateProducts() {
   state.products = [];
   const baseProducts = [
-    { name: 'Asphalt Shingle Bundle 3-Tab', category: 'Shingles', base: 45 },
-    { name: 'Asphalt Shingle Bundle Architectural', category: 'Shingles', base: 62 },
+    { name: 'Architectural Shingle Bundle', category: 'Shingles', base: 62 },
+    { name: '3-Tab Shingle Bundle', category: 'Shingles', base: 45 },
+    { name: 'Designer Shingle Premium', category: 'Shingles', base: 110 },
+    { name: 'Impact Resistant Shingle', category: 'Shingles', base: 85 },
     { name: 'Wood Shake Shingle', category: 'Shingles', base: 95 },
-    { name: 'Roofing Underlayment 30lb', category: 'Underlayment', base: 28 },
-    { name: 'Roofing Underlayment 48lb', category: 'Underlayment', base: 42 },
+    { name: 'Synthetic Underlayment Roll', category: 'Underlayment', base: 42 },
+    { name: 'Felt Underlayment 30lb', category: 'Underlayment', base: 28 },
+    { name: 'Ice & Water Shield', category: 'Underlayment', base: 55 },
+    { name: 'Self-Adhering Membrane', category: 'Underlayment', base: 48 },
+    { name: 'Roof Deck Protection', category: 'Underlayment', base: 38 },
     { name: 'Ridge Cap Shingle', category: 'Ridge Cap', base: 35 },
+    { name: 'Hip & Ridge Shingle', category: 'Ridge Cap', base: 40 },
+    { name: 'Ventilated Ridge Cap', category: 'Ridge Cap', base: 52 },
+    { name: 'Universal Ridge Cap', category: 'Ridge Cap', base: 32 },
+    { name: 'High Profile Ridge', category: 'Ridge Cap', base: 45 },
     { name: 'Drip Edge Aluminum', category: 'Accessories', base: 18 },
-    { name: 'Vinyl Soffit Panel', category: 'Siding', base: 55 },
-    { name: 'Vinyl Fascia Board', category: 'Siding', base: 48 },
-    { name: 'Vinyl Gutter System', category: 'Gutters', base: 65 },
+    { name: 'Starter Strip Shingle', category: 'Accessories', base: 22 },
+    { name: 'Pipe Boot Flashing', category: 'Accessories', base: 15 },
+    { name: 'Step Flashing Kit', category: 'Accessories', base: 28 },
+    { name: 'Roof Cement 1gal', category: 'Accessories', base: 12 },
   ];
 
   let id = 0;
@@ -1929,47 +2396,46 @@ function renderDashboard() {
   const kpiGrid = document.getElementById('kpi-grid');
   const activeAnomalies = state.anomalies.filter(a => a.status === 'active').length;
   const avgGM = (state.products.reduce((s, p) => s + p.gm_pct, 0) / state.products.length).toFixed(1);
-  const qualityScore = Math.floor(75 + Math.random() * 20);
+  const brandsCount = new Set(state.products.map(p => p.brand)).size;
 
   kpiGrid.innerHTML = `
-    <div class="stat-card">
+    <div class="stat-card clickable" onclick="switchTab('item-master', document.querySelector('[onclick*=item-master]'))">
       <div class="stat-value">${state.products.length}</div>
       <div class="stat-label">Total SKUs Governed</div>
     </div>
-    <div class="stat-card red">
+    <div class="stat-card red clickable" onclick="switchTab('anomaly', document.querySelector('[onclick*=anomaly]'))">
       <div class="stat-value">${activeAnomalies}</div>
       <div class="stat-label">Active Anomalies</div>
     </div>
-    <div class="stat-card green">
+    <div class="stat-card green clickable" onclick="switchTab('price-sheet', document.querySelector('[onclick*=price-sheet]'))">
       <div class="stat-value">${avgGM}%</div>
       <div class="stat-label">Avg Gross Margin</div>
     </div>
-    <div class="stat-card amber">
-      <div class="stat-value">${qualityScore}%</div>
-      <div class="stat-label">Data Quality Score</div>
+    <div class="stat-card amber clickable" onclick="switchTab('price-sheet', document.querySelector('[onclick*=price-sheet]'))">
+      <div class="stat-value">${brandsCount}</div>
+      <div class="stat-label">Brands Covered</div>
     </div>
   `;
 
-  // GM by category bar chart
-  const cats = {};
-  state.products.forEach(p => {
-    if (!cats[p.category]) cats[p.category] = [];
-    cats[p.category].push(p.gm_pct);
+  // Anomalies by Brand bar chart
+  const brandAnoms = {};
+  state.anomalies.filter(a => a.status === 'active').forEach(a => {
+    brandAnoms[a.brand] = (brandAnoms[a.brand] || 0) + 1;
   });
-  const catAvgs = Object.entries(cats).map(([c, vals]) => ({
-    cat: c,
-    avg: (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1)
-  })).sort((a, b) => b.avg - a.avg);
+  const brandCounts = Object.entries(brandAnoms).map(([b, count]) => ({ brand: b, count })).sort((a, b) => b.count - a.count).slice(0, 8);
 
   let barChart = '<div class="bar-chart">';
-  const maxVal = Math.max(...catAvgs.map(c => parseFloat(c.avg)));
-  catAvgs.forEach(c => {
-    const pct = (parseFloat(c.avg) / maxVal * 100);
+  const maxVal = brandCounts.length ? Math.max(...brandCounts.map(c => c.count)) : 1;
+  if (brandCounts.length === 0) {
+    barChart += '<div style="text-align:center; color:var(--text-tertiary); padding:20px;">No active anomalies</div>';
+  }
+  brandCounts.forEach(c => {
+    const pct = (c.count / maxVal * 100);
     barChart += `
       <div class="bar-row">
-        <div class="bar-label">${c.cat}</div>
-        <div class="bar-container"><div class="bar-fill" style="width:${pct}%"></div></div>
-        <div class="bar-value">${c.avg}%</div>
+        <div class="bar-label">${c.brand}</div>
+        <div class="bar-container"><div class="bar-fill" style="width:${pct}%; background:var(--gradient-red);"></div></div>
+        <div class="bar-value">${c.count}</div>
       </div>
     `;
   });
@@ -2007,11 +2473,33 @@ function renderDashboard() {
   if (actDiv) actDiv.innerHTML = activityHtml;
 }
 
+let itemPage = 1;
+const ITEMS_PER_PAGE = 50;
+
 function renderItemMaster() {
   const tbody = document.getElementById('item-tbody');
   tbody.innerHTML = '';
 
-  state.products.forEach(p => {
+  // Update progress bar
+  const pText = document.getElementById('gov-progress-text');
+  const pFill = document.getElementById('gov-progress-fill');
+  const pPct = document.getElementById('gov-progress-pct');
+  const pctVal = Math.round(state.products.length / 500 * 100);
+  if (pText) pText.textContent = `${state.products.length} of ~500 estimated SKUs governed`;
+  if (pFill) pFill.style.width = pctVal + '%';
+  if (pPct) pPct.textContent = pctVal + '%';
+
+  const filtered = getFilteredProducts();
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  if (itemPage > totalPages) itemPage = totalPages || 1;
+  const start = (itemPage - 1) * ITEMS_PER_PAGE;
+  const pageProducts = filtered.slice(start, start + ITEMS_PER_PAGE);
+
+  const trends = ['↑', '↓', '—'];
+  const trendColors = { '↑': 'var(--accent-green)', '↓': 'var(--accent-red)', '—': 'var(--text-tertiary)' };
+
+  pageProducts.forEach(p => {
+    const trend = trends[Math.floor(Math.random() * 3)];
     const row = document.createElement('tr');
     row.onclick = () => showDetailPanel(p);
     row.innerHTML = `
@@ -2019,13 +2507,40 @@ function renderItemMaster() {
       <td>${p.sku}</td>
       <td>${p.category}</td>
       <td>${p.brand}</td>
+      <td>$${p.governed_price.toFixed(2)}</td>
       <td>$${p.abc_price.toFixed(2)}</td>
       <td>$${p.qxo_price.toFixed(2)}</td>
       <td>$${p.srs_price.toFixed(2)}</td>
-      <td><strong>${p.gm_pct}%</strong></td>
-      <td><span class="badge badge-green">${p.status}</span></td>
+      <td><strong>${p.gm_pct}%</strong> <span style="color:${trendColors[trend]}; font-size:12px;">${trend}</span></td>
+      <td><span class="badge ${p.status === 'Active' ? 'badge-green' : 'badge-gray'}">${p.status}</span></td>
     `;
     tbody.appendChild(row);
+  });
+
+  // Pagination
+  const pagDiv = document.getElementById('item-pagination');
+  if (pagDiv) {
+    pagDiv.innerHTML = `
+      <span>Showing ${start + 1}–${Math.min(start + ITEMS_PER_PAGE, filtered.length)} of ${filtered.length} products</span>
+      <div class="pagination-controls">
+        <button class="pagination-btn" onclick="itemPage=1; renderItemMaster()" ${itemPage === 1 ? 'disabled' : ''}>First</button>
+        <button class="pagination-btn" onclick="itemPage--; renderItemMaster()" ${itemPage === 1 ? 'disabled' : ''}>← Prev</button>
+        <span style="padding:0 8px; font-weight:600;">Page ${itemPage} of ${totalPages}</span>
+        <button class="pagination-btn" onclick="itemPage++; renderItemMaster()" ${itemPage >= totalPages ? 'disabled' : ''}>Next →</button>
+        <button class="pagination-btn" onclick="itemPage=${totalPages}; renderItemMaster()" ${itemPage >= totalPages ? 'disabled' : ''}>Last</button>
+      </div>
+    `;
+  }
+}
+
+function getFilteredProducts() {
+  const search = (document.getElementById('item-search')?.value || '').toLowerCase();
+  const cat = document.getElementById('category-filter')?.value || '';
+  return state.products.filter(p => {
+    if (p.status === 'Inactive') return false;
+    if (cat && p.category !== cat) return false;
+    if (search && !(`${p.name} ${p.sku} ${p.category} ${p.brand}`).toLowerCase().includes(search)) return false;
+    return true;
   });
 }
 
@@ -2058,9 +2573,10 @@ function showDetailPanel(product) {
       <div class="detail-row"><span class="detail-label">GM%</span><span class="detail-value">${product.gm_pct}%</span></div>
       <div class="detail-row"><span class="detail-label">Last Updated</span><span class="detail-value">${product.last_updated}</span></div>
     </div>
-    <div class="detail-actions">
-      <button class="btn btn-primary" onclick="editProduct(${product.id})">Edit Price</button>
-      <button class="btn btn-secondary" onclick="openFlagAnomalyModal(${product.id})">Flag Anomaly</button>
+    <div class="detail-actions" style="flex-wrap:wrap;">
+      <button class="btn btn-primary role-admin-only" onclick="openEditProductModal(${product.id})">Edit Product</button>
+      <button class="btn btn-secondary" onclick="openProposePriceModal(${product.id})">Propose Price Change</button>
+      <button class="btn btn-danger role-admin-only" onclick="openDeleteConfirm(${product.id})">Deactivate</button>
     </div>
   `;
 
@@ -2072,64 +2588,125 @@ function closeDetailPanel() {
 }
 
 function renderAnomalyDashboard() {
+  const activeAnoms = state.anomalies.filter(a => a.status === 'active');
+  const resolvedAnoms = state.anomalies.filter(a => a.status === 'resolved');
+
+  // KPI cards
+  const kpiGrid = document.getElementById('anomaly-kpi-grid');
+  if (kpiGrid) {
+    const totalOvercharge = activeAnoms.reduce((s, a) => s + Math.abs(a.charged - a.governed), 0);
+    const avgVariance = activeAnoms.length ? (activeAnoms.reduce((s, a) => s + a.variance, 0) / activeAnoms.length).toFixed(1) : '0.0';
+    kpiGrid.innerHTML = `
+      <div class="stat-card red"><div class="stat-value">${activeAnoms.length}</div><div class="stat-label">Active Flags</div></div>
+      <div class="stat-card amber"><div class="stat-value">$${totalOvercharge.toFixed(0)}</div><div class="stat-label">Total Overcharge</div></div>
+      <div class="stat-card green"><div class="stat-value">${avgVariance}%</div><div class="stat-label">Avg Variance</div></div>
+      <div class="stat-card"><div class="stat-value">${resolvedAnoms.length}</div><div class="stat-label">Resolved This Month</div></div>
+    `;
+  }
+
+  // Active anomaly cards
   const grid = document.getElementById('anomaly-grid');
   grid.innerHTML = '';
 
-  state.anomalies.filter(a => a.status === 'active').forEach(a => {
+  activeAnoms.forEach(a => {
     const card = document.createElement('div');
-    const severity = a.severity === 'critical' ? 'red' : a.severity === 'warning' ? 'amber-card' : 'yellow-card';
+    const severity = a.severity === 'critical' ? '' : a.severity === 'warning' ? 'amber-card' : 'yellow-card';
     card.className = `anomaly-card ${severity}`;
+    card.onclick = (e) => { if (e.target.tagName !== 'BUTTON') showAnomalyDetail(a); };
     card.innerHTML = `
       <div class="a-product">${a.product_name}</div>
       <div class="a-meta">${a.brand} • ${a.sku}</div>
+      <div style="font-size:11px; color:var(--accent-blue); margin-bottom:10px; font-weight:600;">${a.distributor}</div>
       <div class="price-row"><span class="lbl">Governed:</span><span class="val">$${a.governed.toFixed(2)}</span></div>
       <div class="price-row"><span class="lbl">Charged:</span><span class="val">$${a.charged.toFixed(2)}</span></div>
       <div class="price-row"><span class="lbl">Variance:</span><span class="val" style="color:var(--accent-red);">${a.variance.toFixed(1)}%</span></div>
       <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border-primary); display:flex; gap:6px;">
-        <button class="btn btn-sm btn-green" onclick="approveAnomaly(${a.id})">Approve</button>
-        <button class="btn btn-sm btn-amber" onclick="escalateAnomaly(${a.id})">Escalate</button>
+        <button class="btn btn-sm btn-green role-admin-only" onclick="event.stopPropagation(); approveAnomaly(${a.id})">Approve</button>
+        <button class="btn btn-sm btn-amber" onclick="event.stopPropagation(); escalateAnomaly(${a.id})">Escalate</button>
       </div>
     `;
-    card.onclick = (e) => {
-      if (e.target.tagName !== 'BUTTON') {
-        card.classList.toggle('expanded');
-        if (card.classList.contains('expanded')) {
-          card.innerHTML = `
-            <div style="margin-bottom:16px;">
-              <div class="a-product">${a.product_name}</div>
-              <div class="a-meta">${a.brand} • ${a.sku}</div>
-            </div>
-            <div class="detail-section">
-              <div class="price-row"><span class="lbl">Governed:</span><span class="val">$${a.governed.toFixed(2)}</span></div>
-              <div class="price-row"><span class="lbl">Charged:</span><span class="val">$${a.charged.toFixed(2)}</span></div>
-              <div class="price-row"><span class="lbl">Floor:</span><span class="val">$${a.floor.toFixed(2)}</span></div>
-              <div class="price-row"><span class="lbl">Ceiling:</span><span class="val">$${a.ceiling.toFixed(2)}</span></div>
-              <div class="price-row"><span class="lbl">Variance:</span><span class="val" style="color:var(--accent-red);">${a.variance.toFixed(1)}%</span></div>
-            </div>
-            <div class="detail-section">
-              <label style="display:block; font-size:11px; font-weight:700; margin-bottom:8px; color:var(--text-secondary);">Notes</label>
-              <textarea style="width:100%; padding:8px; border:1px solid var(--border-primary); border-radius:5px; font-size:12px; resize:vertical; background:var(--bg-secondary); color:var(--text-primary);" placeholder="Add notes...">${a.notes}</textarea>
-            </div>
-            <div class="detail-actions">
-              <button class="btn btn-sm btn-green" onclick="approveAnomaly(${a.id})">Approve</button>
-              <button class="btn btn-sm btn-amber" onclick="escalateAnomaly(${a.id})">Escalate</button>
-              <button class="btn btn-sm btn-secondary" onclick="renderAnomalyDashboard()">Collapse</button>
-            </div>
-          `;
-        } else {
-          renderAnomalyDashboard();
-        }
-      }
-    };
     grid.appendChild(card);
   });
 
+  // Resolved section
+  const resolvedCount = document.getElementById('resolved-count');
+  if (resolvedCount) resolvedCount.textContent = resolvedAnoms.length;
+  const resolvedGrid = document.getElementById('resolved-grid');
+  if (resolvedGrid) {
+    resolvedGrid.innerHTML = '';
+    resolvedAnoms.forEach(a => {
+      const card = document.createElement('div');
+      card.className = 'anomaly-card resolved-card';
+      card.innerHTML = `
+        <div class="a-product">${a.product_name}</div>
+        <div class="a-meta">${a.brand} • ${a.sku} • ${a.distributor}</div>
+        <div class="price-row"><span class="lbl">Variance:</span><span class="val">${a.variance.toFixed(1)}%</span></div>
+        <div style="font-size:11px; color:var(--accent-green); margin-top:8px;">✓ Resolved</div>
+      `;
+      resolvedGrid.appendChild(card);
+    });
+  }
+
+  // Nav badge
   const badge = document.getElementById('anomaly-badge');
   if (badge) {
-    const count = state.anomalies.filter(a => a.status === 'active').length;
-    badge.textContent = count;
-    badge.style.display = count > 0 ? 'inline-block' : 'none';
+    badge.textContent = activeAnoms.length;
+    badge.style.display = activeAnoms.length > 0 ? 'inline-block' : 'none';
   }
+}
+
+function toggleResolved() {
+  const grid = document.getElementById('resolved-grid');
+  const arrow = document.getElementById('resolved-arrow');
+  if (grid) {
+    grid.classList.toggle('show');
+    if (arrow) arrow.textContent = grid.classList.contains('show') ? '▾' : '▸';
+  }
+}
+
+function showAnomalyDetail(a) {
+  const body = document.getElementById('anomaly-detail-body');
+  const footer = document.getElementById('anomaly-detail-footer');
+  body.innerHTML = `
+    <div style="margin-bottom:16px;">
+      <div style="font-size:16px; font-weight:700; margin-bottom:4px;">${a.product_name}</div>
+      <div style="font-size:13px; color:var(--text-secondary);">${a.brand} • ${a.sku}</div>
+    </div>
+    <div class="detail-section">
+      <div style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; margin-bottom:8px;">Pricing Details</div>
+      <div class="detail-row"><span class="detail-label">Governed Price</span><span class="detail-value">$${a.governed.toFixed(2)}</span></div>
+      <div class="detail-row"><span class="detail-label">Charged Price</span><span class="detail-value" style="color:var(--accent-red);">$${a.charged.toFixed(2)}</span></div>
+      <div class="detail-row"><span class="detail-label">Floor Price</span><span class="detail-value">$${a.floor.toFixed(2)}</span></div>
+      <div class="detail-row"><span class="detail-label">Ceiling Price</span><span class="detail-value">$${a.ceiling.toFixed(2)}</span></div>
+      <div class="detail-row"><span class="detail-label">Variance</span><span class="detail-value" style="color:var(--accent-red);">${a.variance.toFixed(1)}%</span></div>
+    </div>
+    <div class="detail-section">
+      <div style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; margin-bottom:8px;">Context</div>
+      <div class="detail-row"><span class="detail-label">Distributor</span><span class="detail-value">${a.distributor}</span></div>
+      <div class="detail-row"><span class="detail-label">Severity</span><span class="badge ${a.severity === 'critical' ? 'badge-red' : 'badge-amber'}">${a.severity}</span></div>
+      <div class="detail-row"><span class="detail-label">Detected</span><span class="detail-value">${a.detected}</span></div>
+      <div class="detail-row"><span class="detail-label">Status</span><span class="badge ${a.status === 'active' ? 'badge-red' : 'badge-green'}">${a.status}</span></div>
+    </div>
+  `;
+  footer.innerHTML = `
+    <button class="btn btn-secondary" onclick="closeModal('anomaly-detail-modal')">Close</button>
+    ${a.status === 'active' ? `<button class="btn btn-green" onclick="approveAnomaly(${a.id}); closeModal('anomaly-detail-modal')">Approve</button>
+    <button class="btn btn-amber" onclick="escalateAnomaly(${a.id}); closeModal('anomaly-detail-modal')">Escalate</button>` : ''}
+  `;
+  document.getElementById('anomaly-detail-modal').classList.add('open');
+}
+
+function runNewScan() {
+  showToast('Running anomaly scan...', 'info');
+  const lastScanned = document.getElementById('last-scanned');
+  if (lastScanned) lastScanned.textContent = 'Scanning...';
+  setTimeout(() => {
+    generateAnomalies(state.products, state.brands);
+    saveState();
+    renderAnomalyDashboard();
+    if (lastScanned) lastScanned.textContent = 'Last scanned: just now';
+    showToast('Scan complete — found ' + state.anomalies.filter(a => a.status === 'active').length + ' anomalies', 'success');
+  }, 1500);
 }
 
 function renderPriceSheetInit() {
@@ -2178,7 +2755,43 @@ function showBrandPriceSheet(brand) {
   backBtn.style.display = 'inline-flex';
 
   const products = state.products.filter(p => p.brand === brand);
+  const anomCount = state.anomalies.filter(a => a.brand === brand && a.status === 'active').length;
+  const healthScore = Math.max(0, 100 - anomCount * 15 - Math.floor(Math.random() * 10));
+  const avgBestGM = products.length ? (products.reduce((s, p) => s + p.gm_pct, 0) / products.length).toFixed(1) : 0;
+
+  // Distribution summary
+  let abcBest = 0, qxoBest = 0, srsBest = 0;
+  products.forEach(p => {
+    const prices = [p.abc_price, p.qxo_price, p.srs_price];
+    const best = Math.min(...prices);
+    if (best === p.abc_price) abcBest++;
+    else if (best === p.qxo_price) qxoBest++;
+    else srsBest++;
+  });
+
   let html = `
+    <!-- Summary Stats -->
+    <div class="summary-stats">
+      <div class="summary-stat">
+        <div class="summary-stat-value" style="color:${healthScore >= 70 ? 'var(--accent-green)' : healthScore >= 40 ? 'var(--accent-amber)' : 'var(--accent-red)'};">${healthScore}</div>
+        <div class="summary-stat-label">Health Score</div>
+      </div>
+      <div class="summary-stat">
+        <div class="summary-stat-value">${products.length}</div>
+        <div class="summary-stat-label">Total SKUs</div>
+      </div>
+      <div class="summary-stat">
+        <div class="summary-stat-value">${avgBestGM}%</div>
+        <div class="summary-stat-label">Avg GM%</div>
+      </div>
+    </div>
+    <!-- Distribution Summary -->
+    <div style="display:flex; gap:16px; margin-bottom:16px; font-size:12px;">
+      <span style="color:var(--text-secondary);">Best price from: </span>
+      <span><strong>ABC Supply:</strong> ${abcBest} SKUs (${products.length ? Math.round(abcBest/products.length*100) : 0}%)</span>
+      <span><strong>QXO:</strong> ${qxoBest} SKUs (${products.length ? Math.round(qxoBest/products.length*100) : 0}%)</span>
+      <span><strong>SRS/BMCA:</strong> ${srsBest} SKUs (${products.length ? Math.round(srsBest/products.length*100) : 0}%)</span>
+    </div>
     <div class="card">
       <div class="card-header">${brand} - Price Sheet</div>
       <div class="card-body">
@@ -2188,6 +2801,7 @@ function showBrandPriceSheet(brand) {
               <th>SKU</th>
               <th>Product</th>
               <th>Category</th>
+              <th>Governed</th>
               <th>ABC Supply</th>
               <th>QXO</th>
               <th>SRS/BMCA</th>
@@ -2198,19 +2812,25 @@ function showBrandPriceSheet(brand) {
   `;
 
   products.forEach(p => {
-    const prices = [p.abc_price, p.qxo_price, p.srs_price];
-    const best = Math.min(...prices);
-    const worst = Math.max(...prices);
+    const prices = [
+      { val: p.abc_price, name: 'ABC' },
+      { val: p.qxo_price, name: 'QXO' },
+      { val: p.srs_price, name: 'SRS' }
+    ];
+    const best = Math.min(p.abc_price, p.qxo_price, p.srs_price);
+    const worst = Math.max(p.abc_price, p.qxo_price, p.srs_price);
     const variance = ((worst - best) / best * 100).toFixed(1);
+    const bestDist = prices.find(pr => pr.val === best)?.name || '';
 
     html += `
       <tr>
         <td>${p.sku}</td>
         <td>${p.name}</td>
         <td>${p.category}</td>
-        <td>$${p.abc_price.toFixed(2)}</td>
-        <td>$${p.qxo_price.toFixed(2)}</td>
-        <td>$${p.srs_price.toFixed(2)}</td>
+        <td style="font-weight:600;">$${p.governed_price.toFixed(2)}</td>
+        <td${p.abc_price === best ? ' style="color:var(--accent-green); font-weight:600;"' : ''}>$${p.abc_price.toFixed(2)}${p.abc_price === best ? ' ★' : ''}</td>
+        <td${p.qxo_price === best ? ' style="color:var(--accent-green); font-weight:600;"' : ''}>$${p.qxo_price.toFixed(2)}${p.qxo_price === best ? ' ★' : ''}</td>
+        <td${p.srs_price === best ? ' style="color:var(--accent-green); font-weight:600;"' : ''}>$${p.srs_price.toFixed(2)}${p.srs_price === best ? ' ★' : ''}</td>
         <td style="font-weight:600; color:var(--accent-green);">$${best.toFixed(2)}</td>
         <td>${variance}%</td>
       </tr>
@@ -2231,10 +2851,77 @@ function switchReportsTab(tabName, btn) {
 }
 
 function loadReportTemplate(template) {
-  showToast('Template loaded: ' + (template || 'None'), 'info');
+  if (!template) return;
+  const rows = document.getElementById('rows-canvas');
+  const cols = document.getElementById('cols-canvas');
+  const filters = document.getElementById('filter-canvas');
+  if (!rows || !cols || !filters) return;
+
+  const templates = {
+    'overcharges': { rows: ['Brand', 'Product'], cols: ['Variance'], filters: ['Distributor'] },
+    'gm-trend': { rows: ['Category'], cols: ['GM%', 'Date Range'], filters: [] },
+    'distributor': { rows: ['Distributor'], cols: ['Brand', 'Price Type'], filters: ['Category'] },
+    'heatmap': { rows: ['Brand'], cols: ['Category', 'Variance'], filters: [] }
+  };
+  const t = templates[template];
+  if (!t) return;
+
+  function fillCanvas(canvas, chips) {
+    canvas.innerHTML = '';
+    if (chips.length) {
+      canvas.classList.add('has-items');
+      chips.forEach(c => {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.textContent = c;
+        canvas.appendChild(chip);
+      });
+    } else {
+      canvas.classList.remove('has-items');
+      canvas.textContent = 'Drop fields here';
+    }
+  }
+  fillCanvas(rows, t.rows);
+  fillCanvas(cols, t.cols);
+  fillCanvas(filters, t.filters);
+  showToast('Template loaded: ' + template, 'info');
 }
 
 function runReport() {
+  const output = document.getElementById('report-output');
+  if (!output) return;
+  const chartType = document.querySelector('input[name="chart-type"]:checked')?.value || 'table';
+
+  // Generate sample data based on available products
+  const brands = [...new Set(state.products.map(p => p.brand))].slice(0, 8);
+  let html = '<div class="report-output-card">';
+  html += '<div class="report-output-header"><span>Report Results</span><span style="font-size:11px; color:var(--text-tertiary);">Generated ' + new Date().toLocaleString() + '</span></div>';
+
+  if (chartType === 'table' || chartType === 'pivot') {
+    html += '<div style="padding:0;"><div class="table-wrapper"><table><thead><tr><th>Brand</th><th>SKUs</th><th>Avg GM%</th><th>Avg ABC</th><th>Avg QXO</th><th>Avg SRS</th><th>Anomalies</th></tr></thead><tbody>';
+    brands.forEach(b => {
+      const prods = state.products.filter(p => p.brand === b);
+      const avgGM = prods.length ? (prods.reduce((s, p) => s + p.gm_pct, 0) / prods.length).toFixed(1) : 0;
+      const avgABC = prods.length ? (prods.reduce((s, p) => s + p.abc_price, 0) / prods.length).toFixed(2) : 0;
+      const avgQXO = prods.length ? (prods.reduce((s, p) => s + p.qxo_price, 0) / prods.length).toFixed(2) : 0;
+      const avgSRS = prods.length ? (prods.reduce((s, p) => s + p.srs_price, 0) / prods.length).toFixed(2) : 0;
+      const anomCount = state.anomalies.filter(a => a.brand === b && a.status === 'active').length;
+      html += `<tr><td style="font-weight:600;">${b}</td><td>${prods.length}</td><td>${avgGM}%</td><td>$${avgABC}</td><td>$${avgQXO}</td><td>$${avgSRS}</td><td>${anomCount}</td></tr>`;
+    });
+    html += '</tbody></table></div></div>';
+  } else {
+    // Bar/Line/Heatmap - show CSS bar chart
+    html += '<div style="padding:20px;"><div class="bar-chart">';
+    const maxProds = Math.max(...brands.map(b => state.products.filter(p => p.brand === b).length));
+    brands.forEach(b => {
+      const count = state.products.filter(p => p.brand === b).length;
+      const pct = (count / maxProds * 100);
+      html += `<div class="bar-row"><div class="bar-label">${b}</div><div class="bar-container"><div class="bar-fill" style="width:${pct}%"></div></div><div class="bar-value">${count}</div></div>`;
+    });
+    html += '</div></div>';
+  }
+  html += '</div>';
+  output.innerHTML = html;
   showToast('Report generated successfully', 'success');
 }
 
@@ -2255,41 +2942,258 @@ function loadQuery(query) {
 }
 
 function executeQuery() {
+  const query = (document.getElementById('query-editor')?.value || '').toLowerCase();
   document.getElementById('query-empty-state').style.display = 'none';
-  document.getElementById('query-results').style.display = 'table';
-  document.getElementById('query-results').innerHTML = `
-    <thead><tr><th style="padding:8px;">Column 1</th><th style="padding:8px;">Column 2</th></tr></thead>
-    <tbody><tr><td style="padding:8px;">Sample Data</td><td style="padding:8px;">123</td></tr></tbody>
-  `;
-  document.getElementById('query-stats').textContent = 'Returned 1 row in 124ms';
+  const table = document.getElementById('query-results');
+  table.style.display = 'table';
+
+  let rows = '';
+  let cols = '';
+  const ms = Math.floor(50 + Math.random() * 200);
+
+  if (query.includes('group by brand') || query.includes('brand')) {
+    cols = '<tr><th>brand</th><th>count</th><th>avg_gm</th></tr>';
+    const brands = [...new Set(state.products.map(p => p.brand))].slice(0, 10);
+    brands.forEach(b => {
+      const prods = state.products.filter(p => p.brand === b);
+      const avg = prods.length ? (prods.reduce((s, p) => s + p.gm_pct, 0) / prods.length).toFixed(1) : 0;
+      rows += `<tr><td>${b}</td><td>${prods.length}</td><td>${avg}%</td></tr>`;
+    });
+    document.getElementById('query-stats').textContent = `Returned ${brands.length} rows in ${ms}ms`;
+  } else if (query.includes('anomal')) {
+    cols = '<tr><th>brand</th><th>anomaly_count</th><th>total_variance</th></tr>';
+    const brandAnoms = {};
+    state.anomalies.forEach(a => { brandAnoms[a.brand] = (brandAnoms[a.brand] || 0) + 1; });
+    Object.entries(brandAnoms).sort((a,b) => b[1]-a[1]).forEach(([b, c]) => {
+      const totalVar = state.anomalies.filter(a => a.brand === b).reduce((s, a) => s + a.variance, 0).toFixed(1);
+      rows += `<tr><td>${b}</td><td>${c}</td><td>${totalVar}%</td></tr>`;
+    });
+    document.getElementById('query-stats').textContent = `Returned ${Object.keys(brandAnoms).length} rows in ${ms}ms`;
+  } else {
+    cols = '<tr><th>sku</th><th>product</th><th>brand</th><th>abc_price</th><th>qxo_price</th><th>gm_pct</th></tr>';
+    state.products.slice(0, 15).forEach(p => {
+      rows += `<tr><td>${p.sku}</td><td>${p.name}</td><td>${p.brand}</td><td>$${p.abc_price.toFixed(2)}</td><td>$${p.qxo_price.toFixed(2)}</td><td>${p.gm_pct}%</td></tr>`;
+    });
+    document.getElementById('query-stats').textContent = `Returned 15 rows in ${ms}ms (showing first 15 of ${state.products.length})`;
+  }
+
+  table.innerHTML = `<thead>${cols}</thead><tbody>${rows}</tbody>`;
   showToast('Query executed', 'success');
 }
+
+function generateSampleAuditLog() {
+  if (state.auditLog.length > 5) return; // Already has data
+  const sampleEntries = [
+    { timestamp: '2026-03-27 09:15:22', user: 'J. Teresi', action: 'APPROVE', entity: 'Anomaly #7', field: 'Status', prev: 'Active', next: 'Resolved', status: 'Completed' },
+    { timestamp: '2026-03-27 09:12:05', user: 'Admin User', action: 'EDIT', entity: 'SKU-0012', field: 'Governed Price', prev: '$45.00', next: '$47.50', status: 'Completed' },
+    { timestamp: '2026-03-27 08:58:41', user: 'M. Rodriguez', action: 'ESCALATE', entity: 'Anomaly #3', field: 'Status', prev: 'Active', next: 'Escalated', status: 'Completed' },
+    { timestamp: '2026-03-27 08:45:18', user: 'Admin User', action: 'ADD', entity: 'SKU-0126', field: '—', prev: '—', next: 'New Product', status: 'Completed' },
+    { timestamp: '2026-03-27 08:30:00', user: 'System', action: 'RESOLVE', entity: 'Anomaly #5', field: 'Status', prev: 'Active', next: 'Auto-Resolved', status: 'Completed' },
+    { timestamp: '2026-03-26 17:22:14', user: 'J. Teresi', action: 'EDIT', entity: 'Settings', field: 'GM% Threshold', prev: '20%', next: '25%', status: 'Completed' },
+    { timestamp: '2026-03-26 16:55:33', user: 'S. Park', action: 'APPROVE', entity: 'Anomaly #2', field: 'Status', prev: 'Active', next: 'Resolved', status: 'Completed' },
+    { timestamp: '2026-03-26 15:10:48', user: 'Admin User', action: 'EDIT', entity: 'SKU-0045', field: 'ABC Price', prev: '$62.10', next: '$58.75', status: 'Completed' },
+    { timestamp: '2026-03-26 14:30:22', user: 'M. Rodriguez', action: 'ADD', entity: 'SKU-0125', field: '—', prev: '—', next: 'New Product', status: 'Completed' },
+    { timestamp: '2026-03-26 13:05:11', user: 'System', action: 'RESOLVE', entity: 'Anomalies (bulk)', field: 'Status', prev: '12 Active', next: '12 Resolved', status: 'Completed' },
+    { timestamp: '2026-03-26 11:42:00', user: 'System', action: 'EDIT', entity: 'SRS/BMCA Sync', field: 'Sync Status', prev: 'Connected', next: 'Failed', status: 'Error' },
+    { timestamp: '2026-03-26 09:00:00', user: 'System', action: 'RESOLVE', entity: 'Daily Scan', field: '—', prev: '—', next: '3 anomalies detected', status: 'Completed' },
+    { timestamp: '2026-03-25 16:30:45', user: 'J. Teresi', action: 'ESCALATE', entity: 'Anomaly #1', field: 'Status', prev: 'Active', next: 'Escalated', status: 'Completed' },
+    { timestamp: '2026-03-25 14:20:18', user: 'S. Park', action: 'EDIT', entity: 'SKU-0088', field: 'Category', prev: 'Accessories', next: 'Ridge Cap', status: 'Completed' },
+    { timestamp: '2026-03-25 11:00:00', user: 'Admin User', action: 'DELETE', entity: 'SKU-0099', field: 'Status', prev: 'Active', next: 'Inactive', status: 'Completed' },
+    { timestamp: '2026-03-25 09:15:00', user: 'System', action: 'ADD', entity: 'ABC Supply Sync', field: '—', prev: '—', next: '15 prices updated', status: 'Completed' },
+    { timestamp: '2026-03-24 17:45:30', user: 'M. Rodriguez', action: 'APPROVE', entity: 'Anomaly #9', field: 'Status', prev: 'Active', next: 'Resolved', status: 'Completed' },
+    { timestamp: '2026-03-24 15:30:00', user: 'J. Teresi', action: 'EDIT', entity: 'Settings', field: 'Tolerance Band', prev: '±10%', next: '±8%', status: 'Completed' },
+  ];
+  state.auditLog = sampleEntries;
+}
+
+const ACTION_BADGE_CLASSES = {
+  'APPROVE': 'badge-approve',
+  'ESCALATE': 'badge-escalate',
+  'EDIT': 'badge-edit',
+  'ADD': 'badge-add',
+  'RESOLVE': 'badge-resolve',
+  'DELETE': 'badge-delete',
+  'BULK_RESOLVE': 'badge-resolve',
+  'CREATE': 'badge-add',
+  'UPDATE': 'badge-edit'
+};
+
+let auditPage = 1;
+const AUDIT_PER_PAGE = 20;
 
 function renderAuditLog() {
   const tbody = document.getElementById('audit-tbody');
   if (!tbody) return;
   tbody.innerHTML = '';
 
-  state.auditLog.slice(-20).reverse().forEach(log => {
+  const logs = [...state.auditLog].reverse();
+  const totalPages = Math.ceil(logs.length / AUDIT_PER_PAGE);
+  if (auditPage > totalPages) auditPage = totalPages || 1;
+  const start = (auditPage - 1) * AUDIT_PER_PAGE;
+  const pageLogs = logs.slice(start, start + AUDIT_PER_PAGE);
+
+  const countLabel = document.getElementById('audit-count-label');
+  if (countLabel) countLabel.textContent = `Showing ${start + 1}–${Math.min(start + AUDIT_PER_PAGE, logs.length)} of ${logs.length} entries`;
+
+  pageLogs.forEach(log => {
+    const badgeClass = ACTION_BADGE_CLASSES[log.action] || 'badge-blue';
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${log.timestamp}</td>
+      <td style="font-size:12px; white-space:nowrap;">${log.timestamp}</td>
       <td>${log.user}</td>
-      <td><span class="badge badge-blue">${log.action}</span></td>
-      <td>${log.entity}</td>
-      <td style="font-size:12px; color:var(--text-secondary);">${log.details}</td>
-      <td><span class="badge badge-green">${log.status}</span></td>
+      <td><span class="badge ${badgeClass}">${log.action}</span></td>
+      <td style="font-weight:600;">${log.entity}</td>
+      <td style="font-size:12px;">${log.field || '—'}</td>
+      <td style="font-size:12px; color:var(--text-tertiary);">${log.prev || '—'}</td>
+      <td style="font-size:12px; font-weight:600;">${log.next || '—'}</td>
+      <td><span class="badge ${log.status === 'Error' ? 'badge-red' : 'badge-green'}">${log.status}</span></td>
     `;
     tbody.appendChild(row);
   });
+
+  // Pagination
+  const pagDiv = document.getElementById('audit-pagination');
+  if (pagDiv && totalPages > 1) {
+    pagDiv.innerHTML = `
+      <span></span>
+      <div class="pagination-controls">
+        <button class="pagination-btn" onclick="auditPage--; renderAuditLog()" ${auditPage === 1 ? 'disabled' : ''}>← Prev</button>
+        <span style="padding:0 8px; font-weight:600;">Page ${auditPage} of ${totalPages}</span>
+        <button class="pagination-btn" onclick="auditPage++; renderAuditLog()" ${auditPage >= totalPages ? 'disabled' : ''}>Next →</button>
+      </div>
+    `;
+  }
 }
 
-function editProduct(id) {
-  showToast('Edit product feature coming soon', 'info');
+function exportAuditLog() {
+  showToast('Audit log exported', 'success');
 }
 
-function openFlagAnomalyModal(id) {
-  showToast('Flag modal coming soon', 'info');
+let editingProductId = null;
+let deletingProductId = null;
+let proposingProductId = null;
+
+function openEditProductModal(id) {
+  const p = state.products.find(pr => pr.id === id);
+  if (!p) return;
+  editingProductId = id;
+  document.getElementById('edit-sku-code').value = p.sku;
+  document.getElementById('edit-product-name').value = p.name;
+  document.getElementById('edit-category').value = p.category;
+  document.getElementById('edit-governed-price').value = p.governed_price;
+  document.getElementById('edit-abc-price').value = p.abc_price;
+  document.getElementById('edit-qxo-price').value = p.qxo_price;
+  document.getElementById('edit-srs-price').value = p.srs_price;
+  document.getElementById('edit-product-modal').classList.add('open');
+}
+
+function saveEditProduct() {
+  const p = state.products.find(pr => pr.id === editingProductId);
+  if (!p) return;
+  const oldPrice = p.governed_price;
+  p.name = document.getElementById('edit-product-name').value;
+  p.category = document.getElementById('edit-category').value;
+  p.governed_price = parseFloat(document.getElementById('edit-governed-price').value) || p.governed_price;
+  p.abc_price = parseFloat(document.getElementById('edit-abc-price').value) || p.abc_price;
+  p.qxo_price = parseFloat(document.getElementById('edit-qxo-price').value) || p.qxo_price;
+  p.srs_price = parseFloat(document.getElementById('edit-srs-price').value) || p.srs_price;
+  p.last_updated = new Date().toLocaleDateString();
+  saveState();
+  closeModal('edit-product-modal');
+  closeDetailPanel();
+  renderItemMaster();
+  showToast('Product updated', 'success');
+  logAudit('EDIT', p.sku, 'Governed Price', '$' + oldPrice.toFixed(2), '$' + p.governed_price.toFixed(2));
+}
+
+function openProposePriceModal(id) {
+  const p = state.products.find(pr => pr.id === id);
+  if (!p) return;
+  proposingProductId = id;
+  document.getElementById('propose-product-name').textContent = p.name;
+  document.getElementById('propose-product-info').textContent = `${p.sku} • ${p.brand} • ${p.category}`;
+  document.getElementById('propose-current-price').value = '$' + p.governed_price.toFixed(2);
+  document.getElementById('propose-new-price').value = '';
+  document.getElementById('propose-reason').value = '';
+  document.getElementById('propose-price-modal').classList.add('open');
+}
+
+function submitPriceProposal() {
+  const p = state.products.find(pr => pr.id === proposingProductId);
+  if (!p) return;
+  const newPrice = document.getElementById('propose-new-price').value;
+  const reason = document.getElementById('propose-reason').value;
+  if (!newPrice) { showToast('Please enter a proposed price', 'error'); return; }
+  closeModal('propose-price-modal');
+  showToast('Price change proposal submitted for approval', 'success');
+  logAudit('EDIT', p.sku, 'Proposed Price', '$' + p.governed_price.toFixed(2), '$' + parseFloat(newPrice).toFixed(2));
+}
+
+function openDeleteConfirm(id) {
+  const p = state.products.find(pr => pr.id === id);
+  if (!p) return;
+  deletingProductId = id;
+  document.getElementById('delete-product-info').textContent = `${p.name} (${p.sku}) — ${p.brand}`;
+  document.getElementById('delete-confirm-modal').classList.add('open');
+}
+
+function confirmDeleteProduct() {
+  const p = state.products.find(pr => pr.id === deletingProductId);
+  if (!p) return;
+  p.status = 'Inactive';
+  saveState();
+  closeModal('delete-confirm-modal');
+  closeDetailPanel();
+  renderItemMaster();
+  showToast('Product deactivated', 'warning');
+  logAudit('DELETE', p.sku, 'Status', 'Active', 'Inactive');
+}
+
+function switchRole(role) {
+  state.currentRole = role;
+  document.body.setAttribute('data-role', role);
+  const nameDisplay = document.getElementById('user-name-display');
+  const avatarDisplay = document.getElementById('user-avatar');
+  const roleNames = { admin: 'Admin User', analyst: 'Pricing Analyst', viewer: 'Viewer' };
+  const roleAvatars = { admin: 'AB', analyst: 'PA', viewer: 'VW' };
+  if (nameDisplay) nameDisplay.textContent = roleNames[role] || 'Admin User';
+  if (avatarDisplay) avatarDisplay.textContent = roleAvatars[role] || 'AB';
+  showToast('Switched to ' + (roleNames[role] || role) + ' role', 'info');
+}
+
+function addBrand() {
+  const input = document.getElementById('new-brand-input');
+  const name = input.value.trim();
+  if (!name) return;
+  if (state.brands.includes(name)) { showToast('Brand already exists', 'error'); return; }
+  state.brands.push(name);
+  input.value = '';
+  saveState();
+  renderBrandTags();
+  showToast('Brand added: ' + name, 'success');
+}
+
+function removeBrand(name) {
+  state.brands = state.brands.filter(b => b !== name);
+  saveState();
+  renderBrandTags();
+  showToast('Brand removed: ' + name, 'warning');
+}
+
+function renderBrandTags() {
+  const list = document.getElementById('brand-tag-list');
+  if (!list) return;
+  list.innerHTML = state.brands.map(b =>
+    `<span class="brand-tag">${b}<span class="remove-brand role-admin-only" onclick="removeBrand('${b.replace(/'/g, "\\'")}')">&times;</span></span>`
+  ).join('');
+}
+
+function syncDistributor(name) {
+  showToast('Syncing ' + name + '...', 'info');
+  setTimeout(() => {
+    showToast(name + ' sync complete', 'success');
+    logAudit('EDIT', name + ' Sync', 'Sync Status', 'Syncing', 'Connected');
+  }, 2000);
 }
 
 function approveAnomaly(anomalyId) {
@@ -2298,7 +3202,7 @@ function approveAnomaly(anomalyId) {
     anomaly.status = 'resolved';
     saveState();
     renderAnomalyDashboard();
-    logAudit('APPROVE', 'Anomaly', `Approved anomaly #${anomaly.id}`);
+    logAudit('APPROVE', `Anomaly #${anomaly.id}`, 'Status', 'Active', 'Resolved');
     showToast('Anomaly approved', 'success');
   }
 }
@@ -2307,7 +3211,7 @@ function escalateAnomaly(anomalyId) {
   const anomaly = state.anomalies.find(a => a.id === anomalyId);
   if (anomaly) {
     showToast('Anomaly escalated to management', 'warning');
-    logAudit('ESCALATE', 'Anomaly', `Escalated anomaly #${anomaly.id}`);
+    logAudit('ESCALATE', `Anomaly #${anomaly.id}`, 'Status', 'Active', 'Escalated');
   }
 }
 
@@ -2317,7 +3221,7 @@ function bulkResolveAnomalies() {
   saveState();
   renderAnomalyDashboard();
   showToast(`Resolved ${count} anomalies`, 'success');
-  logAudit('BULK_RESOLVE', 'Anomalies', `Resolved ${count} anomalies`);
+  logAudit('RESOLVE', 'Anomalies (bulk)', 'Status', `${count} Active`, `${count} Resolved`);
 }
 
 function openAddSKUModal() {
@@ -2370,7 +3274,7 @@ function saveNewSKU() {
   renderItemMaster();
   closeModal('add-sku-modal');
   showToast('Product added successfully', 'success');
-  logAudit('CREATE', 'Product', `Created product ${sku}`);
+  logAudit('ADD', sku, '—', '—', 'New Product');
 }
 
 function exportCSV() {
@@ -2396,7 +3300,7 @@ function saveSettings() {
   state.settings.autoApproval = document.getElementById('auto-approval').value;
   saveState();
   showToast('Settings saved', 'success');
-  logAudit('UPDATE', 'Settings', 'Updated governance settings');
+  logAudit('EDIT', 'Settings', 'Governance', 'Previous', 'Updated');
 }
 
 function resetSettings() {
@@ -2408,13 +3312,16 @@ function resetSettings() {
   showToast('Settings reset', 'info');
 }
 
-function logAudit(action, entity, details) {
-  state.auditLog.push({
+function logAudit(action, entity, field, prev, next) {
+  const roleNames = { admin: 'Admin User', analyst: 'Pricing Analyst', viewer: 'Viewer' };
+  state.auditLog.unshift({
     timestamp: new Date().toLocaleString(),
-    user: 'Admin User',
+    user: roleNames[state.currentRole] || 'Admin User',
     action: action,
     entity: entity,
-    details: details,
+    field: field || '—',
+    prev: prev || '—',
+    next: next || '—',
     status: 'Completed'
   });
   saveState();
@@ -2602,13 +3509,22 @@ function sendCompassMessage(message) {
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
+  // Clear old state to pick up new data model
+  localStorage.removeItem('ihs-state');
   loadState();
+  generateSampleAuditLog();
+  saveState();
+
   const theme = localStorage.getItem('ihs-theme') || 'dark';
   document.documentElement.setAttribute('data-theme', theme);
   const darkLabel = document.getElementById('dark-label');
   if (darkLabel) darkLabel.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
 
+  // Set initial role
+  document.body.setAttribute('data-role', state.currentRole || 'admin');
+
   renderDashboard();
+  renderBrandTags();
   updateCompassSuggestions('dashboard');
 
   const compassInput = document.getElementById('compass-input');
@@ -2620,24 +3536,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const itemSearch = document.getElementById('item-search');
   if (itemSearch) {
-    itemSearch.onkeyup = () => {
-      const query = itemSearch.value.toLowerCase();
-      document.querySelectorAll('#item-tbody tr').forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
-      });
-    };
+    itemSearch.onkeyup = () => { itemPage = 1; renderItemMaster(); };
   }
 
   const catFilter = document.getElementById('category-filter');
   if (catFilter) {
-    catFilter.onchange = () => {
-      const filter = catFilter.value;
-      document.querySelectorAll('#item-tbody tr').forEach((row, idx) => {
-        const product = state.products[idx];
-        row.style.display = (!filter || product.category === filter) ? '' : 'none';
-      });
-    };
+    catFilter.onchange = () => { itemPage = 1; renderItemMaster(); };
   }
 
   document.querySelectorAll('.chip').forEach(chip => {
