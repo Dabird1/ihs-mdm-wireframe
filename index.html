@@ -1188,6 +1188,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 .message-item.assistant {
   background: var(--accent-blue-light);
   border-left: 3px solid var(--accent-blue);
+  color: #1e293b;
 }
 
 .compass-footer {
@@ -1942,6 +1943,7 @@ function generateProducts() {
     { name: "Pipe Boot Flashing 3\"", mfr: "Various", cat: "Accessories", base: 11.50 }
   ];
 
+  const brandNames = DEFAULT.brands;
   return realProducts.map((p, i) => {
     const floor = +(p.base * 0.88).toFixed(2);
     const ceiling = +(p.base * 1.12).toFixed(2);
@@ -1957,6 +1959,7 @@ function generateProducts() {
       name: p.name,
       manufacturer: p.mfr,
       category: p.cat,
+      brand: brandNames[i % brandNames.length],
       abc_code: 'ABC-' + String(1000 + i * 7),
       qxo_code: 'QXO-' + String(2000 + i * 11),
       srs_code: 'SRS-' + String(3000 + i * 13),
@@ -2052,6 +2055,12 @@ function switchTab(tabName, navItem) {
   if (tabName === 'dashboard') renderDashboard();
   else if (tabName === 'item-master') renderItemMaster();
   else if (tabName === 'anomaly') renderAnomalyDashboard();
+  else if (tabName === 'reports') {
+    // Re-activate the default sub-tab since switchTab clears all .tab-panel.active
+    document.getElementById('reports-builder').classList.add('active');
+    document.querySelectorAll('#tab-reports .tab-pill').forEach(p => p.classList.remove('active'));
+    document.querySelector('#tab-reports .tab-pill').classList.add('active');
+  }
   else if (tabName === 'price-sheet') renderPriceSheetInit();
   else if (tabName === 'audit-log') renderAuditLog();
 }
