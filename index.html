@@ -1888,9 +1888,20 @@ function switchTab(tabName, navItem) {
   updatePageHeader(tabName);
   updateCompassSuggestions(tabName);
 
+  // Close detail panel when switching tabs
+  closeDetailPanel();
+
   if (tabName === 'dashboard') renderDashboard();
   else if (tabName === 'item-master') renderItemMaster();
   else if (tabName === 'anomaly') renderAnomalyDashboard();
+  else if (tabName === 'reports') {
+    // Re-activate default sub-tab since switchTab clears all .tab-panel.active
+    const builder = document.getElementById('reports-builder');
+    if (builder) builder.classList.add('active');
+    const pills = document.querySelectorAll('#tab-reports .tab-pill');
+    pills.forEach(p => p.classList.remove('active'));
+    if (pills[0]) pills[0].classList.add('active');
+  }
   else if (tabName === 'price-sheet') renderPriceSheetInit();
   else if (tabName === 'audit-log') renderAuditLog();
 }
