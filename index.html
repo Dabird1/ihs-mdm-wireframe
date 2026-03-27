@@ -111,7 +111,7 @@ body {
   display: flex;
   flex-direction: column;
   padding: 20px 16px;
-  overflow-y: auto;
+  overflow: hidden;
   border-right: 1px solid rgba(255,255,255,0.06);
   transition: background-color 0.2s ease;
 }
@@ -160,12 +160,20 @@ body {
   font-weight: 500;
 }
 
-.sidebar-nav {
+.sidebar-scroll-content {
   flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-nav {
+  flex: none;
   display: flex;
   flex-direction: column;
   gap: 4px;
   margin-bottom: 20px;
+  overflow: visible;
+  position: relative;
 }
 
 .nav-item {
@@ -309,6 +317,34 @@ body {
   color: rgba(255,255,255,0.85);
 }
 
+.compass-float-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  background: var(--accent-blue);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.compass-float-btn:hover {
+  background: var(--accent-blue-dark);
+  box-shadow: var(--shadow-lg);
+  transform: scale(1.05);
+}
+
+.compass-float-btn .nav-icon {
+  width: 24px;
+  height: 24px;
+}
+
 .user-info {
   display: flex;
   align-items: center;
@@ -396,6 +432,26 @@ body {
   gap: 10px;
   align-items: center;
   flex-wrap: wrap;
+}
+
+.gear-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.gear-btn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
 }
 
 .content {
@@ -1544,6 +1600,23 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   align-items: center;
 }
 
+/* ── ROLE BANNER ── */
+.role-banner {
+  background: var(--accent-blue);
+  color: white;
+  padding: 10px 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  display: none;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.role-banner.show { display: block; }
+
+[data-role="analyst"] .role-banner { background: var(--accent-amber); }
+[data-role="viewer"] .role-banner { background: var(--accent-gray); }
+
 /* ── ROLE-HIDDEN ── */
 .role-admin-only { }
 .role-analyst-hide { }
@@ -1564,42 +1637,45 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
     </div>
   </div>
 
+  <div class="sidebar-scroll-content">
   <nav class="sidebar-nav">
     <button class="nav-item active" data-tooltip="Executive overview of pricing governance and data quality" onclick="switchTab('dashboard', this)">
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       <span>Dashboard</span>
+      <span class="nav-badge" id="approvals-badge" style="display:none">0</span>
     </button>
     <button class="nav-item" data-tooltip="Browse and manage all governed product SKUs" onclick="switchTab('item-master', this)">
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m0 0H3m2 0V5m0 0h4m4 0H9m6 0h4a2 2 0 0 1 2 2v4m0 0v4m0 0h2m-2 0v-4m0 0h-4m0 0h4m-6 6h-4a2 2 0 0 0-2 2v4m0 0H3m2 0v4m0 0h4"/></svg>
       <span>Item Master</span>
+    </button>
+    <button class="nav-item" data-tooltip="Compare distributor pricing by brand" onclick="switchTab('price-sheet', this)">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm0 2c-2.209 0-4 1.791-4 4 0 .891.328 1.711.887 2.35H6a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2h-2.887c.559-.639.887-1.459.887-2.35 0-2.209-1.791-4-4-4z"/></svg>
+      <span>Brand Price Sheet</span>
     </button>
     <button class="nav-item" data-tooltip="Review and resolve pricing anomalies across brands" onclick="switchTab('anomaly', this)">
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4v2m1.581-12.464a2 2 0 0 0-3.162 0l-9.183 15.986a2 2 0 0 0 1.581 3.038h18.366a2 2 0 0 0 1.581-3.038l-9.183-15.986z"/></svg>
       <span>Anomaly Dashboard</span>
       <span class="nav-badge" id="anomaly-badge" style="display:none">0</span>
     </button>
-    <button class="nav-item" data-tooltip="Compare distributor pricing by brand" onclick="switchTab('price-sheet', this)">
-      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm0 2c-2.209 0-4 1.791-4 4 0 .891.328 1.711.887 2.35H6a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2h-2.887c.559-.639.887-1.459.887-2.35 0-2.209-1.791-4-4-4z"/></svg>
-      <span>Brand Price Sheet</span>
-    </button>
-    <button class="nav-item" data-tooltip="Configure governance thresholds and notifications" onclick="switchTab('settings', this)">
-      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><path d="M12 8v-2m0 10v2M16 12h2m-10 0H4m12.95-2.95l1.414-1.414M9.05 18.95l1.414-1.414m7.07-7.07l1.414 1.414M9.05 9.05L7.636 7.636M18 12a6 6 0 1 1-12 0 6 6 0 0 1 12 0z"/></svg>
-      <span>Settings</span>
-    </button>
     <button class="nav-item" data-tooltip="Track all system changes and user actions" onclick="switchTab('audit-log', this)">
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
       <span>Audit Log</span>
       <span class="nav-badge" id="audit-badge" style="display:none">0</span>
     </button>
-    <button class="nav-item" data-tooltip="AI-powered assistant for data insights" onclick="switchTab('compass', this)">
-      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-      <span>Compass AI</span>
-    </button>
     <button class="nav-item" data-tooltip="Build custom reports and query the data warehouse" onclick="switchTab('reports', this)">
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
       <span>MyDrill</span>
     </button>
+    <button class="nav-item" data-tooltip="Configure governance thresholds and notifications" onclick="switchTab('settings', this)">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><path d="M12 8v-2m0 10v2M16 12h2m-10 0H4m12.95-2.95l1.414-1.414M9.05 18.95l1.414-1.414m7.07-7.07l1.414 1.414M9.05 9.05L7.636 7.636M18 12a6 6 0 1 1-12 0 6 6 0 0 1 12 0z"/></svg>
+      <span>Rules & Thresholds</span>
+    </button>
   </nav>
+  </div>
+
+  <button class="compass-float-btn" data-tooltip="AI-powered assistant for data insights" onclick="switchTab('compass', this)" title="Compass AI">
+    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+  </button>
 
   <div class="purpose-strip">
     <div class="label">Our Purpose</div>
@@ -1638,14 +1714,28 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
         <div class="page-subtitle" id="page-subtitle"></div>
       </div>
     </div>
-    <div class="header-actions" id="header-actions"></div>
+    <div class="header-actions" id="header-actions">
+      <button class="gear-btn" onclick="openUserSettingsPanel()" title="User Settings">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="1"/><path d="M12 8v-2m0 10v2M16 12h2m-10 0H4m12.95-2.95l1.414-1.414M9.05 18.95l1.414-1.414m7.07-7.07l1.414 1.414M9.05 9.05L7.636 7.636M18 12a6 6 0 1 1-12 0 6 6 0 0 1 12 0z"/>
+        </svg>
+      </button>
+    </div>
   </div>
+
+  <!-- ROLE BANNER -->
+  <div id="role-banner" class="role-banner"></div>
 
   <!-- CONTENT -->
   <div class="content" id="content">
 
   <!-- TAB 1: DASHBOARD -->
   <div id="tab-dashboard" class="tab-panel active">
+    <div class="toolbar" style="margin-bottom:20px;">
+      <select class="filter-select" id="dashboard-brand-filter" onchange="onBrandFilterChange(this.value, 'dashboard')">
+        <option value="All Brands">All Brands</option>
+      </select>
+    </div>
     <div class="kpi-grid" id="kpi-grid"></div>
     <div class="dash-grid">
       <div class="dash-card">
@@ -1661,6 +1751,10 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       <div class="dash-card-header">Recent Activity</div>
       <div class="dash-card-body" id="dash-activity" style="padding:0 20px;"></div>
     </div>
+    <div class="dash-card" style="margin-top: 16px; role-admin-only">
+      <div class="dash-card-header">Pending Approvals</div>
+      <div class="dash-card-body" id="dash-pending-approvals" style="padding:20px;"></div>
+    </div>
   </div>
 
   <!-- TAB 2: ITEM MASTER -->
@@ -1675,6 +1769,9 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" class="search-input" id="item-search" placeholder="Search products by name, SKU, category...">
       </div>
+      <select class="filter-select" id="item-brand-filter" onchange="onBrandFilterChange(this.value, 'item-master')">
+        <option value="All Brands">All Brands</option>
+      </select>
       <select class="filter-select" id="category-filter">
         <option value="">All Categories</option>
         <option value="Shingles">Shingles</option>
@@ -1721,6 +1818,9 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   <div id="tab-anomaly" class="tab-panel">
     <div class="kpi-grid" id="anomaly-kpi-grid"></div>
     <div class="toolbar">
+      <select class="filter-select" id="anomaly-brand-filter" onchange="onBrandFilterChange(this.value, 'anomaly')">
+        <option value="All Brands">All Brands</option>
+      </select>
       <select class="filter-select" id="anomaly-filter">
         <option value="">All Severities</option>
         <option value="critical">Critical Only</option>
@@ -2004,10 +2104,10 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
         <div class="card">
           <div class="card-header">Sample Queries</div>
           <div class="card-body">
-            <button class="btn btn-secondary" onclick="loadQuery('select COUNT(*) FROM products WHERE price > ceiling_price')" style="width:100%; margin-bottom:8px; justify-content:flex-start;">All products above ceiling</button>
-            <button class="btn btn-secondary" onclick="loadQuery('select brand, COUNT(*) as anomaly_count FROM anomalies GROUP BY brand ORDER BY anomaly_count DESC')" style="width:100%; margin-bottom:8px; justify-content:flex-start;">Anomaly rate by distributor</button>
-            <button class="btn btn-secondary" onclick="loadQuery('select brand, AVG(gm_pct) as avg_gm FROM products GROUP BY brand ORDER BY avg_gm DESC')" style="width:100%; margin-bottom:8px; justify-content:flex-start;">Brand GM% ranking</button>
-            <button class="btn btn-secondary" onclick="loadQuery('select sku, abc_price, qxo_price, (abc_price - qxo_price) as delta FROM products WHERE abc_price != qxo_price ORDER BY delta DESC')" style="width:100%; justify-content:flex-start;">Cost delta: ABC vs QXO</button>
+            <button class="btn btn-secondary" onclick="loadQuery('select COUNT(*) FROM products WHERE price > ceiling_price')" style="width:100%; margin-bottom:8px; justify-content:flex-start; white-space:normal; text-align:left; overflow:hidden; text-overflow:ellipsis;">All products above ceiling</button>
+            <button class="btn btn-secondary" onclick="loadQuery('select brand, COUNT(*) as anomaly_count FROM anomalies GROUP BY brand ORDER BY anomaly_count DESC')" style="width:100%; margin-bottom:8px; justify-content:flex-start; white-space:normal; text-align:left; overflow:hidden; text-overflow:ellipsis;">Anomaly rate by distributor</button>
+            <button class="btn btn-secondary" onclick="loadQuery('select brand, AVG(gm_pct) as avg_gm FROM products GROUP BY brand ORDER BY avg_gm DESC')" style="width:100%; margin-bottom:8px; justify-content:flex-start; white-space:normal; text-align:left; overflow:hidden; text-overflow:ellipsis;">Brand GM% ranking</button>
+            <button class="btn btn-secondary" onclick="loadQuery('select sku, abc_price, qxo_price, (abc_price - qxo_price) as delta FROM products WHERE abc_price != qxo_price ORDER BY delta DESC')" style="width:100%; justify-content:flex-start; white-space:normal; text-align:left; overflow:hidden; text-overflow:ellipsis;">Cost delta: ABC vs QXO</button>
           </div>
         </div>
         <div class="card">
@@ -2228,8 +2328,10 @@ const state = {
   products: [],
   brands: ['GAF', 'Owens Corning', 'CertainTeed', 'Tamko', 'IKO', 'Malarkey', 'Pabco', 'Atlas', 'BORAL', 'DaVinci', 'EagleView', 'Brava', 'Decra', 'Metro Roof', 'Luma', 'Pinnacle', 'Norandex', 'ABC Private Label', 'QXO Private Label', 'Heritage', 'ProLine', 'RoofTech', 'Summit', 'TrueDefinition', 'WeatherGuard'],
   currentRole: 'admin',
+  brandFilter: 'All Brands',
   anomalies: [],
   auditLog: [],
+  pendingApprovals: [],
   settings: {
     gmCritical: 15,
     gmWarning: 20,
@@ -2344,33 +2446,74 @@ function saveState() {
 }
 
 function switchTab(tabName, navItem) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  requestAnimationFrame(() => {
+    // Remove active from nav items
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-  const tab = document.getElementById(`tab-${tabName}`);
-  if (tab) tab.classList.add('active');
-  if (navItem) navItem.classList.add('active');
+    // Hide old tab panel
+    const oldTab = document.querySelector('.tab-panel.active');
+    if (oldTab) oldTab.classList.remove('active');
 
-  state.currentTab = tabName;
-  updatePageHeader(tabName);
-  updateCompassSuggestions(tabName);
+    // Show new tab panel
+    const tab = document.getElementById(`tab-${tabName}`);
+    if (tab) tab.classList.add('active');
+    if (navItem) navItem.classList.add('active');
 
-  // Close detail panel when switching tabs
-  closeDetailPanel();
+    state.currentTab = tabName;
+    updatePageHeader(tabName);
+    updateCompassSuggestions(tabName);
 
+    // Close detail panel when switching tabs
+    closeDetailPanel();
+
+    if (tabName === 'dashboard') renderDashboard();
+    else if (tabName === 'item-master') renderItemMaster();
+    else if (tabName === 'anomaly') renderAnomalyDashboard();
+    else if (tabName === 'reports') {
+      // Re-activate default sub-tab since switchTab clears all .tab-panel.active
+      const builder = document.getElementById('reports-builder');
+      if (builder) builder.classList.add('active');
+      const pills = document.querySelectorAll('#tab-reports .tab-pill');
+      pills.forEach(p => p.classList.remove('active'));
+      if (pills[0]) pills[0].classList.add('active');
+    }
+    else if (tabName === 'price-sheet') renderPriceSheetInit();
+    else if (tabName === 'audit-log') renderAuditLog();
+  });
+}
+
+function updateApprovalsBadge() {
+  const badge = document.getElementById('approvals-badge');
+  if (badge) {
+    const pendingCount = state.pendingApprovals.filter(a => a.status === 'pending').length;
+    if (pendingCount > 0) {
+      badge.textContent = pendingCount;
+      badge.style.display = 'block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+}
+
+function populateBrandFilters() {
+  const filters = ['dashboard-brand-filter', 'item-brand-filter', 'anomaly-brand-filter'];
+  filters.forEach(filterId => {
+    const el = document.getElementById(filterId);
+    if (el) {
+      el.innerHTML = '<option value="All Brands">All Brands</option>';
+      state.brands.forEach(brand => {
+        el.innerHTML += `<option value="${brand}">${brand}</option>`;
+      });
+      el.value = state.brandFilter;
+    }
+  });
+}
+
+function onBrandFilterChange(value, tabName) {
+  state.brandFilter = value;
   if (tabName === 'dashboard') renderDashboard();
   else if (tabName === 'item-master') renderItemMaster();
   else if (tabName === 'anomaly') renderAnomalyDashboard();
-  else if (tabName === 'reports') {
-    // Re-activate default sub-tab since switchTab clears all .tab-panel.active
-    const builder = document.getElementById('reports-builder');
-    if (builder) builder.classList.add('active');
-    const pills = document.querySelectorAll('#tab-reports .tab-pill');
-    pills.forEach(p => p.classList.remove('active'));
-    if (pills[0]) pills[0].classList.add('active');
-  }
-  else if (tabName === 'price-sheet') renderPriceSheetInit();
-  else if (tabName === 'audit-log') renderAuditLog();
 }
 
 function updatePageHeader(tabName) {
@@ -2379,7 +2522,7 @@ function updatePageHeader(tabName) {
     'item-master': { title: 'Item Master', subtitle: 'Browse and manage all governed product SKUs' },
     anomaly: { title: 'Anomaly Dashboard', subtitle: 'Review and resolve pricing anomalies' },
     'price-sheet': { title: 'Brand Price Sheet', subtitle: 'Compare distributor pricing by brand' },
-    settings: { title: 'Settings', subtitle: 'Configure governance thresholds and notifications' },
+    settings: { title: 'Rules & Thresholds', subtitle: 'Configure governance thresholds and notifications' },
     'audit-log': { title: 'Audit Log', subtitle: 'Track all system changes and user actions' },
     compass: { title: 'Compass AI', subtitle: 'AI-powered assistant for data insights' },
     reports: { title: 'MyDrill', subtitle: 'Build custom reports and query the data warehouse' }
@@ -2394,13 +2537,22 @@ function updatePageHeader(tabName) {
 
 function renderDashboard() {
   const kpiGrid = document.getElementById('kpi-grid');
-  const activeAnomalies = state.anomalies.filter(a => a.status === 'active').length;
-  const avgGM = (state.products.reduce((s, p) => s + p.gm_pct, 0) / state.products.length).toFixed(1);
-  const brandsCount = new Set(state.products.map(p => p.brand)).size;
+
+  // Filter products and anomalies by selected brand
+  let filteredProducts = state.products;
+  let filteredAnomalies = state.anomalies;
+  if (state.brandFilter !== 'All Brands') {
+    filteredProducts = state.products.filter(p => p.brand === state.brandFilter);
+    filteredAnomalies = state.anomalies.filter(a => a.brand === state.brandFilter);
+  }
+
+  const activeAnomalies = filteredAnomalies.filter(a => a.status === 'active').length;
+  const avgGM = (filteredProducts.reduce((s, p) => s + p.gm_pct, 0) / filteredProducts.length || 0).toFixed(1);
+  const brandsCount = new Set(filteredProducts.map(p => p.brand)).size;
 
   kpiGrid.innerHTML = `
     <div class="stat-card clickable" onclick="switchTab('item-master', document.querySelector('[onclick*=item-master]'))">
-      <div class="stat-value">${state.products.length}</div>
+      <div class="stat-value">${filteredProducts.length}</div>
       <div class="stat-label">Total SKUs Governed</div>
     </div>
     <div class="stat-card red clickable" onclick="switchTab('anomaly', document.querySelector('[onclick*=anomaly]'))">
@@ -2419,7 +2571,7 @@ function renderDashboard() {
 
   // Anomalies by Brand bar chart
   const brandAnoms = {};
-  state.anomalies.filter(a => a.status === 'active').forEach(a => {
+  filteredAnomalies.filter(a => a.status === 'active').forEach(a => {
     brandAnoms[a.brand] = (brandAnoms[a.brand] || 0) + 1;
   });
   const brandCounts = Object.entries(brandAnoms).map(([b, count]) => ({ brand: b, count })).sort((a, b) => b.count - a.count).slice(0, 8);
@@ -2444,7 +2596,7 @@ function renderDashboard() {
   if (chartDiv) chartDiv.innerHTML = barChart;
 
   // Top 5 anomalies
-  const topAnoms = state.anomalies.filter(a => a.status === 'active').sort((a, b) => b.variance - a.variance).slice(0, 5);
+  const topAnoms = filteredAnomalies.filter(a => a.status === 'active').sort((a, b) => b.variance - a.variance).slice(0, 5);
   let anomsHtml = '<div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Product</th><th>Brand</th><th>Variance</th><th>Action</th></tr></thead><tbody>';
   topAnoms.forEach(a => {
     anomsHtml += `<tr><td>${a.product_name}</td><td>${a.brand}</td><td><strong>${a.variance.toFixed(1)}%</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchTab('anomaly', document.querySelector('[onclick*=switchTab][onclick*=anomaly]'))">View</button></td></tr>`;
@@ -2471,6 +2623,26 @@ function renderDashboard() {
   });
   const actDiv = document.getElementById('dash-activity');
   if (actDiv) actDiv.innerHTML = activityHtml;
+
+  // Pending approvals card
+  const approvalsDiv = document.getElementById('dash-pending-approvals');
+  if (approvalsDiv) {
+    const pendingApprovals = state.pendingApprovals.filter(a => a.status === 'pending');
+    if (pendingApprovals.length === 0) {
+      approvalsDiv.innerHTML = '<div style="text-align:center; color:var(--text-tertiary); padding:10px;">No pending approvals</div>';
+    } else {
+      let appHtml = `<div style="font-size:12px;"><strong>${pendingApprovals.length} pending:</strong><br>`;
+      pendingApprovals.slice(0, 3).forEach(a => {
+        appHtml += `<div style="margin:8px 0; padding:8px; background:var(--bg-secondary); border-radius:4px;">
+          ${a.productName} → $${a.newPrice.toFixed(2)}
+          <br><button class="btn btn-sm btn-green" onclick="approveApproval(${a.id})" style="margin-top:4px;">Approve</button>
+          <button class="btn btn-sm btn-danger" onclick="rejectApproval(${a.id})" style="margin-top:4px;">Reject</button>
+        </div>`;
+      });
+      appHtml += '</div>';
+      approvalsDiv.innerHTML = appHtml;
+    }
+  }
 }
 
 let itemPage = 1;
@@ -2536,9 +2708,11 @@ function renderItemMaster() {
 function getFilteredProducts() {
   const search = (document.getElementById('item-search')?.value || '').toLowerCase();
   const cat = document.getElementById('category-filter')?.value || '';
+  const brand = state.brandFilter !== 'All Brands' ? state.brandFilter : '';
   return state.products.filter(p => {
     if (p.status === 'Inactive') return false;
     if (cat && p.category !== cat) return false;
+    if (brand && p.brand !== brand) return false;
     if (search && !(`${p.name} ${p.sku} ${p.category} ${p.brand}`).toLowerCase().includes(search)) return false;
     return true;
   });
@@ -2587,9 +2761,102 @@ function closeDetailPanel() {
   document.getElementById('detail-panel').classList.remove('open');
 }
 
+function openUserSettingsPanel() {
+  const panel = document.getElementById('detail-panel');
+  const title = document.getElementById('detail-title');
+  const content = document.getElementById('detail-content');
+
+  const currentRole = state.currentRole || 'admin';
+  const roleNames = { admin: 'Administrator', analyst: 'Pricing Analyst', viewer: 'Viewer' };
+  const theme = localStorage.getItem('ihs-theme') || 'dark';
+
+  title.textContent = 'User Settings';
+  content.innerHTML = `
+    <div class="detail-section">
+      <div class="detail-label" style="margin-bottom:12px; color:var(--text-secondary); font-size:11px; font-weight:700; text-transform:uppercase;">Profile</div>
+      <div class="detail-row"><span class="detail-label">Name</span><span class="detail-value" id="settings-user-name">Admin User</span></div>
+      <div class="detail-row"><span class="detail-label">Role</span><span class="detail-value">${roleNames[currentRole]}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label" style="margin-bottom:12px; color:var(--text-secondary); font-size:11px; font-weight:700; text-transform:uppercase;">Appearance</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 0;">
+        <span class="detail-label">Theme</span>
+        <button class="btn btn-secondary" onclick="toggleDark()">Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode</button>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label" style="margin-bottom:12px; color:var(--text-secondary); font-size:11px; font-weight:700; text-transform:uppercase;">Notifications</div>
+      <label style="display:flex; align-items:center; gap:8px; padding:8px 0; cursor:pointer;">
+        <input type="checkbox" id="notify-anomalies" checked style="cursor:pointer;">
+        <span>Notify on new anomalies</span>
+      </label>
+      <label style="display:flex; align-items:center; gap:8px; padding:8px 0; cursor:pointer;">
+        <input type="checkbox" id="notify-approvals" checked style="cursor:pointer;">
+        <span>Notify on pending approvals</span>
+      </label>
+      <label style="display:flex; align-items:center; gap:8px; padding:8px 0; cursor:pointer;">
+        <input type="checkbox" id="notify-changes" checked style="cursor:pointer;">
+        <span>Notify on price changes</span>
+      </label>
+    </div>
+    <div class="detail-actions" style="flex-wrap:wrap; margin-top:20px;">
+      <button class="btn btn-danger" onclick="signOut()">Sign Out</button>
+    </div>
+  `;
+
+  panel.classList.add('open');
+}
+
+function signOut() {
+  showToast('Signed out successfully', 'success');
+  setTimeout(() => {
+    window.location.reload();
+  }, 1000);
+}
+
+function approveApproval(approvalId) {
+  const approval = state.pendingApprovals.find(a => a.id === approvalId);
+  if (!approval) return;
+  const product = state.products.find(p => p.id === approval.productId);
+  if (!product) return;
+
+  // Update product price
+  const oldPrice = product.governed_price;
+  product.governed_price = approval.newPrice;
+
+  // Mark approval as approved
+  approval.status = 'approved';
+  approval.approvedAt = new Date().toLocaleDateString();
+
+  saveState();
+  updateApprovalsBadge();
+  renderDashboard();
+  showToast('Price change approved: ' + approval.productName, 'success');
+  logAudit('APPROVE', approval.sku, 'Governed Price', '$' + oldPrice.toFixed(2), '$' + approval.newPrice.toFixed(2));
+}
+
+function rejectApproval(approvalId) {
+  const approval = state.pendingApprovals.find(a => a.id === approvalId);
+  if (!approval) return;
+
+  // Mark approval as rejected
+  approval.status = 'rejected';
+  approval.rejectedAt = new Date().toLocaleDateString();
+
+  saveState();
+  updateApprovalsBadge();
+  renderDashboard();
+  showToast('Price change rejected', 'error');
+  logAudit('REJECT', approval.sku, 'Price Proposal', '', approval.newPrice.toFixed(2));
+}
+
 function renderAnomalyDashboard() {
-  const activeAnoms = state.anomalies.filter(a => a.status === 'active');
-  const resolvedAnoms = state.anomalies.filter(a => a.status === 'resolved');
+  let allAnomalies = state.anomalies;
+  if (state.brandFilter !== 'All Brands') {
+    allAnomalies = state.anomalies.filter(a => a.brand === state.brandFilter);
+  }
+  const activeAnoms = allAnomalies.filter(a => a.status === 'active');
+  const resolvedAnoms = allAnomalies.filter(a => a.status === 'resolved');
 
   // KPI cards
   const kpiGrid = document.getElementById('anomaly-kpi-grid');
@@ -2754,6 +3021,191 @@ function showBrandPriceSheet(brand) {
   const backBtn = document.getElementById('back-to-brands');
   backBtn.style.display = 'inline-flex';
 
+  // Store current brand for drill-through
+  state._activeBrand = brand;
+
+  const products = state.products.filter(p => p.brand === brand);
+  const anomalies = state.anomalies.filter(a => a.brand === brand);
+  const activeAnoms = anomalies.filter(a => a.status === 'active');
+  const resolvedAnoms = anomalies.filter(a => a.status === 'resolved');
+  const healthScore = Math.max(0, 100 - activeAnoms.length * 15 - Math.floor(Math.random() * 10));
+  const avgGM = products.length ? (products.reduce((s, p) => s + p.gm_pct, 0) / products.length).toFixed(1) : 0;
+
+  // Distribution summary
+  let abcBest = 0, qxoBest = 0, srsBest = 0;
+  products.forEach(p => {
+    const prices = [p.abc_price, p.qxo_price, p.srs_price];
+    const best = Math.min(...prices);
+    if (best === p.abc_price) abcBest++;
+    else if (best === p.qxo_price) qxoBest++;
+    else srsBest++;
+  });
+  const totalSKUs = products.length;
+  const bestDist = abcBest >= qxoBest && abcBest >= srsBest ? 'ABC Supply' : qxoBest >= srsBest ? 'QXO' : 'SRS/BMCA';
+  const simulatedRevenue = (totalSKUs * (28000 + Math.floor(Math.random() * 15000))).toLocaleString();
+
+  // Simulated monthly GM% trend (last 6 months)
+  const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+  const gmTrend = months.map((m, i) => {
+    const base = parseFloat(avgGM) + (Math.random() - 0.5) * 8;
+    return { month: m, gm: Math.max(10, Math.min(50, base)).toFixed(1) };
+  });
+  const maxGM = Math.max(...gmTrend.map(g => parseFloat(g.gm)));
+
+  // Brand audit entries
+  const brandAudits = state.auditLog.filter(a =>
+    a.entity.includes(brand) || products.some(p => a.entity.includes(p.sku))
+  ).slice(0, 5);
+
+  const healthColor = healthScore >= 70 ? 'var(--accent-green)' : healthScore >= 40 ? 'var(--accent-amber)' : 'var(--accent-red)';
+  const healthLabel = healthScore >= 70 ? 'Good' : healthScore >= 40 ? 'Warning' : 'Critical';
+
+  let html = `
+    <!-- Brand President Executive Summary -->
+    <div style="margin-bottom:24px;">
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+        <h2 style="font-size:24px; font-weight:800; color:var(--text-primary); margin:0;">${brand}</h2>
+        <span class="badge" style="background:${healthColor}20; color:${healthColor}; font-size:13px; padding:5px 14px;">
+          Health: ${healthScore} — ${healthLabel}
+        </span>
+      </div>
+
+      <!-- Executive KPI Row -->
+      <div class="kpi-grid" style="grid-template-columns:repeat(5,1fr); margin-bottom:20px;">
+        <div class="stat-card">
+          <div class="stat-value">${totalSKUs}</div>
+          <div class="stat-label">Total SKUs</div>
+        </div>
+        <div class="stat-card ${parseFloat(avgGM) >= 30 ? 'green' : parseFloat(avgGM) >= 20 ? 'amber' : 'red'}">
+          <div class="stat-value">${avgGM}%</div>
+          <div class="stat-label">Avg Gross Margin</div>
+        </div>
+        <div class="stat-card ${activeAnoms.length === 0 ? 'green' : 'red'}">
+          <div class="stat-value">${activeAnoms.length}</div>
+          <div class="stat-label">Active Anomalies</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">$${simulatedRevenue}</div>
+          <div class="stat-label">Est. Monthly Volume</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-value">${bestDist}</div>
+          <div class="stat-label" style="font-size:11px;">Best Overall Distributor</div>
+        </div>
+      </div>
+
+      <!-- Two-column layout: GM Trend + Distributor Comparison -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+        <!-- GM% Trend Chart -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">GM% Trend (6 Months)</span>
+          </div>
+          <div class="card-body" style="padding:16px;">
+            <div style="display:flex; align-items:flex-end; gap:8px; height:120px;">
+              ${gmTrend.map(g => {
+                const pct = (parseFloat(g.gm) / maxGM) * 100;
+                const color = parseFloat(g.gm) >= 30 ? 'var(--accent-green)' : parseFloat(g.gm) >= 20 ? 'var(--accent-amber)' : 'var(--accent-red)';
+                return `<div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                  <span style="font-size:10px; font-weight:600; color:var(--text-secondary);">${g.gm}%</span>
+                  <div style="width:100%; height:${pct}%; background:${color}; border-radius:4px 4px 0 0; min-height:8px; transition:height 0.3s;"></div>
+                  <span style="font-size:10px; color:var(--text-tertiary);">${g.month}</span>
+                </div>`;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Distributor Comparison -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Distributor Price Wins</span>
+          </div>
+          <div class="card-body" style="padding:16px;">
+            <div style="margin-bottom:12px;">
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                <span style="font-weight:600; color:var(--text-primary);">ABC Supply</span>
+                <span style="color:var(--text-secondary);">${abcBest} of ${totalSKUs} SKUs (${totalSKUs ? Math.round(abcBest/totalSKUs*100) : 0}%)</span>
+              </div>
+              <div style="height:8px; background:var(--bg-tertiary); border-radius:4px; overflow:hidden;">
+                <div style="height:100%; width:${totalSKUs ? (abcBest/totalSKUs*100) : 0}%; background:var(--accent-blue); border-radius:4px;"></div>
+              </div>
+            </div>
+            <div style="margin-bottom:12px;">
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                <span style="font-weight:600; color:var(--text-primary);">QXO</span>
+                <span style="color:var(--text-secondary);">${qxoBest} of ${totalSKUs} SKUs (${totalSKUs ? Math.round(qxoBest/totalSKUs*100) : 0}%)</span>
+              </div>
+              <div style="height:8px; background:var(--bg-tertiary); border-radius:4px; overflow:hidden;">
+                <div style="height:100%; width:${totalSKUs ? (qxoBest/totalSKUs*100) : 0}%; background:var(--accent-green); border-radius:4px;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                <span style="font-weight:600; color:var(--text-primary);">SRS/BMCA</span>
+                <span style="color:var(--text-secondary);">${srsBest} of ${totalSKUs} SKUs (${totalSKUs ? Math.round(srsBest/totalSKUs*100) : 0}%)</span>
+              </div>
+              <div style="height:8px; background:var(--bg-tertiary); border-radius:4px; overflow:hidden;">
+                <div style="height:100%; width:${totalSKUs ? (srsBest/totalSKUs*100) : 0}%; background:var(--accent-purple); border-radius:4px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two-column: Top Anomalies + Recent Activity -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+        <!-- Top Anomalies -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Active Anomalies</span>
+            <span class="badge ${activeAnoms.length === 0 ? 'badge-green' : 'badge-red'}">${activeAnoms.length}</span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            ${activeAnoms.length === 0 ? '<div style="padding:20px; text-align:center; color:var(--text-tertiary); font-size:13px;">No active anomalies — looking good!</div>' :
+              activeAnoms.slice(0, 3).map(a => {
+                const prod = state.products.find(p => p.sku === a.sku) || {};
+                return `<div style="padding:12px 16px; border-bottom:1px solid var(--border-primary); display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <div style="font-weight:600; font-size:13px; color:var(--text-primary);">${prod.name || a.sku}</div>
+                    <div style="font-size:11px; color:var(--text-tertiary);">${a.distributor} — $${a.charged.toFixed(2)} vs $${a.governed.toFixed(2)}</div>
+                  </div>
+                  <span style="color:var(--accent-red); font-weight:700; font-size:13px;">${a.variance}%</span>
+                </div>`;
+              }).join('')}
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Recent Activity</span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            ${brandAudits.length === 0 ? '<div style="padding:20px; text-align:center; color:var(--text-tertiary); font-size:13px;">No recent activity</div>' :
+              brandAudits.map(a => `<div style="padding:10px 16px; border-bottom:1px solid var(--border-primary); font-size:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-weight:600; color:var(--text-primary);">${a.action} — ${a.entity}</span>
+                  <span style="color:var(--text-tertiary); font-size:11px;">${a.timestamp}</span>
+                </div>
+                <div style="color:var(--text-secondary); margin-top:2px;">${a.field !== '—' ? a.field + ': ' + a.prev + ' → ' + a.next : a.user}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- View Full Price Sheet CTA -->
+      <button class="btn btn-primary btn-lg" onclick="showBrandPriceTable('${brand}')" style="width:100%;">
+        View Full Price Sheet →
+      </button>
+    </div>
+  `;
+
+  content.innerHTML = html;
+}
+
+function showBrandPriceTable(brand) {
+  const content = document.getElementById('price-sheet-content');
   const products = state.products.filter(p => p.brand === brand);
   const anomCount = state.anomalies.filter(a => a.brand === brand && a.status === 'active').length;
   const healthScore = Math.max(0, 100 - anomCount * 15 - Math.floor(Math.random() * 10));
@@ -2770,6 +3222,8 @@ function showBrandPriceSheet(brand) {
   });
 
   let html = `
+    <!-- Back to Summary -->
+    <button class="btn btn-secondary" onclick="showBrandPriceSheet('${brand}')" style="margin-bottom:16px;">← Back to ${brand} Summary</button>
     <!-- Summary Stats -->
     <div class="summary-stats">
       <div class="summary-stat">
@@ -2820,7 +3274,6 @@ function showBrandPriceSheet(brand) {
     const best = Math.min(p.abc_price, p.qxo_price, p.srs_price);
     const worst = Math.max(p.abc_price, p.qxo_price, p.srs_price);
     const variance = ((worst - best) / best * 100).toFixed(1);
-    const bestDist = prices.find(pr => pr.val === best)?.name || '';
 
     html += `
       <tr>
@@ -3121,12 +3574,29 @@ function openProposePriceModal(id) {
 function submitPriceProposal() {
   const p = state.products.find(pr => pr.id === proposingProductId);
   if (!p) return;
-  const newPrice = document.getElementById('propose-new-price').value;
+  const newPrice = parseFloat(document.getElementById('propose-new-price').value);
   const reason = document.getElementById('propose-reason').value;
   if (!newPrice) { showToast('Please enter a proposed price', 'error'); return; }
+
+  // Add to pending approvals
+  state.pendingApprovals.push({
+    id: Date.now(),
+    productId: p.id,
+    productName: p.name,
+    sku: p.sku,
+    oldPrice: p.governed_price,
+    newPrice: newPrice,
+    reason: reason,
+    proposedBy: state.currentRole === 'admin' ? 'Admin User' : 'Pricing Analyst',
+    status: 'pending',
+    createdAt: new Date().toLocaleDateString()
+  });
+
   closeModal('propose-price-modal');
+  saveState();
+  updateApprovalsBadge();
   showToast('Price change proposal submitted for approval', 'success');
-  logAudit('EDIT', p.sku, 'Proposed Price', '$' + p.governed_price.toFixed(2), '$' + parseFloat(newPrice).toFixed(2));
+  logAudit('EDIT', p.sku, 'Proposed Price', '$' + p.governed_price.toFixed(2), '$' + newPrice.toFixed(2));
 }
 
 function openDeleteConfirm(id) {
@@ -3149,6 +3619,15 @@ function confirmDeleteProduct() {
   logAudit('DELETE', p.sku, 'Status', 'Active', 'Inactive');
 }
 
+function updateRoleBanner() {
+  const banner = document.getElementById('role-banner');
+  const roleNames = { admin: 'Administrator', analyst: 'Pricing Analyst', viewer: 'Viewer' };
+  if (banner) {
+    banner.textContent = `Viewing as: ${roleNames[state.currentRole] || 'Unknown'}`;
+    banner.classList.add('show');
+  }
+}
+
 function switchRole(role) {
   state.currentRole = role;
   document.body.setAttribute('data-role', role);
@@ -3158,6 +3637,7 @@ function switchRole(role) {
   const roleAvatars = { admin: 'AB', analyst: 'PA', viewer: 'VW' };
   if (nameDisplay) nameDisplay.textContent = roleNames[role] || 'Admin User';
   if (avatarDisplay) avatarDisplay.textContent = roleAvatars[role] || 'AB';
+  updateRoleBanner();
   showToast('Switched to ' + (roleNames[role] || role) + ' role', 'info');
 }
 
@@ -3339,9 +3819,9 @@ function showToast(message, type = 'success') {
 }
 
 function toggleDark() {
-  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const current = document.body.getAttribute('data-theme') || 'light';
   const next = current === 'light' ? 'dark' : 'light';
-  document.documentElement.setAttribute('data-theme', next);
+  document.body.setAttribute('data-theme', next);
   localStorage.setItem('ihs-theme', next);
   const dl = document.getElementById('dark-label');
   if (dl) dl.textContent = next === 'dark' ? 'Light Mode' : 'Dark Mode';
@@ -3516,13 +3996,16 @@ document.addEventListener('DOMContentLoaded', () => {
   saveState();
 
   const theme = localStorage.getItem('ihs-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', theme);
+  document.body.setAttribute('data-theme', theme);
   const darkLabel = document.getElementById('dark-label');
   if (darkLabel) darkLabel.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
 
   // Set initial role
   document.body.setAttribute('data-role', state.currentRole || 'admin');
+  updateRoleBanner();
 
+  populateBrandFilters();
+  updateApprovalsBadge();
   renderDashboard();
   renderBrandTags();
   updateCompassSuggestions('dashboard');
