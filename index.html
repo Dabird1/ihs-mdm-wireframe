@@ -3159,12 +3159,15 @@ function renderTutorial(tabName, container) {
   const content = tutorialContent[tabName];
   if (!content) return;
 
+  // Prevent duplicate tutorials
+  if (container.querySelector(`[data-tutorial="${tabName}"]`)) return;
+
   const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
   const bgColor = isDarkMode ? 'rgba(59, 130, 246, 0.08)' : 'var(--accent-blue-light)';
   const textColor = isDarkMode ? 'var(--text-primary)' : 'var(--text-primary)';
 
   const tutorialHTML = `
-    <div style="padding:16px; background:${bgColor}; border-left:4px solid var(--accent-blue); border-radius:8px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:flex-start;">
+    <div data-tutorial="${tabName}" style="padding:16px; background:${bgColor}; border-left:4px solid var(--accent-blue); border-radius:8px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:flex-start;">
       <div style="flex:1;">
         <div style="font-size:14px; font-weight:700; color:${textColor}; margin-bottom:8px;">${content.title}</div>
         <ul style="margin:0; padding-left:20px; list-style:disc;">
