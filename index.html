@@ -1780,6 +1780,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
                 <th>SKU</th>
                 <th>Category</th>
                 <th>Brand</th>
+                <th>Manufacturer</th>
                 <th>Governed</th>
                 <th>ABC Price</th>
                 <th>QXO Price</th>
@@ -2172,6 +2173,12 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
           <select id="new-brand" class="form-input"></select>
         </div>
         <div class="form-group">
+          <label class="form-label">Manufacturer</label>
+          <select id="new-manufacturer" class="form-input">
+            <option>GAF</option><option>Owens Corning</option><option>CertainTeed</option><option>Tamko</option><option>IKO</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label class="form-label">ABC Supply Price</label>
           <input type="number" id="new-abc-price" class="form-input" placeholder="$0.00" step="0.01">
         </div>
@@ -2331,7 +2338,38 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 const state = {
   currentTab: 'dashboard',
   products: [],
-  brands: ['GAF', 'Owens Corning', 'CertainTeed', 'Tamko', 'IKO', 'Malarkey', 'Pabco', 'Atlas', 'BORAL', 'DaVinci', 'EagleView', 'Brava', 'Decra', 'Metro Roof', 'Luma', 'Pinnacle', 'Norandex', 'ABC Private Label', 'QXO Private Label', 'Heritage', 'ProLine', 'RoofTech', 'Summit', 'TrueDefinition', 'WeatherGuard'],
+  // IHS Operating Companies (25 brands organized by division and region)
+  divisions: {
+    'US': {
+      'Midwest': ['Infinity Exteriors', 'Overhead Solutions', 'Cochran Exteriors', 'Exterior Heroes', 'Parkhill Roofing', 'Werner Roofing', 'Premier Roofing'],
+      'Northeast': ['Henderson Roofing', 'GF Sprague', 'Resnick Roofing', 'High Point Roofing', 'Couto Construction', 'G. Fedale', 'Franzoso'],
+      'Mid-Atlantic': ['American Home Contractors', 'Exterior Medics', 'Skywalker Roofing'],
+      'Pacific NW': ['Valentine Roofing', 'Interstate Roofing', 'Specialty Exteriors'],
+      'Southeast': ['Altec Roofing', 'Carpenter\'s', 'Watkins Construction']
+    },
+    'Canada': {
+      'Central': ['D\'Angelo & Sons', 'Wheatland Roofing']
+    }
+  },
+  // Flattened list of all 25 IHS brands (for compatibility)
+  brands: [
+    // US - Midwest
+    'Infinity Exteriors', 'Overhead Solutions', 'Cochran Exteriors', 'Exterior Heroes', 'Parkhill Roofing', 'Werner Roofing', 'Premier Roofing',
+    // US - Northeast
+    'Henderson Roofing', 'GF Sprague', 'Resnick Roofing', 'High Point Roofing', 'Couto Construction', 'G. Fedale', 'Franzoso',
+    // US - Mid-Atlantic
+    'American Home Contractors', 'Exterior Medics', 'Skywalker Roofing',
+    // US - Pacific NW
+    'Valentine Roofing', 'Interstate Roofing', 'Specialty Exteriors',
+    // US - Southeast
+    'Altec Roofing', 'Carpenter\'s', 'Watkins Construction',
+    // Canada
+    'D\'Angelo & Sons', 'Wheatland Roofing'
+  ],
+  // Manufacturers (product attribute)
+  manufacturers: ['GAF', 'Owens Corning', 'CertainTeed', 'Tamko', 'IKO'],
+  // Distributors (pricing sources)
+  distributors: ['ABC Supply', 'QXO', 'SRS/BMCA'],
   currentRole: 'admin',
   brandFilter: 'All Brands',
   anomalies: [],
@@ -2388,6 +2426,7 @@ function generateProducts() {
         name: base.name,
         category: base.category,
         brand: state.brands[b],
+        manufacturer: state.manufacturers[Math.floor(Math.random() * state.manufacturers.length)],
         governed_price: parseFloat(govPrice.toFixed(2)),
         floor_price: parseFloat((govPrice * 0.85).toFixed(2)),
         ceiling_price: parseFloat((govPrice * 1.15).toFixed(2)),
@@ -2697,6 +2736,7 @@ function renderItemMaster() {
       <td>${p.sku}</td>
       <td>${p.category}</td>
       <td>${p.brand}</td>
+      <td>${p.manufacturer || 'N/A'}</td>
       <td>$${p.governed_price.toFixed(2)}</td>
       <td>$${p.abc_price.toFixed(2)}</td>
       <td>$${p.qxo_price.toFixed(2)}</td>
@@ -2746,7 +2786,8 @@ function showDetailPanel(product) {
     <div class="detail-section">
       <div class="detail-label" style="margin-bottom:8px; color:var(--text-secondary); font-size:11px; font-weight:700; text-transform:uppercase;">Product Info</div>
       <div class="detail-row"><span class="detail-label">SKU</span><span class="detail-value">${product.sku}</span></div>
-      <div class="detail-row"><span class="detail-label">Manufacturer</span><span class="detail-value">${product.brand}</span></div>
+      <div class="detail-row"><span class="detail-label">Brand</span><span class="detail-value">${product.brand}</span></div>
+      <div class="detail-row"><span class="detail-label">Manufacturer</span><span class="detail-value">${product.manufacturer || 'N/A'}</span></div>
       <div class="detail-row"><span class="detail-label">Category</span><span class="detail-value">${product.category}</span></div>
     </div>
     <div class="detail-section">
@@ -3974,18 +4015,19 @@ function saveNewSKU() {
   const name = document.getElementById('new-product-name').value;
   const category = document.getElementById('new-category').value;
   const brand = document.getElementById('new-brand').value;
+  const manufacturer = document.getElementById('new-manufacturer').value;
   const abc = parseFloat(document.getElementById('new-abc-price').value) || 0;
   const qxo = parseFloat(document.getElementById('new-qxo-price').value) || 0;
   const srs = parseFloat(document.getElementById('new-srs-price').value) || 0;
 
-  if (!sku || !name || !brand) {
+  if (!sku || !name || !brand || !manufacturer) {
     showToast('Please fill all required fields', 'error');
     return;
   }
 
   const newProduct = {
     id: state.products.length,
-    sku, name, category, brand,
+    sku, name, category, brand, manufacturer,
     governed_price: (abc + qxo + srs) / 3,
     floor_price: Math.min(abc, qxo, srs) * 0.85,
     ceiling_price: Math.max(abc, qxo, srs) * 1.15,
