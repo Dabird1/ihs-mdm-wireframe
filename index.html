@@ -207,7 +207,7 @@ body {
   top: 50%;
   transform: translateY(-50%);
   margin-left: 12px;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0,0,0,0.9);
   color: white;
   padding: 8px 12px;
   border-radius: 6px;
@@ -216,6 +216,34 @@ body {
   z-index: 1000;
   pointer-events: none;
   font-weight: 500;
+  opacity: 0;
+  animation: fadeInTooltip 0.15s ease forwards;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+@keyframes fadeInTooltip {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+.nav-item:hover::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 4px 4px 4px 0;
+  border-color: transparent rgba(0,0,0,0.9) transparent transparent;
+  margin-right: 0;
 }
 
 .nav-item.active {
@@ -1513,16 +1541,22 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   font-size: 13px;
   line-height: 1.5;
   word-wrap: break-word;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  align-self: flex-start;
+  background: var(--accent-blue);
+  color: white;
+  align-self: flex-end;
   max-width: 85%;
+  margin-left: auto;
+  margin-bottom: 4px;
 }
 
 .message-item.assistant {
   align-self: flex-start;
-  background: var(--accent-blue-light);
+  background: var(--bg-secondary);
   color: var(--text-primary);
+  margin-left: 0;
+  margin-right: auto;
+  border-left: 3px solid var(--accent-blue);
+  max-width: 85%;
 }
 
 .compass-input-area {
@@ -2657,6 +2691,95 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   </div>
 </div>
 
+<!-- SYSTEM MODAL -->
+<div id="system-modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="system-modal-title">Add System</div>
+      <button class="modal-close" onclick="closeModal('system-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">System Name</label>
+          <input type="text" id="system-name" class="form-input" placeholder="e.g., System Plus">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Manufacturer</label>
+          <select id="system-mfg" class="form-input">
+            <option value="">Select...</option>
+            <option>GAF</option>
+            <option>Owens Corning</option>
+            <option>CertainTeed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tier</label>
+          <select id="system-tier" class="form-input">
+            <option value="Good">Good</option>
+            <option value="Better">Better</option>
+            <option value="Best">Best</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Warranty (years)</label>
+          <input type="number" id="system-warranty" class="form-input" placeholder="e.g., 20" min="1">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('system-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSystem()">Save System</button>
+    </div>
+  </div>
+</div>
+
+<!-- LABOR RATE MODAL -->
+<div id="labor-rate-modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add Labor Rate</div>
+      <button class="modal-close" onclick="closeModal('labor-rate-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Service Line</label>
+          <input type="text" id="labor-service-line" class="form-input" placeholder="e.g., Roofing (steep slope)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Market</label>
+          <input type="text" id="labor-market" class="form-input" placeholder="e.g., Midwest">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Trade</label>
+          <input type="text" id="labor-trade" class="form-input" placeholder="e.g., Lead Installer">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Job Type</label>
+          <input type="text" id="labor-job-type" class="form-input" placeholder="e.g., Residential">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Base Rate ($/hr)</label>
+          <input type="number" id="labor-base-rate" class="form-input" placeholder="$0.00" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Complexity Multiplier</label>
+          <input type="number" id="labor-complexity" class="form-input" placeholder="1.0" step="0.01" min="0.5" max="2.0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">OT Rate ($/hr)</label>
+          <input type="number" id="labor-ot-rate" class="form-input" placeholder="$0.00" step="0.01" min="0">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('labor-rate-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLaborRate()">Add Rate</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST CONTAINER -->
 <div id="toast-container" class="toast-container"></div>
 
@@ -2851,6 +2974,7 @@ function switchTab(tabName, navItem) {
     const pills = document.querySelectorAll('#tab-reports .tab-pill');
     pills.forEach(p => p.classList.remove('active'));
     if (pills[0]) pills[0].classList.add('active');
+    renderReports();
   }
   else if (tabName === 'price-sheet') renderPriceSheetInit();
   else if (tabName === 'brand-dashboard') {
@@ -2864,8 +2988,14 @@ function switchTab(tabName, navItem) {
         sel.appendChild(opt);
       });
     }
+    // Auto-load first brand
+    const currentBrand = sel && sel.value ? sel.value : 'Infinity Exteriors';
+    sel.value = currentBrand;
+    renderBrandDashboard(currentBrand);
   }
   else if (tabName === 'audit-log') renderAuditLog();
+  else if (tabName === 'settings') renderSettings();
+  else if (tabName === 'compass') renderCompass();
 }
 
 function updateApprovalsBadge() {
@@ -2924,8 +3054,166 @@ function updatePageHeader(tabName) {
   if (subtitleEl) subtitleEl.textContent = info.subtitle;
 }
 
+function renderTutorial(tabName, container) {
+  const storageKey = `tutorial-dismissed-${tabName}`;
+  if (localStorage.getItem(storageKey) === 'true') {
+    return;
+  }
+
+  const tutorialContent = {
+    dashboard: {
+      title: 'Getting Started with Dashboard',
+      points: [
+        'View your executive KPI summary',
+        'Click any KPI card to drill into that section',
+        'Filter by brand using the dropdown',
+        'Monitor anomalies and recent activity'
+      ]
+    },
+    'item-master': {
+      title: 'Getting Started with Item Master',
+      points: [
+        'Browse all governed product SKUs',
+        'Click any row to view details',
+        'Use search and filters to narrow results',
+        'Sort by clicking column headers'
+      ]
+    },
+    systems: {
+      title: 'Getting Started with Systems & Assemblies',
+      points: [
+        'Define roofing systems by manufacturer and tier (Good/Better/Best)',
+        'Each system is a complete BOM template',
+        'Expand any system to view components',
+        'Admin users can edit, clone, or add new systems'
+      ]
+    },
+    labor: {
+      title: 'Getting Started with Labor Management',
+      points: [
+        'Manage labor rates by service line, market, and trade',
+        'Filter to find specific rates',
+        'Admin users can add or edit rates',
+        'Rates are benchmarked against Xactimate'
+      ]
+    },
+    'price-sheet': {
+      title: 'Getting Started with Brand Price Sheet',
+      points: [
+        'Compare distributor pricing across brands',
+        'Click a brand card to see their full price list',
+        'Export pricing data for analysis'
+      ]
+    },
+    'brand-dashboard': {
+      title: 'Getting Started with Brand Dashboard',
+      points: [
+        'Select a brand to view their performance dashboard',
+        'See KPIs, pricing trends, anomaly summary, and product breakdown',
+        'Review distributor pricing comparisons',
+        'Filter by time period for temporal analysis'
+      ]
+    },
+    anomaly: {
+      title: 'Getting Started with Anomaly Dashboard',
+      points: [
+        'Review pricing anomalies detected across brands',
+        'Filter by severity',
+        'Click any anomaly card for details',
+        'Admin users can resolve anomalies'
+      ]
+    },
+    'audit-log': {
+      title: 'Getting Started with Audit Log',
+      points: [
+        'Track all system changes and user actions',
+        'Export the log for compliance reporting',
+        'Filter by user, action, or date range',
+        'Review detailed change history'
+      ]
+    },
+    reports: {
+      title: 'Getting Started with MyDrill',
+      points: [
+        'Build custom reports by dragging fields into the canvas',
+        'Choose a chart type, then click Run Report',
+        'Use Quick Start templates for common analyses',
+        'Query the Data Warehouse with SQL'
+      ]
+    },
+    compass: {
+      title: 'Getting Started with Compass AI',
+      points: [
+        'Ask questions about your data in natural language',
+        'Compass analyzes pricing, anomalies, and brand performance',
+        'Try the suggested questions or type your own',
+        'Export insights for presentations'
+      ]
+    },
+    settings: {
+      title: 'Getting Started with Rules & Thresholds',
+      points: [
+        'Configure governance rules — GM% thresholds and tolerance bands',
+        'Set up notification settings and approval workflows',
+        'Manage brands and monitor distributor sync status',
+        'Changes take effect immediately'
+      ]
+    }
+  };
+
+  const content = tutorialContent[tabName];
+  if (!content) return;
+
+  const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+  const bgColor = isDarkMode ? 'rgba(59, 130, 246, 0.08)' : 'var(--accent-blue-light)';
+  const textColor = isDarkMode ? 'var(--text-primary)' : 'var(--text-primary)';
+
+  const tutorialHTML = `
+    <div style="padding:16px; background:${bgColor}; border-left:4px solid var(--accent-blue); border-radius:8px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="flex:1;">
+        <div style="font-size:14px; font-weight:700; color:${textColor}; margin-bottom:8px;">${content.title}</div>
+        <ul style="margin:0; padding-left:20px; list-style:disc;">
+          ${content.points.map(p => `<li style="font-size:13px; color:var(--text-secondary); margin-bottom:4px; line-height:1.4;">${p}</li>`).join('')}
+        </ul>
+      </div>
+      <button class="btn btn-sm btn-secondary" onclick="dismissTutorial('${tabName}')" style="margin-left:16px; flex-shrink:0;">Got it, dismiss</button>
+    </div>
+  `;
+
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = tutorialHTML;
+  container.insertBefore(tempDiv.firstElementChild, container.firstChild);
+}
+
+function dismissTutorial(tabName) {
+  const storageKey = `tutorial-dismissed-${tabName}`;
+  localStorage.setItem(storageKey, 'true');
+  const tutorial = document.querySelector(`[data-tutorial="${tabName}"]`);
+  if (tutorial) {
+    tutorial.parentElement.removeChild(tutorial);
+  } else {
+    location.reload();
+  }
+}
+
+function loadBrandDashboard(brandName) {
+  const selector = document.getElementById('brand-dash-selector');
+  const navItem = document.querySelectorAll('.nav-item')[5];
+  switchTab('brand-dashboard', navItem);
+  setTimeout(() => {
+    if (selector) {
+      selector.value = brandName;
+      renderBrandDashboard(brandName);
+    }
+  }, 50);
+}
+
 function renderDashboard() {
   const kpiGrid = document.getElementById('kpi-grid');
+  const contentArea = kpiGrid.parentElement;
+
+  // Render tutorial if not dismissed
+  renderTutorial('dashboard', contentArea);
 
   // Filter products and anomalies by selected brand
   let filteredProducts = state.products;
@@ -2940,19 +3228,19 @@ function renderDashboard() {
   const brandsCount = new Set(filteredProducts.map(p => p.brand)).size;
 
   kpiGrid.innerHTML = `
-    <div class="stat-card clickable" onclick="switchTab('item-master', document.querySelector('[onclick*=item-master]'))">
+    <div class="stat-card clickable" onclick="switchTab('item-master', document.querySelectorAll('.nav-item')[1])">
       <div class="stat-value">${filteredProducts.length}</div>
       <div class="stat-label">Total SKUs Governed</div>
     </div>
-    <div class="stat-card red clickable" onclick="switchTab('anomaly', document.querySelector('[onclick*=anomaly]'))">
+    <div class="stat-card red clickable" onclick="switchTab('anomaly', document.querySelectorAll('.nav-item')[6])">
       <div class="stat-value">${activeAnomalies}</div>
       <div class="stat-label">Active Anomalies</div>
     </div>
-    <div class="stat-card green clickable" onclick="switchTab('price-sheet', document.querySelector('[onclick*=price-sheet]'))">
+    <div class="stat-card green clickable" onclick="switchTab('price-sheet', document.querySelectorAll('.nav-item')[4])">
       <div class="stat-value">${avgGM}%</div>
       <div class="stat-label">Avg Gross Margin</div>
     </div>
-    <div class="stat-card amber clickable" onclick="switchTab('price-sheet', document.querySelector('[onclick*=price-sheet]'))">
+    <div class="stat-card amber clickable" onclick="switchTab('brand-dashboard', document.querySelectorAll('.nav-item')[5])">
       <div class="stat-value">${brandsCount}</div>
       <div class="stat-label">Brands Covered</div>
     </div>
@@ -2973,7 +3261,7 @@ function renderDashboard() {
   brandCounts.forEach(c => {
     const pct = (c.count / maxVal * 100);
     barChart += `
-      <div class="bar-row">
+      <div class="bar-row" style="cursor:pointer;" onclick="loadBrandDashboard('${c.brand}')">
         <div class="bar-label">${c.brand}</div>
         <div class="bar-container"><div class="bar-fill" style="width:${pct}%; background:var(--gradient-red);"></div></div>
         <div class="bar-value">${c.count}</div>
@@ -2988,7 +3276,7 @@ function renderDashboard() {
   const topAnoms = filteredAnomalies.filter(a => a.status === 'active').sort((a, b) => b.variance - a.variance).slice(0, 5);
   let anomsHtml = '<div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Product</th><th>Brand</th><th>Variance</th><th>Action</th></tr></thead><tbody>';
   topAnoms.forEach(a => {
-    anomsHtml += `<tr><td>${a.product_name}</td><td>${a.brand}</td><td><strong>${a.variance.toFixed(1)}%</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchTab('anomaly', document.querySelector('[onclick*=switchTab][onclick*=anomaly]'))">View</button></td></tr>`;
+    anomsHtml += `<tr><td>${a.product_name}</td><td>${a.brand}</td><td><strong>${a.variance.toFixed(1)}%</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchTab('anomaly', document.querySelectorAll('.nav-item')[6])">View</button></td></tr>`;
   });
   anomsHtml += '</tbody></table></div>';
   const anomDiv = document.getElementById('dash-top-anomalies');
@@ -3035,10 +3323,19 @@ function renderDashboard() {
 }
 
 let itemPage = 1;
-const ITEMS_PER_PAGE = 50;
+let itemSortColumn = 'name';
+let itemSortDirection = 'asc';
+const ITEMS_PER_PAGE = 15;
 
 function renderItemMaster() {
   const tbody = document.getElementById('item-tbody');
+  const tabPanel = document.getElementById('tab-item-master');
+
+  // Render tutorial if not dismissed
+  if (tabPanel) {
+    renderTutorial('item-master', tabPanel);
+  }
+
   tbody.innerHTML = '';
 
   // Update progress bar
@@ -3050,7 +3347,11 @@ function renderItemMaster() {
   if (pFill) pFill.style.width = pctVal + '%';
   if (pPct) pPct.textContent = pctVal + '%';
 
-  const filtered = getFilteredProducts();
+  let filtered = getFilteredProducts();
+
+  // Sort filtered products
+  filtered = sortProducts(filtered, itemSortColumn, itemSortDirection);
+
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   if (itemPage > totalPages) itemPage = totalPages || 1;
   const start = (itemPage - 1) * ITEMS_PER_PAGE;
@@ -3062,7 +3363,12 @@ function renderItemMaster() {
   pageProducts.forEach(p => {
     const trend = trends[Math.floor(Math.random() * 3)];
     const row = document.createElement('tr');
+    row.style.cursor = 'pointer';
     row.onclick = () => showDetailPanel(p);
+
+    const gmColor = p.gm_pct >= 30 ? 'var(--accent-green)' : p.gm_pct >= 20 ? 'var(--accent-amber)' : 'var(--accent-red)';
+    const statusBadgeClass = p.status === 'Active' ? 'badge-green' : p.status === 'Pending' ? 'badge-amber' : 'badge-gray';
+
     row.innerHTML = `
       <td>${p.name}</td>
       <td>${p.sku}</td>
@@ -3073,26 +3379,73 @@ function renderItemMaster() {
       <td>$${p.abc_price.toFixed(2)}</td>
       <td>$${p.qxo_price.toFixed(2)}</td>
       <td>$${p.srs_price.toFixed(2)}</td>
-      <td><strong>${p.gm_pct}%</strong> <span style="color:${trendColors[trend]}; font-size:12px;">${trend}</span></td>
-      <td><span class="badge ${p.status === 'Active' ? 'badge-green' : 'badge-gray'}">${p.status}</span></td>
+      <td><strong style="color:${gmColor};">${p.gm_pct}%</strong> <span style="color:${trendColors[trend]}; font-size:12px;">${trend}</span></td>
+      <td><span class="badge ${statusBadgeClass}">${p.status}</span></td>
     `;
     tbody.appendChild(row);
   });
+
+  // Update column headers with sort indicators
+  updateSortHeaders();
 
   // Pagination
   const pagDiv = document.getElementById('item-pagination');
   if (pagDiv) {
     pagDiv.innerHTML = `
-      <span>Showing ${start + 1}–${Math.min(start + ITEMS_PER_PAGE, filtered.length)} of ${filtered.length} products</span>
+      <span style="font-size:13px; font-weight:600; color:var(--text-secondary);">Showing ${start + 1}–${Math.min(start + ITEMS_PER_PAGE, filtered.length)} of ${filtered.length} products</span>
       <div class="pagination-controls">
         <button class="pagination-btn" onclick="itemPage=1; renderItemMaster()" ${itemPage === 1 ? 'disabled' : ''}>First</button>
         <button class="pagination-btn" onclick="itemPage--; renderItemMaster()" ${itemPage === 1 ? 'disabled' : ''}>← Prev</button>
-        <span style="padding:0 8px; font-weight:600;">Page ${itemPage} of ${totalPages}</span>
+        <span style="padding:0 12px; font-weight:700; font-size:13px;">Page ${itemPage} of ${totalPages}</span>
         <button class="pagination-btn" onclick="itemPage++; renderItemMaster()" ${itemPage >= totalPages ? 'disabled' : ''}>Next →</button>
         <button class="pagination-btn" onclick="itemPage=${totalPages}; renderItemMaster()" ${itemPage >= totalPages ? 'disabled' : ''}>Last</button>
       </div>
     `;
   }
+}
+
+function sortProducts(products, column, direction) {
+  const sorted = [...products];
+  sorted.sort((a, b) => {
+    let aVal = a[column];
+    let bVal = b[column];
+    if (typeof aVal === 'string') {
+      aVal = aVal.toLowerCase();
+      bVal = bVal.toLowerCase();
+    }
+    if (aVal < bVal) return direction === 'asc' ? -1 : 1;
+    if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+  return sorted;
+}
+
+function sortItemsByColumn(column) {
+  if (itemSortColumn === column) {
+    itemSortDirection = itemSortDirection === 'asc' ? 'desc' : 'asc';
+  } else {
+    itemSortColumn = column;
+    itemSortDirection = 'asc';
+  }
+  itemPage = 1;
+  renderItemMaster();
+}
+
+function updateSortHeaders() {
+  const headers = document.querySelectorAll('#item-table thead th');
+  const colMap = { 0: 'name', 1: 'sku', 2: 'category', 3: 'brand', 4: 'manufacturer', 5: 'governed_price', 6: 'abc_price', 7: 'qxo_price', 8: 'srs_price', 9: 'gm_pct', 10: 'status' };
+
+  headers.forEach((h, idx) => {
+    h.style.cursor = 'pointer';
+    h.style.userSelect = 'none';
+    const col = colMap[idx];
+    if (col) {
+      h.onclick = () => sortItemsByColumn(col);
+      const baseText = h.textContent.replace(/\s+[▲▼]/g, '');
+      const indicator = itemSortColumn === col ? (itemSortDirection === 'asc' ? ' ▲' : ' ▼') : '';
+      h.textContent = baseText + indicator;
+    }
+  });
 }
 
 function getFilteredProducts() {
@@ -3114,6 +3467,21 @@ function showDetailPanel(product) {
   const content = document.getElementById('detail-content');
 
   title.textContent = product.name;
+
+  const gmColor = product.gm_pct >= 30 ? 'var(--accent-green)' : product.gm_pct >= 20 ? 'var(--accent-amber)' : 'var(--accent-red)';
+  const gmLabel = product.gm_pct >= 30 ? 'Healthy' : product.gm_pct >= 20 ? 'Warning' : 'Critical';
+
+  const varianceTolerance = state.settings?.varianceTolerance || 5;
+  const abcVariance = Math.abs((product.abc_price - product.governed_price) / product.governed_price * 100);
+  const qxoVariance = Math.abs((product.qxo_price - product.governed_price) / product.governed_price * 100);
+  const srsVariance = Math.abs((product.srs_price - product.governed_price) / product.governed_price * 100);
+
+  const abcStatus = abcVariance <= varianceTolerance ? 'var(--accent-green)' : 'var(--accent-red)';
+  const qxoStatus = qxoVariance <= varianceTolerance ? 'var(--accent-green)' : 'var(--accent-red)';
+  const srsStatus = srsVariance <= varianceTolerance ? 'var(--accent-green)' : 'var(--accent-red)';
+
+  const statusBadgeClass = product.status === 'Active' ? 'badge-green' : product.status === 'Pending' ? 'badge-amber' : 'badge-gray';
+
   content.innerHTML = `
     <div class="detail-section">
       <div class="detail-label" style="margin-bottom:8px; color:var(--text-secondary); font-size:11px; font-weight:700; text-transform:uppercase;">Product Info</div>
@@ -3121,23 +3489,73 @@ function showDetailPanel(product) {
       <div class="detail-row"><span class="detail-label">Brand</span><span class="detail-value">${product.brand}</span></div>
       <div class="detail-row"><span class="detail-label">Manufacturer</span><span class="detail-value">${product.manufacturer || 'N/A'}</span></div>
       <div class="detail-row"><span class="detail-label">Category</span><span class="detail-value">${product.category}</span></div>
+      <div class="detail-row"><span class="detail-label">Status</span><span class="badge ${statusBadgeClass}">${product.status}</span></div>
     </div>
+
     <div class="detail-section">
-      <div class="detail-label" style="margin-bottom:8px; color:var(--text-secondary); font-size:11px; font-weight:700; text-transform:uppercase;">Pricing</div>
-      <div class="detail-row"><span class="detail-label">Governed</span><span class="detail-value">$${product.governed_price.toFixed(2)}</span></div>
-      <div class="detail-row"><span class="detail-label">Floor</span><span class="detail-value">$${product.floor_price.toFixed(2)}</span></div>
-      <div class="detail-row"><span class="detail-label">Ceiling</span><span class="detail-value">$${product.ceiling_price.toFixed(2)}</span></div>
+      <div class="detail-label" style="margin-bottom:8px; color:var(--text-secondary); font-size:11px; font-weight:700; text-transform:uppercase;">Governed Price & Range</div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:24px; font-weight:800; color:var(--text-primary); margin-bottom:4px;">$${product.governed_price.toFixed(2)}</div>
+        <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+          <span style="color:var(--text-secondary);">Range:</span>
+          <span style="color:var(--accent-green);">Floor $${product.floor_price.toFixed(2)}</span>
+          <span style="color:var(--text-tertiary);">—</span>
+          <span style="color:var(--accent-red);">Ceiling $${product.ceiling_price.toFixed(2)}</span>
+        </div>
+      </div>
     </div>
+
     <div class="detail-section">
-      <div class="detail-label" style="margin-bottom:8px; color:var(--text-secondary); font-size:11px; font-weight:700; text-transform:uppercase;">Distributor Costs</div>
-      <div class="detail-row"><span class="detail-label">ABC Supply</span><span class="detail-value">$${product.abc_price.toFixed(2)}</span></div>
-      <div class="detail-row"><span class="detail-label">QXO</span><span class="detail-value">$${product.qxo_price.toFixed(2)}</span></div>
-      <div class="detail-row"><span class="detail-label">SRS/BMCA</span><span class="detail-value">$${product.srs_price.toFixed(2)}</span></div>
+      <div class="detail-label" style="margin-bottom:12px; color:var(--text-secondary); font-size:11px; font-weight:700; text-transform:uppercase;">Distributor Costs & Variance</div>
+      <div style="margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--bg-secondary); border-radius:6px; margin-bottom:8px;">
+          <div>
+            <div style="font-size:12px; font-weight:700; color:var(--text-primary); margin-bottom:2px;">ABC Supply</div>
+            <div style="font-size:13px; font-weight:600;">$${product.abc_price.toFixed(2)}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px; color:${abcStatus}; font-weight:700;">${abcVariance.toFixed(1)}% <span style="font-size:10px;">${abcVariance <= varianceTolerance ? '✓' : '⚠'}</span></div>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--bg-secondary); border-radius:6px; margin-bottom:8px;">
+          <div>
+            <div style="font-size:12px; font-weight:700; color:var(--text-primary); margin-bottom:2px;">QXO</div>
+            <div style="font-size:13px; font-weight:600;">$${product.qxo_price.toFixed(2)}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px; color:${qxoStatus}; font-weight:700;">${qxoVariance.toFixed(1)}% <span style="font-size:10px;">${qxoVariance <= varianceTolerance ? '✓' : '⚠'}</span></div>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--bg-secondary); border-radius:6px;">
+          <div>
+            <div style="font-size:12px; font-weight:700; color:var(--text-primary); margin-bottom:2px;">SRS/BMCA</div>
+            <div style="font-size:13px; font-weight:600;">$${product.srs_price.toFixed(2)}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px; color:${srsStatus}; font-weight:700;">${srsVariance.toFixed(1)}% <span style="font-size:10px;">${srsVariance <= varianceTolerance ? '✓' : '⚠'}</span></div>
+          </div>
+        </div>
+      </div>
     </div>
+
     <div class="detail-section">
-      <div class="detail-row"><span class="detail-label">GM%</span><span class="detail-value">${product.gm_pct}%</span></div>
+      <div class="detail-label" style="margin-bottom:8px; color:var(--text-secondary); font-size:11px; font-weight:700; text-transform:uppercase;">Gross Margin</div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div>
+          <div style="font-size:28px; font-weight:800; color:${gmColor};">${product.gm_pct}%</div>
+          <div style="font-size:11px; color:var(--text-secondary); font-weight:700; text-transform:uppercase;">${gmLabel}</div>
+        </div>
+        <div style="flex:1; height:60px; background:var(--bg-secondary); border-radius:6px; overflow:hidden;">
+          <div style="height:100%; width:${Math.min(product.gm_pct, 60)}%; background:${gmColor}; transition:width 0.3s;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label" style="margin-bottom:8px; color:var(--text-secondary); font-size:11px; font-weight:700; text-transform:uppercase;">Metadata</div>
       <div class="detail-row"><span class="detail-label">Last Updated</span><span class="detail-value">${product.last_updated}</span></div>
     </div>
+
     <div class="detail-actions" style="flex-wrap:wrap;">
       <button class="btn btn-primary role-admin-only" onclick="openEditProductModal(${product.id})">Edit Product</button>
       <button class="btn btn-secondary" onclick="openProposePriceModal(${product.id})">Propose Price Change</button>
@@ -3242,6 +3660,11 @@ function rejectApproval(approvalId) {
 }
 
 function renderAnomalyDashboard() {
+  const tabPanel = document.getElementById('tab-anomaly');
+  if (tabPanel) {
+    renderTutorial('anomaly', tabPanel);
+  }
+
   let allAnomalies = state.anomalies;
   if (state.brandFilter !== 'All Brands') {
     allAnomalies = state.anomalies.filter(a => a.brand === state.brandFilter);
@@ -3368,12 +3791,17 @@ function runNewScan() {
 }
 
 function renderBrandDashboard(brand) {
+  const tabPanel = document.getElementById('tab-brand-dashboard');
+  if (tabPanel) {
+    renderTutorial('brand-dashboard', tabPanel);
+  }
+
   const content = document.getElementById('brand-dash-content');
   if (!brand) {
     content.innerHTML = `<div style="text-align:center; padding:80px 20px; color:var(--text-tertiary);">
       <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom:12px; opacity:0.5;"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
       <div style="font-size:16px; font-weight:600; margin-bottom:4px;">Select a brand to view their dashboard</div>
-      <div style="font-size:13px;">Choose a brand from the dropdown above</div>
+      <div style="font-size:13px;">Choose a brand from the dropdown above or click a tile below</div>
     </div>`;
     return;
   }
@@ -3432,7 +3860,36 @@ function renderBrandDashboard(brand) {
     return prod && prod.brand === brand;
   });
 
+  // Build brand tiles grid
+  const divisionMap = {};
+  Object.entries(state.divisions).forEach(([division, regions]) => {
+    Object.entries(regions).forEach(([region, brands]) => {
+      brands.forEach(b => {
+        divisionMap[b] = { division, region };
+      });
+    });
+  });
+
+  const brandTiles = state.brands.map(b => {
+    const location = divisionMap[b] || { division: 'US', region: 'Unknown' };
+    const isSelected = b === brand;
+    const borderColor = isSelected ? 'var(--accent-blue)' : 'var(--border-primary)';
+    const bgColor = isSelected ? 'var(--accent-blue-light)' : 'var(--bg-card)';
+    return `<div style="padding:12px; border:2px solid ${borderColor}; border-radius:8px; background:${bgColor}; cursor:pointer; transition:all 0.2s;" onclick="renderBrandDashboard('${b}'); document.getElementById('brand-dash-selector').value='${b}';" onmouseover="this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.boxShadow='none'">
+      <div style="font-size:13px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">${b}</div>
+      <div style="font-size:11px; color:var(--text-secondary);">${location.region}, ${location.division}</div>
+    </div>`;
+  }).join('');
+
   content.innerHTML = `
+    <!-- Brand Tiles Grid -->
+    <div style="margin-bottom:20px;">
+      <div style="font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; margin-bottom:12px; letter-spacing:0.05em;">Select a Brand</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:10px;">
+        ${brandTiles}
+      </div>
+    </div>
+
     <!-- Brand Header -->
     <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
       <h2 style="font-size:22px; font-weight:800; color:var(--text-primary); margin:0;">${brand}</h2>
@@ -3598,7 +4055,33 @@ function exportBrandDashboard() {
   showToast('Brand dashboard exported', 'success');
 }
 
+function renderSettings() {
+  const tabPanel = document.getElementById('tab-settings');
+  if (tabPanel) {
+    renderTutorial('settings', tabPanel);
+  }
+}
+
+function renderReports() {
+  const tabPanel = document.getElementById('tab-reports');
+  if (tabPanel) {
+    renderTutorial('reports', tabPanel);
+  }
+}
+
+function renderCompass() {
+  const tabPanel = document.getElementById('tab-compass');
+  if (tabPanel) {
+    renderTutorial('compass', tabPanel);
+  }
+}
+
 function renderPriceSheetInit() {
+  const tabPanel = document.getElementById('tab-price-sheet');
+  if (tabPanel) {
+    renderTutorial('price-sheet', tabPanel);
+  }
+
   const content = document.getElementById('price-sheet-content');
   const search = document.getElementById('brand-search');
   const backBtn = document.getElementById('back-to-brands');
@@ -3933,10 +4416,34 @@ function loadReportTemplate(template) {
   if (!rows || !cols || !filters) return;
 
   const templates = {
-    'overcharges': { rows: ['Brand', 'Product'], cols: ['Variance'], filters: ['Distributor'] },
-    'gm-trend': { rows: ['Category'], cols: ['GM%', 'Date Range'], filters: [] },
-    'distributor': { rows: ['Distributor'], cols: ['Brand', 'Price Type'], filters: ['Category'] },
-    'heatmap': { rows: ['Brand'], cols: ['Category', 'Variance'], filters: [] }
+    'overcharges': {
+      rows: ['Brand'],
+      cols: ['Variance'],
+      filters: ['Distributor'],
+      chartType: 'bar',
+      name: 'Top Overcharges by Brand'
+    },
+    'gm-trend': {
+      rows: ['Category'],
+      cols: ['GM%'],
+      filters: [],
+      chartType: 'bar',
+      name: 'GM% Trend by Category'
+    },
+    'distributor': {
+      rows: ['Distributor'],
+      cols: ['Price Type'],
+      filters: [],
+      chartType: 'table',
+      name: 'Distributor Cost Comparison'
+    },
+    'heatmap': {
+      rows: ['Brand'],
+      cols: ['Category'],
+      filters: [],
+      chartType: 'heatmap',
+      name: 'Price Variance Heatmap'
+    }
   };
   const t = templates[template];
   if (!t) return;
@@ -3946,10 +4453,29 @@ function loadReportTemplate(template) {
     if (chips.length) {
       canvas.classList.add('has-items');
       chips.forEach(c => {
-        const chip = document.createElement('div');
-        chip.className = 'chip';
-        chip.textContent = c;
-        canvas.appendChild(chip);
+        const chipEl = document.createElement('div');
+        chipEl.className = 'chip';
+        chipEl.style.display = 'inline-flex';
+        chipEl.style.alignItems = 'center';
+        chipEl.style.gap = '6px';
+        const span = document.createElement('span');
+        span.textContent = c;
+        const xBtn = document.createElement('span');
+        xBtn.textContent = '×';
+        xBtn.style.cursor = 'pointer';
+        xBtn.style.fontSize = '16px';
+        xBtn.style.marginLeft = '2px';
+        xBtn.onclick = (e) => {
+          e.stopPropagation();
+          chipEl.remove();
+          if (canvas.querySelectorAll('.chip').length === 0) {
+            canvas.classList.remove('has-items');
+            canvas.textContent = 'Drop fields here';
+          }
+        };
+        chipEl.appendChild(span);
+        chipEl.appendChild(xBtn);
+        canvas.appendChild(chipEl);
       });
     } else {
       canvas.classList.remove('has-items');
@@ -3959,42 +4485,141 @@ function loadReportTemplate(template) {
   fillCanvas(rows, t.rows);
   fillCanvas(cols, t.cols);
   fillCanvas(filters, t.filters);
-  showToast('Template loaded: ' + template, 'info');
+
+  // Auto-select chart type
+  const chartRadios = document.querySelectorAll('input[name="chart-type"]');
+  chartRadios.forEach(r => {
+    if (r.value === t.chartType) r.checked = true;
+  });
+
+  // Auto-run report
+  setTimeout(() => {
+    runReport();
+    showToast('Template loaded: ' + t.name, 'success');
+  }, 100);
 }
 
 function runReport() {
   const output = document.getElementById('report-output');
   if (!output) return;
   const chartType = document.querySelector('input[name="chart-type"]:checked')?.value || 'table';
+  const rowsCanvas = document.getElementById('rows-canvas');
+  const colsCanvas = document.getElementById('cols-canvas');
 
-  // Generate sample data based on available products
-  const brands = [...new Set(state.products.map(p => p.brand))].slice(0, 8);
+  // Get selected fields
+  const rowFields = Array.from(rowsCanvas?.querySelectorAll('.chip span') || []).map(s => s.textContent);
+  const colFields = Array.from(colsCanvas?.querySelectorAll('.chip span') || []).map(s => s.textContent);
+
   let html = '<div class="report-output-card">';
   html += '<div class="report-output-header"><span>Report Results</span><span style="font-size:11px; color:var(--text-tertiary);">Generated ' + new Date().toLocaleString() + '</span></div>';
 
   if (chartType === 'table' || chartType === 'pivot') {
-    html += '<div style="padding:0;"><div class="table-wrapper"><table><thead><tr><th>Brand</th><th>SKUs</th><th>Avg GM%</th><th>Avg ABC</th><th>Avg QXO</th><th>Avg SRS</th><th>Anomalies</th></tr></thead><tbody>';
-    brands.forEach(b => {
-      const prods = state.products.filter(p => p.brand === b);
-      const avgGM = prods.length ? (prods.reduce((s, p) => s + p.gm_pct, 0) / prods.length).toFixed(1) : 0;
-      const avgABC = prods.length ? (prods.reduce((s, p) => s + p.abc_price, 0) / prods.length).toFixed(2) : 0;
-      const avgQXO = prods.length ? (prods.reduce((s, p) => s + p.qxo_price, 0) / prods.length).toFixed(2) : 0;
-      const avgSRS = prods.length ? (prods.reduce((s, p) => s + p.srs_price, 0) / prods.length).toFixed(2) : 0;
-      const anomCount = state.anomalies.filter(a => a.brand === b && a.status === 'active').length;
-      html += `<tr><td style="font-weight:600;">${b}</td><td>${prods.length}</td><td>${avgGM}%</td><td>$${avgABC}</td><td>$${avgQXO}</td><td>$${avgSRS}</td><td>${anomCount}</td></tr>`;
+    // Build table based on row/col fields
+    let headers = rowFields.length ? rowFields : ['Brand'];
+    headers = headers.concat(colFields.length ? colFields : ['Value']);
+
+    html += '<div style="padding:0;"><div class="table-wrapper"><table><thead><tr>';
+    headers.forEach(h => html += `<th>${h}</th>`);
+    html += '</tr></thead><tbody>';
+
+    // Get unique row values
+    let rowValues = [];
+    if (headers[0] === 'Brand') {
+      rowValues = [...new Set(state.products.map(p => p.brand))].slice(0, 10);
+    } else if (headers[0] === 'Category') {
+      rowValues = [...new Set(state.products.map(p => p.category))];
+    } else if (headers[0] === 'Distributor') {
+      rowValues = state.distributors;
+    } else if (headers[0] === 'Product') {
+      rowValues = [...new Set(state.products.map(p => p.name))].slice(0, 8);
+    }
+
+    rowValues.forEach(rv => {
+      html += '<tr><td style="font-weight:600;">' + rv + '</td>';
+      const filtered = state.products.filter(p => {
+        if (headers[0] === 'Brand') return p.brand === rv;
+        if (headers[0] === 'Category') return p.category === rv;
+        if (headers[0] === 'Product') return p.name === rv;
+        return true;
+      });
+
+      headers.slice(1).forEach(h => {
+        let value = '—';
+        if (h === 'Variance') {
+          const variances = filtered.map(p => Math.abs(p.abc_price - p.governed_price) / p.governed_price * 100);
+          value = variances.length ? variances.reduce((a,b) => a+b) / variances.length : 0;
+          value = value.toFixed(1) + '%';
+        } else if (h === 'GM%') {
+          value = filtered.length ? (filtered.reduce((s, p) => s + p.gm_pct, 0) / filtered.length).toFixed(1) + '%' : '0%';
+        } else if (h === 'Price Type' || h === 'Distributor') {
+          value = filtered.length ? filtered[0].abc_price : '—';
+          if (typeof value === 'number') value = '$' + value.toFixed(2);
+        } else if (h === 'Count' || h === 'SKUs') {
+          value = filtered.length;
+        }
+        html += '<td>' + value + '</td>';
+      });
+      html += '</tr>';
     });
     html += '</tbody></table></div></div>';
-  } else {
-    // Bar/Line/Heatmap - show CSS bar chart
+
+  } else if (chartType === 'bar') {
+    // Bar chart
     html += '<div style="padding:20px;"><div class="bar-chart">';
-    const maxProds = Math.max(...brands.map(b => state.products.filter(p => p.brand === b).length));
-    brands.forEach(b => {
-      const count = state.products.filter(p => p.brand === b).length;
-      const pct = (count / maxProds * 100);
-      html += `<div class="bar-row"><div class="bar-label">${b}</div><div class="bar-container"><div class="bar-fill" style="width:${pct}%"></div></div><div class="bar-value">${count}</div></div>`;
+    let labels = [];
+    if (rowFields[0] === 'Brand') {
+      labels = [...new Set(state.products.map(p => p.brand))].slice(0, 8);
+    } else if (rowFields[0] === 'Category') {
+      labels = [...new Set(state.products.map(p => p.category))];
+    } else if (rowFields[0] === 'Distributor') {
+      labels = state.distributors;
+    }
+
+    let values = labels.map(label => {
+      let val = 0;
+      if (colFields[0] === 'Variance') {
+        const prods = state.products.filter(p => rowFields[0] === 'Brand' ? p.brand === label : p.category === label);
+        const variances = prods.map(p => Math.abs(p.abc_price - p.governed_price) / p.governed_price * 100);
+        val = variances.length ? variances.reduce((a,b) => a+b) / variances.length : 0;
+      } else if (colFields[0] === 'GM%') {
+        const prods = state.products.filter(p => rowFields[0] === 'Brand' ? p.brand === label : p.category === label);
+        val = prods.length ? prods.reduce((s, p) => s + p.gm_pct, 0) / prods.length : 0;
+      } else {
+        val = state.products.filter(p => rowFields[0] === 'Brand' ? p.brand === label : p.category === label).length;
+      }
+      return val;
+    });
+
+    const maxVal = Math.max(...values);
+    labels.forEach((label, i) => {
+      const pct = (values[i] / maxVal * 100);
+      html += `<div class="bar-row"><div class="bar-label" style="min-width:120px;">${label}</div><div class="bar-container" style="flex:1;"><div class="bar-fill" style="width:${pct}%; background:var(--accent-blue);"></div></div><div class="bar-value">${values[i].toFixed(1)}</div></div>`;
     });
     html += '</div></div>';
+
+  } else if (chartType === 'heatmap') {
+    // Heat map
+    html += '<div style="padding:20px;">';
+    const brands = [...new Set(state.products.map(p => p.brand))].slice(0, 6);
+    const categories = [...new Set(state.products.map(p => p.category))];
+
+    html += '<div style="display:grid; grid-template-columns:100px repeat(' + categories.length + ', 1fr); gap:4px;">';
+    html += '<div style="font-weight:600; padding:8px;"></div>';
+    categories.forEach(c => html += `<div style="font-weight:600; font-size:11px; padding:8px; text-align:center;">${c}</div>`);
+
+    brands.forEach(b => {
+      html += `<div style="font-weight:600; padding:8px;">${b}</div>`;
+      categories.forEach(c => {
+        const prods = state.products.filter(p => p.brand === b && p.category === c);
+        const variance = prods.length ? prods.reduce((s,p) => s + Math.abs(p.abc_price - p.governed_price) / p.governed_price * 100, 0) / prods.length : 0;
+        const color = variance < 3 ? '#e0f2fe' : variance < 8 ? '#fef3c7' : '#fee2e2';
+        html += `<div style="padding:8px; text-align:center; background:${color}; border-radius:4px; font-size:11px;">${variance.toFixed(1)}%</div>`;
+      });
+    });
+    html += '</div>';
+    html += '</div>';
   }
+
   html += '</div>';
   output.innerHTML = html;
   showToast('Report generated successfully', 'success');
@@ -4017,7 +4642,8 @@ function loadQuery(query) {
 }
 
 function executeQuery() {
-  const query = (document.getElementById('query-editor')?.value || '').toLowerCase();
+  const query = document.getElementById('query-editor')?.value || '';
+  const queryLower = query.toLowerCase();
   document.getElementById('query-empty-state').style.display = 'none';
   const table = document.getElementById('query-results');
   table.style.display = 'table';
@@ -4026,30 +4652,82 @@ function executeQuery() {
   let cols = '';
   const ms = Math.floor(50 + Math.random() * 200);
 
-  if (query.includes('group by brand') || query.includes('brand')) {
-    cols = '<tr><th>brand</th><th>count</th><th>avg_gm</th></tr>';
-    const brands = [...new Set(state.products.map(p => p.brand))].slice(0, 10);
-    brands.forEach(b => {
-      const prods = state.products.filter(p => p.brand === b);
-      const avg = prods.length ? (prods.reduce((s, p) => s + p.gm_pct, 0) / prods.length).toFixed(1) : 0;
-      rows += `<tr><td>${b}</td><td>${prods.length}</td><td>${avg}%</td></tr>`;
-    });
-    document.getElementById('query-stats').textContent = `Returned ${brands.length} rows in ${ms}ms`;
-  } else if (query.includes('anomal')) {
-    cols = '<tr><th>brand</th><th>anomaly_count</th><th>total_variance</th></tr>';
-    const brandAnoms = {};
-    state.anomalies.forEach(a => { brandAnoms[a.brand] = (brandAnoms[a.brand] || 0) + 1; });
-    Object.entries(brandAnoms).sort((a,b) => b[1]-a[1]).forEach(([b, c]) => {
-      const totalVar = state.anomalies.filter(a => a.brand === b).reduce((s, a) => s + a.variance, 0).toFixed(1);
-      rows += `<tr><td>${b}</td><td>${c}</td><td>${totalVar}%</td></tr>`;
-    });
-    document.getElementById('query-stats').textContent = `Returned ${Object.keys(brandAnoms).length} rows in ${ms}ms`;
-  } else {
-    cols = '<tr><th>sku</th><th>product</th><th>brand</th><th>abc_price</th><th>qxo_price</th><th>gm_pct</th></tr>';
-    state.products.slice(0, 15).forEach(p => {
-      rows += `<tr><td>${p.sku}</td><td>${p.name}</td><td>${p.brand}</td><td>$${p.abc_price.toFixed(2)}</td><td>$${p.qxo_price.toFixed(2)}</td><td>${p.gm_pct}%</td></tr>`;
-    });
-    document.getElementById('query-stats').textContent = `Returned 15 rows in ${ms}ms (showing first 15 of ${state.products.length})`;
+  try {
+    // Parse basic SQL patterns
+    if (queryLower.includes('group by brand')) {
+      cols = '<tr><th>brand</th><th>count</th><th>avg_gm</th></tr>';
+      const brands = [...new Set(state.products.map(p => p.brand))].slice(0, 10);
+
+      // Check for ORDER BY
+      let sorted = brands;
+      if (queryLower.includes('order by avg_gm desc')) {
+        sorted = brands.sort((a, b) => {
+          const avgA = state.products.filter(p => p.brand === a).reduce((s, p) => s + p.gm_pct, 0) / state.products.filter(p => p.brand === a).length;
+          const avgB = state.products.filter(p => p.brand === b).reduce((s, p) => s + p.gm_pct, 0) / state.products.filter(p => p.brand === b).length;
+          return avgB - avgA;
+        });
+      }
+
+      sorted.forEach(b => {
+        const prods = state.products.filter(p => p.brand === b);
+        const avg = prods.length ? (prods.reduce((s, p) => s + p.gm_pct, 0) / prods.length).toFixed(1) : 0;
+        rows += `<tr><td>${b}</td><td>${prods.length}</td><td>${avg}%</td></tr>`;
+      });
+      document.getElementById('query-stats').textContent = `Returned ${sorted.length} rows in ${ms}ms`;
+
+    } else if (queryLower.includes('anomal')) {
+      cols = '<tr><th>brand</th><th>anomaly_count</th><th>total_variance</th></tr>';
+      const brandAnoms = {};
+      state.anomalies.forEach(a => { brandAnoms[a.brand] = (brandAnoms[a.brand] || 0) + 1; });
+
+      const sorted = Object.entries(brandAnoms);
+      if (queryLower.includes('order by anomaly_count desc')) {
+        sorted.sort((a,b) => b[1] - a[1]);
+      }
+
+      sorted.forEach(([b, c]) => {
+        const totalVar = state.anomalies.filter(a => a.brand === b).reduce((s, a) => s + a.variance, 0).toFixed(1);
+        rows += `<tr><td>${b}</td><td>${c}</td><td>${totalVar}%</td></tr>`;
+      });
+      document.getElementById('query-stats').textContent = `Returned ${Object.keys(brandAnoms).length} rows in ${ms}ms`;
+
+    } else if (queryLower.includes('price') && queryLower.includes('delta')) {
+      cols = '<tr><th>sku</th><th>product</th><th>abc_price</th><th>qxo_price</th><th>delta</th></tr>';
+      const filtered = state.products.filter(p => p.abc_price !== p.qxo_price).slice(0, 15);
+
+      let sorted = filtered;
+      if (queryLower.includes('order by delta desc')) {
+        sorted = filtered.sort((a, b) => Math.abs(b.abc_price - b.qxo_price) - Math.abs(a.abc_price - a.qxo_price));
+      }
+
+      sorted.forEach(p => {
+        const delta = (p.abc_price - p.qxo_price).toFixed(2);
+        rows += `<tr><td>${p.sku}</td><td>${p.name}</td><td>$${p.abc_price.toFixed(2)}</td><td>$${p.qxo_price.toFixed(2)}</td><td>$${delta}</td></tr>`;
+      });
+      document.getElementById('query-stats').textContent = `Returned ${sorted.length} rows in ${ms}ms`;
+
+    } else if (queryLower.includes('where price > ceiling')) {
+      cols = '<tr><th>sku</th><th>product</th><th>brand</th><th>price</th><th>ceiling</th><th>variance</th></tr>';
+      const filtered = state.products.filter(p => p.abc_price > p.ceiling_price).slice(0, 15);
+
+      filtered.forEach(p => {
+        const variance = ((p.abc_price - p.ceiling_price) / p.ceiling_price * 100).toFixed(1);
+        rows += `<tr><td>${p.sku}</td><td>${p.name}</td><td>${p.brand}</td><td>$${p.abc_price.toFixed(2)}</td><td>$${p.ceiling_price.toFixed(2)}</td><td>${variance}%</td></tr>`;
+      });
+      document.getElementById('query-stats').textContent = `Returned ${filtered.length} rows in ${ms}ms`;
+
+    } else {
+      // Default: all products
+      cols = '<tr><th>sku</th><th>product</th><th>brand</th><th>category</th><th>abc_price</th><th>gm_pct</th></tr>';
+      state.products.slice(0, 15).forEach(p => {
+        rows += `<tr><td>${p.sku}</td><td>${p.name}</td><td>${p.brand}</td><td>${p.category}</td><td>$${p.abc_price.toFixed(2)}</td><td>${p.gm_pct}%</td></tr>`;
+      });
+      document.getElementById('query-stats').textContent = `Returned 15 rows in ${ms}ms (showing first 15 of ${state.products.length})`;
+    }
+
+  } catch (e) {
+    showToast('Query error: ' + e.message, 'error');
+    return;
   }
 
   table.innerHTML = `<thead>${cols}</thead><tbody>${rows}</tbody>`;
@@ -4097,6 +4775,11 @@ let auditPage = 1;
 const AUDIT_PER_PAGE = 20;
 
 function renderAuditLog() {
+  const tabPanel = document.getElementById('tab-audit-log');
+  if (tabPanel) {
+    renderTutorial('audit-log', tabPanel);
+  }
+
   const tbody = document.getElementById('audit-tbody');
   if (!tbody) return;
   tbody.innerHTML = '';
@@ -4266,19 +4949,27 @@ function addBrand() {
   const input = document.getElementById('new-brand-input');
   const name = input.value.trim();
   if (!name) return;
-  if (state.brands.includes(name)) { showToast('Brand already exists', 'error'); return; }
+  if (state.brands.includes(name)) {
+    showToast('Brand already exists', 'error');
+    return;
+  }
   state.brands.push(name);
+  state.brands.sort();
   input.value = '';
   saveState();
   renderBrandTags();
+  populateBrandFilters();
   showToast('Brand added: ' + name, 'success');
+  logAudit('ADD', 'Brand: ' + name, 'Master Data', '—', 'Active');
 }
 
 function removeBrand(name) {
   state.brands = state.brands.filter(b => b !== name);
   saveState();
   renderBrandTags();
+  populateBrandFilters();
   showToast('Brand removed: ' + name, 'warning');
+  logAudit('DELETE', 'Brand: ' + name, 'Master Data', 'Active', 'Removed');
 }
 
 function renderBrandTags() {
@@ -4290,11 +4981,33 @@ function renderBrandTags() {
 }
 
 function syncDistributor(name) {
-  showToast('Syncing ' + name + '...', 'info');
+  const button = event?.target;
+  if (!button) return;
+
+  const originalText = button.textContent;
+  button.textContent = '⟳ Syncing...';
+  button.disabled = true;
+  button.style.opacity = '0.6';
+
   setTimeout(() => {
-    showToast(name + ' sync complete', 'success');
-    logAudit('EDIT', name + ' Sync', 'Sync Status', 'Syncing', 'Connected');
-  }, 2000);
+    const row = button.closest('tr');
+    if (row) {
+      const statusCell = row.querySelector('td:nth-child(2)');
+      if (statusCell) {
+        statusCell.innerHTML = '<span style="color:var(--accent-green); font-weight:700;">✓ Connected</span>';
+      }
+      const dateCell = row.querySelector('td:nth-child(3)');
+      if (dateCell) {
+        dateCell.textContent = new Date().toLocaleDateString();
+      }
+    }
+
+    button.textContent = 'Sync Now';
+    button.disabled = false;
+    button.style.opacity = '1';
+    showToast(name + ' synced successfully', 'success');
+    logAudit('SYNC', name, 'Distributor', 'Pending', 'Connected');
+  }, 1500);
 }
 
 function approveAnomaly(anomalyId) {
@@ -4401,8 +5114,8 @@ function saveSettings() {
   state.settings.qualityTarget = parseInt(document.getElementById('quality-target').value) || 95;
   state.settings.autoApproval = document.getElementById('auto-approval').value;
   saveState();
-  showToast('Settings saved', 'success');
-  logAudit('EDIT', 'Settings', 'Governance', 'Previous', 'Updated');
+  showToast('Settings saved successfully', 'success');
+  logAudit('EDIT', 'Settings', 'Governance Thresholds', 'Previous', 'Updated');
 }
 
 function resetSettings() {
@@ -4411,7 +5124,14 @@ function resetSettings() {
   document.getElementById('variance-tolerance').value = 5;
   document.getElementById('quality-target').value = 95;
   document.getElementById('auto-approval').value = 'No Auto-Approval';
-  showToast('Settings reset', 'info');
+  state.settings.gmCritical = 15;
+  state.settings.gmWarning = 20;
+  state.settings.varianceTolerance = 5;
+  state.settings.qualityTarget = 95;
+  state.settings.autoApproval = 'No Auto-Approval';
+  saveState();
+  showToast('Settings reset to defaults', 'success');
+  logAudit('RESET', 'Settings', 'Governance', 'Updated', 'Defaults');
 }
 
 function logAudit(action, entity, field, prev, next) {
@@ -4468,15 +5188,42 @@ function handleDrop(e) {
   e.currentTarget.classList.remove('drag-over');
   const data = e.dataTransfer.getData('text/plain');
   if (data) {
+    // Check if already exists
+    const existing = Array.from(e.currentTarget.querySelectorAll('.chip')).some(c => c.textContent.includes(data));
+    if (existing) {
+      showToast('Field already added', 'info');
+      return;
+    }
+
     const chip = document.createElement('div');
     chip.className = 'chip';
-    chip.textContent = data;
-    e.currentTarget.appendChild(chip);
-    if (!e.currentTarget.textContent.includes('Drop')) {
-      e.currentTarget.textContent = '';
+    chip.style.display = 'inline-flex';
+    chip.style.alignItems = 'center';
+    chip.style.gap = '6px';
+    const span = document.createElement('span');
+    span.textContent = data;
+    const xBtn = document.createElement('span');
+    xBtn.textContent = '×';
+    xBtn.style.cursor = 'pointer';
+    xBtn.style.fontSize = '16px';
+    xBtn.style.marginLeft = '2px';
+    xBtn.onclick = (ev) => {
+      ev.stopPropagation();
+      chip.remove();
+      if (e.currentTarget.querySelectorAll('.chip').length === 0) {
+        e.currentTarget.classList.remove('has-items');
+        e.currentTarget.textContent = 'Drop fields here';
+      }
+    };
+    chip.appendChild(span);
+    chip.appendChild(xBtn);
+
+    // Clear placeholder text if exists
+    if (!e.currentTarget.classList.contains('has-items')) {
+      e.currentTarget.innerHTML = '';
       e.currentTarget.classList.add('has-items');
-      e.currentTarget.appendChild(chip);
     }
+    e.currentTarget.appendChild(chip);
   }
 }
 
@@ -4558,20 +5305,90 @@ function askCompass(question) {
 function generateCompassResponse(msg) {
   const m = msg.toLowerCase();
   const activeAnoms = state.anomalies.filter(a => a.status === 'active');
+  const resolvedAnoms = state.anomalies.filter(a => a.status === 'resolved');
   const totalExposure = activeAnoms.reduce((s, a) => s + Math.abs(a.charged - a.governed), 0);
   const avgGM = (state.products.reduce((s, p) => s + p.gm_pct, 0) / state.products.length).toFixed(1);
 
-  if (m.includes('anomal')) {
-    return { content: `<strong>Anomaly Summary:</strong><br/>Active flags: ${activeAnoms.length}<br/>Total exposure: $${totalExposure.toFixed(2)}<br/>Average variance: ${(activeAnoms.length ? (activeAnoms.reduce((s, a) => s + a.variance, 0) / activeAnoms.length).toFixed(1) : 0)}%`, delay: 1200 };
-  }
-  if (m.includes('gm') || m.includes('margin')) {
-    return { content: `<strong>Gross Margin:</strong><br/>Portfolio average: ${avgGM}%<br/>Products meeting 30% threshold: ${state.products.filter(p => p.gm_pct >= 30).length}/${state.products.length}`, delay: 1000 };
-  }
-  if (m.includes('quality')) {
-    return { content: `<strong>Data Quality:</strong><br/>Governed SKUs: ${state.products.length}<br/>Active anomalies: ${activeAnoms.length}<br/>Quality score: ${Math.floor(85 + Math.random() * 10)}%`, delay: 1100 };
+  // Check for brand-specific queries
+  for (const brand of state.brands) {
+    if (m.includes(brand.toLowerCase())) {
+      const brandProds = state.products.filter(p => p.brand === brand);
+      const brandAnoms = state.anomalies.filter(a => a.brand === brand && a.status === 'active');
+      const avgBrandGM = brandProds.length ? (brandProds.reduce((s, p) => s + p.gm_pct, 0) / brandProds.length).toFixed(1) : 0;
+      const categories = [...new Set(brandProds.map(p => p.category))];
+      return {
+        content: `<div style="padding:12px; background:var(--accent-blue-light); border-radius:8px; margin:6px 0;"><strong>${brand} Performance</strong></div><div style="font-size:12px; margin:8px 0;"><strong>Products:</strong> ${brandProds.length} SKUs<br/><strong>Avg GM%:</strong> ${avgBrandGM}%<br/><strong>Categories:</strong> ${categories.join(', ')}<br/><strong>Active Anomalies:</strong> ${brandAnoms.length}</div>`,
+        delay: 1200
+      };
+    }
   }
 
-  return { content: '<strong>Analysis:</strong><br/>The MDM Hub has ' + state.products.length + ' products across ' + state.brands.length + ' brands with ' + activeAnoms.length + ' active anomalies.', delay: 900 };
+  if (m.includes('use compass') || m.includes('how can i')) {
+    return {
+      content: `<strong>Welcome to Compass AI</strong><div style="margin:8px 0; font-size:12px; line-height:1.6;">I can help you:<br/>• Analyze pricing data across 25 brands<br/>• Find anomalies and pricing variances<br/>• Compare distributor pricing (ABC, QXO, SRS)<br/>• Review brand performance and GM%<br/>• Identify optimization opportunities<br/><br/>Try asking about anomalies, specific brands, pricing analysis, or data quality.</div>`,
+      delay: 1100
+    };
+  }
+
+  if (m.includes('what questions') || m.includes('what can i ask')) {
+    return {
+      content: `<strong>You can ask me about:</strong><div style="margin:8px 0; font-size:12px;"><em>Anomalies:</em> "Show me data insights" or "Tell me about [Brand name]"<br/><em>Pricing:</em> "Help me analyze pricing" or "Which products have high variance?"<br/><em>Data Quality:</em> "What's our quality score?" or "Show me governed products"<br/><em>Performance:</em> "Top performing brands?" or "Lowest margin products?"</div>`,
+      delay: 1000
+    };
+  }
+
+  if (m.includes('data insight') || m.includes('show me insight')) {
+    const topBrand = [...new Set(state.products.map(p => p.brand))].map(b => {
+      const prods = state.products.filter(p => p.brand === b);
+      const avg = prods.reduce((s, p) => s + p.gm_pct, 0) / prods.length;
+      return { brand: b, avg };
+    }).sort((a,b) => b.avg - a.avg)[0];
+
+    const anomBrand = Object.entries(state.anomalies.reduce((acc, a) => {
+      acc[a.brand] = (acc[a.brand] || 0) + 1;
+      return acc;
+    }, {})).sort((a,b) => b[1] - a[1])[0];
+
+    return {
+      content: `<div style="margin:8px 0;"><div style="padding:12px; background:var(--tint-green); border-left:3px solid var(--accent-green); border-radius:4px; margin-bottom:8px;"><strong style="color:var(--accent-green);">Top Brand Performance</strong><br/><span style="font-size:12px;">${topBrand.brand}</span> with <strong>${topBrand.avg.toFixed(1)}%</strong> avg GM%</div><div style="padding:12px; background:var(--tint-blue); border-left:3px solid var(--accent-blue); border-radius:4px; margin-bottom:8px;"><strong style="color:var(--accent-blue);">Anomalies</strong><br/><strong>${activeAnoms.length}</strong> active flags across portfolio</div><div style="padding:12px; background:var(--tint-amber); border-left:3px solid var(--accent-amber); border-radius:4px;"><strong style="color:var(--accent-amber);">Variance Exposure</strong><br/>Est. <strong>$${totalExposure.toFixed(2)}</strong> at risk</div></div>`,
+      delay: 1400
+    };
+  }
+
+  if (m.includes('analy') || m.includes('pricing')) {
+    const lowMargin = state.products.filter(p => p.gm_pct < 20);
+    const highVariance = state.products.filter(p => {
+      const v = Math.abs(p.abc_price - p.qxo_price) / p.governed_price * 100;
+      return v > 10;
+    });
+    return {
+      content: `<strong>Pricing Analysis</strong><div style="margin:8px 0; font-size:12px;"><strong>Low Margin Alert:</strong> ${lowMargin.length} products below 20% GM<br/><strong>High Variance:</strong> ${highVariance.length} products with >10% distributor spread<br/><strong>Recommendation:</strong> Review ${lowMargin.slice(0,3).map(p => p.name).join(', ')} for repricing</div>`,
+      delay: 1200
+    };
+  }
+
+  if (m.includes('anomal')) {
+    const critical = activeAnoms.filter(a => a.severity === 'critical').length;
+    const warning = activeAnoms.filter(a => a.severity === 'warning').length;
+    return {
+      content: `<strong>Anomaly Summary</strong><div style="margin:8px 0; font-size:12px;"><strong>Critical:</strong> ${critical} | <strong>Warning:</strong> ${warning} | <strong>Info:</strong> ${activeAnoms.length - critical - warning}<br/><strong>Total Exposure:</strong> $${totalExposure.toFixed(2)}<br/><strong>Avg Variance:</strong> ${(activeAnoms.length ? (activeAnoms.reduce((s, a) => s + a.variance, 0) / activeAnoms.length).toFixed(1) : 0)}%</div>`,
+      delay: 1100
+    };
+  }
+
+  if (m.includes('quality')) {
+    const score = Math.floor(85 + (1 - activeAnoms.length / state.products.length) * 10);
+    return {
+      content: `<strong>Data Quality Report</strong><div style="margin:8px 0; font-size:12px;"><strong>Governed SKUs:</strong> ${state.products.length}<br/><strong>Quality Score:</strong> ${score}%<br/><strong>Active Anomalies:</strong> ${activeAnoms.length}<br/><strong>Resolved (30d):</strong> ${resolvedAnoms.length}<br/><strong>Status:</strong> ${score >= 90 ? 'Excellent' : 'Good'}</div>`,
+      delay: 1100
+    };
+  }
+
+  // Fallback response
+  return {
+    content: `<strong>Portfolio Overview</strong><div style="margin:8px 0; font-size:12px;"><strong>${state.products.length}</strong> products across <strong>${state.brands.length}</strong> brands<br/><strong>Avg GM%:</strong> ${avgGM}%<br/><strong>Active Anomalies:</strong> ${activeAnoms.length}<br/><strong>Distributors:</strong> ABC Supply, QXO, SRS/BMCA<br/><br/>Ask me about a specific brand, anomalies, or pricing analysis.</div>`,
+    delay: 1000
+  };
 }
 
 function sendCompassMessage(message) {
@@ -4579,33 +5396,51 @@ function sendCompassMessage(message) {
 
   const messagesDiv = document.getElementById('compass-messages');
   const suggestionsDiv = document.getElementById('compass-suggestions');
+  const input = document.getElementById('compass-input');
   if (!messagesDiv) return;
 
   if (suggestionsDiv) suggestionsDiv.style.display = 'none';
+
+  // Disable input while processing
+  if (input) input.disabled = true;
 
   const userMsg = document.createElement('div');
   userMsg.className = 'message-item';
   userMsg.textContent = message;
   messagesDiv.appendChild(userMsg);
 
-  const input = document.getElementById('compass-input');
   if (input) input.value = '';
 
+  // Typing indicator
   const typingMsg = document.createElement('div');
   typingMsg.className = 'message-item assistant';
-  typingMsg.innerHTML = '<div style="display:flex;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;opacity:0.4;animation:pulse 1.2s infinite;"></span><span style="width:6px;height:6px;border-radius:50%;background:currentColor;opacity:0.4;animation:pulse 1.2s 0.2s infinite;"></span><span style="width:6px;height:6px;border-radius:50%;background:currentColor;opacity:0.4;animation:pulse 1.2s 0.4s infinite;"></span></div>';
+  typingMsg.innerHTML = '<div style="display:flex;gap:4px; align-items:center;"><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);opacity:0.5;"></span><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);opacity:0.5;"></span><span style="width:6px;height:6px;border-radius:50%;background:var(--text-secondary);opacity:0.5;"></span></div>';
+
+  // Animate dots
+  let dotCount = 1;
+  const dotInterval = setInterval(() => {
+    const dots = '•'.repeat(dotCount);
+    typingMsg.textContent = 'Compass is thinking' + dots;
+    dotCount = dotCount > 2 ? 1 : dotCount + 1;
+  }, 300);
+
   messagesDiv.appendChild(typingMsg);
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
   const resp = generateCompassResponse(message);
 
   setTimeout(() => {
+    clearInterval(dotInterval);
     typingMsg.remove();
     const response = document.createElement('div');
     response.className = 'message-item assistant';
     response.innerHTML = resp.content;
     messagesDiv.appendChild(response);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    // Re-enable input
+    if (input) input.disabled = false;
+    if (input) input.focus();
   }, resp.delay || 1000);
 }
 
@@ -4726,6 +5561,11 @@ function generateSystems() {
 }
 
 function renderSystems() {
+  const tabPanel = document.getElementById('tab-systems');
+  if (tabPanel) {
+    renderTutorial('systems', tabPanel);
+  }
+
   generateSystems();
   const grid = document.getElementById('systems-grid');
   if (!grid) return;
@@ -4780,20 +5620,93 @@ function toggleBOM(btn) {
   const bom = btn.closest('.system-card-body').querySelector('.system-bom');
   if (!bom) return;
   const span = btn.querySelector('span');
-  bom.style.display = bom.style.display === 'none' ? 'block' : 'none';
-  span.textContent = bom.style.display === 'none' ? '▶' : '▼';
+  const wasHidden = bom.style.display === 'none' || bom.style.display === '';
+
+  if (wasHidden) {
+    bom.style.display = 'block';
+    span.textContent = '▼';
+  } else {
+    bom.style.display = 'none';
+    span.textContent = '▶';
+  }
 }
 
 function addSystem() {
-  showToast('Add system feature coming soon', 'info');
+  openSystemModal(null);
 }
 
 function editSystem(system) {
-  showToast('Edit system: ' + system.name, 'info');
+  openSystemModal(system);
+}
+
+function openSystemModal(system) {
+  const modal = document.getElementById('system-modal');
+  if (!modal) {
+    showToast('System modal not found', 'error');
+    return;
+  }
+
+  const isNew = !system;
+  document.getElementById('system-modal-title').textContent = isNew ? 'Add System' : 'Edit System';
+  document.getElementById('system-name').value = system?.name || '';
+  document.getElementById('system-mfg').value = system?.manufacturer || '';
+  document.getElementById('system-tier').value = system?.tier || 'Good';
+  document.getElementById('system-warranty').value = system?.warranty_years || '';
+
+  const btn = document.querySelector('[onclick*="saveSystem"]') || document.createElement('button');
+  btn.textContent = 'Save System';
+  btn.className = 'btn btn-primary';
+  btn.onclick = () => saveSystem(system);
+
+  modal.classList.add('open');
+}
+
+function saveSystem(originalSystem) {
+  const name = document.getElementById('system-name').value.trim();
+  const mfg = document.getElementById('system-mfg').value.trim();
+  const tier = document.getElementById('system-tier').value;
+  const warranty = parseInt(document.getElementById('system-warranty').value) || 20;
+
+  if (!name || !mfg) {
+    showToast('Please fill in all required fields', 'error');
+    return;
+  }
+
+  if (originalSystem) {
+    originalSystem.name = name;
+    originalSystem.manufacturer = mfg;
+    originalSystem.tier = tier;
+    originalSystem.warranty_years = warranty;
+    showToast('System updated successfully', 'success');
+    logAudit('EDIT', name, 'System', 'Previous', 'Updated');
+  } else {
+    const newSystem = {
+      name, manufacturer: mfg, tier, warranty_years: warranty,
+      components: []
+    };
+    state.systems.push(newSystem);
+    showToast('System added successfully', 'success');
+    logAudit('ADD', name, 'System', '—', 'Created');
+  }
+
+  saveState();
+  renderSystems();
+  closeModal('system-modal');
 }
 
 function cloneSystem(system) {
-  showToast('Cloned ' + system.name, 'success');
+  const cloned = {
+    name: system.name + ' (Copy)',
+    manufacturer: system.manufacturer,
+    tier: system.tier,
+    warranty_years: system.warranty_years,
+    components: JSON.parse(JSON.stringify(system.components))
+  };
+  state.systems.push(cloned);
+  saveState();
+  renderSystems();
+  showToast('System cloned successfully', 'success');
+  logAudit('ADD', cloned.name, 'System', '—', 'Cloned');
 }
 
 // ── LABOR MANAGEMENT ──
@@ -4833,6 +5746,11 @@ function generateLaborRates() {
 }
 
 function renderLabor() {
+  const tabPanel = document.getElementById('tab-labor');
+  if (tabPanel) {
+    renderTutorial('labor', tabPanel);
+  }
+
   generateLaborRates();
   const serviceFilter = document.getElementById('labor-service-filter')?.value || 'All';
   const marketFilter = document.getElementById('labor-market-filter')?.value || 'All';
@@ -4843,12 +5761,14 @@ function renderLabor() {
   if (marketFilter !== 'All') filtered = filtered.filter(r => r.market === marketFilter);
   if (tradeFilter !== 'All') filtered = filtered.filter(r => r.trade === tradeFilter);
 
-  // Render KPIs
+  // Render KPIs with calculated values
   const kpiContainer = document.getElementById('labor-kpis');
   if (kpiContainer) {
-    const avgRate = (filtered.reduce((s, r) => s + r.base_rate, 0) / filtered.length || 0).toFixed(2);
-    const uniqueTrades = new Set(filtered.map(r => r.trade)).size;
-    const uniqueMarkets = new Set(filtered.map(r => r.market)).size;
+    const allRates = state.laborRates;
+    const avgRate = (allRates.reduce((s, r) => s + r.base_rate, 0) / allRates.length || 0).toFixed(2);
+    const uniqueTrades = new Set(allRates.map(r => r.trade)).size;
+    const uniqueMarkets = new Set(allRates.map(r => r.market)).size;
+    const lastUpdated = allRates.length > 0 ? new Date(allRates[0].effective_date).toLocaleDateString() : 'N/A';
 
     kpiContainer.innerHTML = `
       <div class="stat-card">
@@ -4864,50 +5784,147 @@ function renderLabor() {
         <div class="stat-label">Markets Covered</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">Jan 15</div>
+        <div class="stat-value">${lastUpdated}</div>
         <div class="stat-label">Last Updated</div>
       </div>
     `;
   }
 
-  // Render table
-  const table = document.getElementById('labor-table');
-  if (!table) return;
+  // Group rates by service line
+  const grouped = {};
+  filtered.forEach(rate => {
+    if (!grouped[rate.service_line]) {
+      grouped[rate.service_line] = [];
+    }
+    grouped[rate.service_line].push(rate);
+  });
 
-  table.innerHTML = `
-    <thead>
-      <tr>
-        <th>Service Line</th>
-        <th>Market</th>
-        <th>Trade</th>
-        <th>Job Type</th>
-        <th>Base Rate ($/hr)</th>
-        <th>Complexity</th>
-        <th>OT Rate ($/hr)</th>
-        <th>Effective</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${filtered.map(rate => `
-        <tr>
-          <td>${rate.service_line}</td>
-          <td>${rate.market}</td>
-          <td>${rate.trade}</td>
-          <td>${rate.job_type}</td>
-          <td><strong>$${rate.base_rate}</strong></td>
-          <td>${rate.complexity_multiplier.toFixed(2)}x</td>
-          <td>$${rate.overtime_rate}</td>
-          <td>${rate.effective_date}</td>
-          <td><span style="padding:2px 8px; border-radius:4px; background:var(--accent-green-light); color:var(--accent-green); font-size:11px; font-weight:600;">${rate.status}</span></td>
-        </tr>
-      `).join('')}
-    </tbody>
-  `;
+  // Render accordion
+  const container = document.getElementById('labor-table');
+  if (!container) return;
+
+  let html = '<div class="labor-accordion">';
+  let isFirst = true;
+
+  Object.entries(grouped).forEach(([serviceLine, rates]) => {
+    const avgRateForService = (rates.reduce((s, r) => s + r.base_rate, 0) / rates.length).toFixed(2);
+    const isExpanded = isFirst;
+
+    html += `
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleLaborSection(this, '${serviceLine}')">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <div style="display:flex; align-items:center; gap:12px; flex:1;">
+              <span style="font-size:14px; color:var(--text-tertiary);">${isExpanded ? '▾' : '▸'}</span>
+              <span style="font-size:14px; font-weight:700; color:var(--text-primary);">${serviceLine}</span>
+              <span style="font-size:12px; color:var(--text-secondary); background:var(--bg-secondary); padding:2px 8px; border-radius:4px;">${rates.length} rates</span>
+            </div>
+            <div style="font-size:13px; font-weight:700; color:var(--accent-blue);">Avg: $${avgRateForService}/hr</div>
+          </div>
+        </div>
+        <div class="accordion-content" style="display: ${isExpanded ? 'block' : 'none'};">
+          <table style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="background:var(--bg-secondary); border-bottom:1px solid var(--border-primary);">
+                <th style="padding:12px; text-align:left; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Market</th>
+                <th style="padding:12px; text-align:left; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Trade</th>
+                <th style="padding:12px; text-align:left; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Job Type</th>
+                <th style="padding:12px; text-align:right; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Base Rate</th>
+                <th style="padding:12px; text-align:right; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Complexity</th>
+                <th style="padding:12px; text-align:right; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">OT Rate</th>
+                <th style="padding:12px; text-align:center; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rates.map(rate => `
+                <tr style="border-bottom:1px solid var(--border-primary); hover-background:var(--bg-secondary);">
+                  <td style="padding:10px 12px; font-size:13px;">${rate.market}</td>
+                  <td style="padding:10px 12px; font-size:13px;">${rate.trade}</td>
+                  <td style="padding:10px 12px; font-size:13px;">${rate.job_type}</td>
+                  <td style="padding:10px 12px; text-align:right; font-size:13px; font-weight:700;">$${rate.base_rate}</td>
+                  <td style="padding:10px 12px; text-align:right; font-size:13px;">${rate.complexity_multiplier.toFixed(2)}x</td>
+                  <td style="padding:10px 12px; text-align:right; font-size:13px; font-weight:700;">$${rate.overtime_rate}</td>
+                  <td style="padding:10px 12px; text-align:center;"><span style="padding:2px 8px; border-radius:4px; background:var(--accent-green-light); color:var(--accent-green); font-size:11px; font-weight:600;">${rate.status}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    isFirst = false;
+  });
+
+  html += '</div>';
+  html += '<div style="margin-top:20px; padding:12px; background:var(--bg-secondary); border-radius:6px; font-size:12px; color:var(--text-secondary); border-left:3px solid var(--accent-blue);">📊 Labor rates benchmarked against Xactimate. Labor represents 40-60% of total job cost.</div>';
+  html += '<div style="margin-top:16px;"><button class="btn btn-primary role-admin-only" onclick="openAddLaborRateModal()">+ Add Labor Rate</button></div>';
+
+  container.innerHTML = html;
 }
 
-function addLaborRate() {
-  showToast('Add labor rate feature coming soon', 'info');
+function toggleLaborSection(header, serviceLine) {
+  const content = header.closest('.accordion-item').querySelector('.accordion-content');
+  const arrow = header.querySelector('span');
+  const isHidden = content.style.display === 'none' || content.style.display === '';
+
+  if (isHidden) {
+    content.style.display = 'block';
+    arrow.textContent = '▾';
+  } else {
+    content.style.display = 'none';
+    arrow.textContent = '▸';
+  }
+}
+
+function openAddLaborRateModal() {
+  const modal = document.getElementById('labor-rate-modal');
+  if (!modal) {
+    showToast('Labor rate modal not found', 'error');
+    return;
+  }
+  document.getElementById('labor-service-line').value = '';
+  document.getElementById('labor-market').value = '';
+  document.getElementById('labor-trade').value = '';
+  document.getElementById('labor-job-type').value = '';
+  document.getElementById('labor-base-rate').value = '';
+  document.getElementById('labor-complexity').value = '1.0';
+  document.getElementById('labor-ot-rate').value = '';
+
+  modal.classList.add('open');
+}
+
+function saveLaborRate() {
+  const serviceLine = document.getElementById('labor-service-line').value.trim();
+  const market = document.getElementById('labor-market').value.trim();
+  const trade = document.getElementById('labor-trade').value.trim();
+  const jobType = document.getElementById('labor-job-type').value.trim();
+  const baseRate = parseFloat(document.getElementById('labor-base-rate').value) || 0;
+  const complexity = parseFloat(document.getElementById('labor-complexity').value) || 1.0;
+  const otRate = parseFloat(document.getElementById('labor-ot-rate').value) || 0;
+
+  if (!serviceLine || !market || !trade || !jobType || baseRate === 0) {
+    showToast('Please fill all required fields', 'error');
+    return;
+  }
+
+  const newRate = {
+    service_line: serviceLine,
+    market,
+    trade,
+    job_type: jobType,
+    base_rate: baseRate,
+    complexity_multiplier: complexity,
+    overtime_rate: otRate,
+    effective_date: new Date().toISOString().split('T')[0],
+    status: 'Active'
+  };
+
+  state.laborRates.push(newRate);
+  saveState();
+  renderLabor();
+  closeModal('labor-rate-modal');
+  showToast('Labor rate added successfully', 'success');
+  logAudit('ADD', serviceLine + ' - ' + trade, 'Labor Rate', '—', 'Active');
 }
 
 // ── INIT ──
@@ -4950,14 +5967,17 @@ document.addEventListener('DOMContentLoaded', () => {
     catFilter.onchange = () => { itemPage = 1; renderItemMaster(); };
   }
 
-  document.querySelectorAll('.chip').forEach(chip => {
+  function initChipDrag(chip) {
     chip.addEventListener('dragstart', (e) => {
+      const fieldName = chip.querySelector('span')?.textContent || chip.textContent.replace('×', '').trim();
       e.dataTransfer.effectAllowed = 'copy';
-      e.dataTransfer.setData('text/plain', chip.textContent);
+      e.dataTransfer.setData('text/plain', fieldName);
       chip.classList.add('dragging');
     });
     chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
-  });
+  }
+
+  document.querySelectorAll('#reports-builder .chip').forEach(initChipDrag);
 
   // Initialize service line selector
   initServiceLineSelector();
