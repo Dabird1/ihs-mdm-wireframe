@@ -200,25 +200,32 @@ body {
   color: rgba(255,255,255,0.85);
 }
 
-.nav-item:hover::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-left: 12px;
-  background: rgba(0,0,0,0.9);
+/* Tooltips handled by JS — appended to body to avoid overflow clipping */
+.sidebar-tooltip {
+  position: fixed;
+  z-index: 10000;
+  background: rgba(0,0,0,0.92);
   color: white;
-  padding: 8px 12px;
+  padding: 8px 14px;
   border-radius: 6px;
   font-size: 11px;
-  white-space: nowrap;
-  z-index: 1000;
-  pointer-events: none;
   font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
   opacity: 0;
-  animation: fadeInTooltip 0.15s ease forwards;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: opacity 0.15s ease;
+}
+.sidebar-tooltip.visible { opacity: 1; }
+.sidebar-tooltip::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-style: solid;
+  border-width: 5px 6px 5px 0;
+  border-color: transparent rgba(0,0,0,0.92) transparent transparent;
 }
 
 @keyframes fadeInTooltip {
@@ -232,19 +239,7 @@ body {
   }
 }
 
-.nav-item:hover::before {
-  content: '';
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 4px 4px 4px 0;
-  border-color: transparent rgba(0,0,0,0.9) transparent transparent;
-  margin-right: 0;
-}
+/* Arrow pseudo-element removed — JS tooltips handle this */
 
 .nav-item.active {
   background: var(--sidebar-active);
@@ -5978,6 +5973,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.querySelectorAll('#reports-builder .chip').forEach(initChipDrag);
+
+  // JS-based sidebar tooltips (appended to body, immune to overflow clipping)
+  (function initSidebarTooltips() {
+    const tip = document.createElement('div');
+    tip.className = 'sidebar-tooltip';
+    document.body.appendChild(tip);
+    let showTimer = null;
+    document.querySelectorAll('.nav-item[data-tooltip]').forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        const text = item.getAttribute('data-tooltip');
+        if (!text) return;
+        tip.textContent = text;
+        const rect = item.getBoundingClientRect();
+        tip.style.left = (rect.right + 10) + 'px';
+        tip.style.top = (rect.top + rect.height / 2) + 'px';
+        tip.style.transform = 'translateY(-50%)';
+        showTimer = setTimeout(() => tip.classList.add('visible'), 80);
+      });
+      item.addEventListener('mouseleave', () => {
+        clearTimeout(showTimer);
+        tip.classList.remove('visible');
+      });
+    });
+  })();
 
   // Initialize service line selector
   initServiceLineSelector();
