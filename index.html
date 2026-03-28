@@ -1066,6 +1066,46 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   border-bottom-color: var(--accent-blue);
 }
 
+/* ── SERVICE LINE SELECTOR ── */
+.service-line-selector {
+  display: flex;
+  gap: 8px;
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
+  flex-wrap: wrap;
+  position: sticky;
+  top: 60px;
+  z-index: 90;
+}
+
+.service-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.service-pill:hover {
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+  background: var(--accent-blue-light);
+}
+
+.service-pill.active {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: white;
+}
+
 /* ── UTILITIES ── */
 .tab-panel { display: none; animation: fadeUp 0.18s ease; }
 .tab-panel.active { display: block; }
@@ -1151,6 +1191,212 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   color: var(--text-secondary);
   margin-left: 8px;
   min-width: 30px;
+}
+
+/* ── SYSTEMS & ASSEMBLIES ── */
+.systems-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.system-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.system-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: var(--shadow-md);
+}
+
+.system-card-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-primary);
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.system-card-mfg {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 8px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.system-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tier-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tier-badge.good {
+  background: var(--tint-blue);
+  color: var(--accent-blue);
+}
+
+.tier-badge.better {
+  background: var(--tint-purple);
+  color: var(--accent-purple);
+}
+
+.tier-badge.best {
+  background: var(--tint-amber);
+  color: var(--accent-amber);
+}
+
+.system-card-body {
+  padding: 16px;
+}
+
+.system-warranty {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.system-bom-toggle {
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.system-bom-toggle:hover {
+  text-decoration: underline;
+}
+
+.system-bom {
+  margin-top: 12px;
+  border-top: 1px solid var(--border-primary);
+  padding-top: 12px;
+  font-size: 12px;
+}
+
+.bom-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.bom-item:last-child {
+  border-bottom: none;
+}
+
+.bom-item-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.bom-item-qty {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  margin-left: 12px;
+}
+
+.system-cost {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-primary);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-green);
+}
+
+.system-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-primary);
+}
+
+.system-actions .btn {
+  flex: 1;
+  justify-content: center;
+}
+
+/* ── LABOR MANAGEMENT ── */
+.labor-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.labor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.labor-table thead {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.labor-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.labor-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-primary);
+  color: var(--text-primary);
+}
+
+.labor-table tr:hover {
+  background: var(--bg-secondary);
+}
+
+.labor-note {
+  margin-top: 20px;
+  padding: 12px 16px;
+  background: var(--accent-blue-light);
+  border-radius: var(--radius-lg);
+  font-size: 12px;
+  color: var(--accent-blue-dark);
+  border-left: 3px solid var(--accent-blue);
 }
 
 /* ── REPORTS BUILDER ── */
@@ -1627,6 +1873,14 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m0 0H3m2 0V5m0 0h4m4 0H9m6 0h4a2 2 0 0 1 2 2v4m0 0v4m0 0h2m-2 0v-4m0 0h-4m0 0h4m-6 6h-4a2 2 0 0 0-2 2v4m0 0H3m2 0v4m0 0h4"/></svg>
       <span>Item Master</span>
     </button>
+    <button class="nav-item" data-tooltip="Configure roofing systems and material assemblies" onclick="switchTab('systems', this)">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m0 0l8 4 8-4m0 0v10l-8 4-8-4V7m8 4v10m0 0l8-4m-8 4l-8-4"/></svg>
+      <span>Systems & Assemblies</span>
+    </button>
+    <button class="nav-item" data-tooltip="Manage labor rates and trade pricing" onclick="switchTab('labor', this)">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 0 0-5.356-1.362M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.862m-10 1.862H7m0 0v-2c0-.656.126-1.283.356-1.862M7 20a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4m-13-2a4 4 0 1 1 8 0 4 4 0 0 1-8 0z"/></svg>
+      <span>Labor Management</span>
+    </button>
     <button class="nav-item" data-tooltip="Compare distributor pricing by brand" onclick="switchTab('price-sheet', this)">
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm0 2c-2.209 0-4 1.791-4 4 0 .891.328 1.711.887 2.35H6a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2h-2.887c.559-.639.887-1.459.887-2.35 0-2.209-1.791-4-4-4z"/></svg>
       <span>Brand Price Sheet</span>
@@ -1710,6 +1964,11 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 
   <!-- CONTENT -->
   <div class="content" id="content">
+
+  <!-- SERVICE LINE SELECTOR -->
+  <div class="service-line-selector" id="service-line-selector">
+    <div style="font-size:11px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; padding:4px 0; width:100%; margin-bottom:4px;">Service Line</div>
+  </div>
 
   <!-- TAB 1: DASHBOARD -->
   <div id="tab-dashboard" class="tab-panel active">
@@ -2135,6 +2394,74 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
     </div>
   </div>
 
+  <!-- TAB: SYSTEMS & ASSEMBLIES -->
+  <div id="tab-systems" class="tab-panel">
+    <div class="toolbar" style="margin-bottom:20px;">
+      <select class="filter-select" id="systems-mfg-filter" onchange="renderSystems()">
+        <option value="All">All Manufacturers</option>
+        <option value="GAF">GAF</option>
+        <option value="Owens Corning">Owens Corning</option>
+        <option value="CertainTeed">CertainTeed</option>
+      </select>
+      <select class="filter-select" id="systems-tier-filter" onchange="renderSystems()">
+        <option value="All">All Tiers</option>
+        <option value="Good">Good</option>
+        <option value="Better">Better</option>
+        <option value="Best">Best</option>
+      </select>
+      <button class="btn btn-primary role-admin-only" style="margin-left:auto;" onclick="addSystem()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add System
+      </button>
+    </div>
+    <div class="systems-grid" id="systems-grid"></div>
+  </div>
+
+  <!-- TAB: LABOR MANAGEMENT -->
+  <div id="tab-labor" class="tab-panel">
+    <div class="labor-kpis" id="labor-kpis"></div>
+
+    <div class="toolbar" style="margin-bottom:20px;">
+      <select class="filter-select" id="labor-service-filter" onchange="renderLabor()">
+        <option value="All">All Service Lines</option>
+        <option value="Roofing (steep slope)">Roofing (steep slope)</option>
+        <option value="Roofing (low slope)">Roofing (low slope)</option>
+        <option value="Siding">Siding</option>
+        <option value="Windows">Windows</option>
+        <option value="Gutters">Gutters</option>
+        <option value="Solar">Solar</option>
+        <option value="Insulation">Insulation</option>
+      </select>
+      <select class="filter-select" id="labor-market-filter" onchange="renderLabor()">
+        <option value="All">All Markets</option>
+        <option value="Midwest">Midwest</option>
+        <option value="Northeast">Northeast</option>
+        <option value="Mid-Atlantic">Mid-Atlantic</option>
+        <option value="Pacific NW">Pacific NW</option>
+        <option value="Southeast">Southeast</option>
+        <option value="Canada">Canada</option>
+      </select>
+      <select class="filter-select" id="labor-trade-filter" onchange="renderLabor()">
+        <option value="All">All Trades</option>
+        <option value="Lead Installer">Lead Installer</option>
+        <option value="Helper">Helper</option>
+        <option value="Project Manager">Project Manager</option>
+      </select>
+      <button class="btn btn-primary role-admin-only" style="margin-left:auto;" onclick="addLaborRate()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Rate
+      </button>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="labor-table" id="labor-table"></table>
+    </div>
+
+    <div class="labor-note">
+      Labor rates benchmarked against Xactimate. Labor represents 40-60% of total job cost.
+    </div>
+  </div>
+
   </div>
 </div>
 
@@ -2337,7 +2664,11 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 // ── STATE ──
 const state = {
   currentTab: 'dashboard',
+  currentServiceLine: 'Roofing',
+  serviceLines: ['Roofing', 'Siding', 'Windows', 'Gutters', 'Solar', 'Insulation', 'Other'],
   products: [],
+  systems: [],
+  laborRates: [],
   // IHS Operating Companies (25 brands organized by division and region)
   divisions: {
     'US': {
@@ -2513,6 +2844,8 @@ function switchTab(tabName, navItem) {
     if (tabName === 'dashboard') renderDashboard();
     else if (tabName === 'item-master') renderItemMaster();
     else if (tabName === 'anomaly') renderAnomalyDashboard();
+    else if (tabName === 'systems') renderSystems();
+    else if (tabName === 'labor') renderLabor();
     else if (tabName === 'reports') {
       // Re-activate default sub-tab since switchTab clears all .tab-panel.active
       const builder = document.getElementById('reports-builder');
@@ -2577,6 +2910,8 @@ function updatePageHeader(tabName) {
     dashboard: { title: 'Dashboard', subtitle: 'Executive overview of pricing governance' },
     'item-master': { title: 'Item Master', subtitle: 'Browse and manage all governed product SKUs' },
     anomaly: { title: 'Anomaly Dashboard', subtitle: 'Review and resolve pricing anomalies' },
+    systems: { title: 'Systems & Assemblies', subtitle: 'Configure roofing systems and material BOMs' },
+    labor: { title: 'Labor Management', subtitle: 'Manage labor rates and trade pricing by market' },
     'price-sheet': { title: 'Brand Price Sheet', subtitle: 'Compare distributor pricing by brand' },
     'brand-dashboard': { title: 'Brand Dashboard', subtitle: 'Executive brand performance and pricing intelligence' },
     settings: { title: 'Rules & Thresholds', subtitle: 'Configure governance thresholds and notifications' },
@@ -4277,6 +4612,307 @@ function sendCompassMessage(message) {
   }, resp.delay || 1000);
 }
 
+// ── SERVICE LINE SELECTOR ──
+function initServiceLineSelector() {
+  const selector = document.getElementById('service-line-selector');
+  if (!selector) return;
+
+  const label = selector.querySelector('div');
+  state.serviceLines.forEach(line => {
+    const pill = document.createElement('button');
+    pill.className = 'service-pill' + (line === state.currentServiceLine ? ' active' : '');
+    pill.textContent = line;
+    if (line === 'Solar') pill.textContent += ' (AHC Only)';
+    pill.onclick = () => switchServiceLine(line);
+    selector.appendChild(pill);
+  });
+}
+
+function switchServiceLine(line) {
+  state.currentServiceLine = line;
+  document.querySelectorAll('.service-pill').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.service-pill').forEach(p => {
+    if (p.textContent.includes(line)) p.classList.add('active');
+  });
+  if (state.currentTab === 'systems') renderSystems();
+  else if (state.currentTab === 'labor') renderLabor();
+}
+
+// ── SYSTEMS & ASSEMBLIES ──
+function generateSystems() {
+  state.systems = [
+    // GAF
+    { manufacturer: 'GAF', tier: 'Good', name: 'System Plus', warranty_years: 20, components: [
+      { name: 'Timberline HD Shingles', category: 'Shingles', qty_per_square: 1, price: 65 },
+      { name: 'Starter Strip', category: 'Starter Strip', qty_per_square: 1, price: 22 },
+      { name: 'Ridge Cap Shingle', category: 'Ridge Cap', qty_per_square: 0.33, price: 35 },
+      { name: 'Synthetic Underlayment', category: 'Underlayment', qty_per_square: 1, price: 42 },
+      { name: 'Ice & Water Shield', category: 'Underlayment', qty_per_square: 0.2, price: 55 },
+      { name: 'Drip Edge Aluminum', category: 'Accessories', qty_per_square: 1, price: 18 },
+      { name: 'Hip & Ridge Vent', category: 'Ventilation', qty_per_square: 0.33, price: 48 }
+    ]},
+    { manufacturer: 'GAF', tier: 'Better', name: 'Silver Pledge', warranty_years: 30, components: [
+      { name: 'Timberline HD Ultra Premium', category: 'Shingles', qty_per_square: 1, price: 78 },
+      { name: 'Starter Strip Premium', category: 'Starter Strip', qty_per_square: 1, price: 25 },
+      { name: 'Ridge Cap Shingle', category: 'Ridge Cap', qty_per_square: 0.33, price: 38 },
+      { name: 'Synthetic Underlayment', category: 'Underlayment', qty_per_square: 1, price: 44 },
+      { name: 'Ice & Water Shield Premium', category: 'Underlayment', qty_per_square: 0.3, price: 58 },
+      { name: 'Drip Edge Aluminum', category: 'Accessories', qty_per_square: 1, price: 19 },
+      { name: 'Ridge Vent Premium', category: 'Ventilation', qty_per_square: 0.33, price: 52 }
+    ]},
+    { manufacturer: 'GAF', tier: 'Best', name: 'Golden Pledge', warranty_years: 50, components: [
+      { name: 'Timberline Ultra HD Architectural', category: 'Shingles', qty_per_square: 1, price: 95 },
+      { name: 'Starter Strip Elite', category: 'Starter Strip', qty_per_square: 1, price: 28 },
+      { name: 'Ridge Cap Shingle Elite', category: 'Ridge Cap', qty_per_square: 0.33, price: 42 },
+      { name: 'Self-Adhering Underlayment', category: 'Underlayment', qty_per_square: 1, price: 48 },
+      { name: 'Ice & Water Shield Elite', category: 'Underlayment', qty_per_square: 0.4, price: 62 },
+      { name: 'Flashing Kit', category: 'Flashing', qty_per_square: 1, price: 28 },
+      { name: 'Ridge Vent Premium Elite', category: 'Ventilation', qty_per_square: 0.33, price: 55 }
+    ]},
+    // Owens Corning
+    { manufacturer: 'Owens Corning', tier: 'Good', name: 'Preferred', warranty_years: 15, components: [
+      { name: 'Duration Shingles', category: 'Shingles', qty_per_square: 1, price: 62 },
+      { name: 'Starter Strip', category: 'Starter Strip', qty_per_square: 1, price: 21 },
+      { name: 'Ridge Cap', category: 'Ridge Cap', qty_per_square: 0.33, price: 34 },
+      { name: 'Underlayment Standard', category: 'Underlayment', qty_per_square: 1, price: 40 },
+      { name: 'Ice & Water Shield', category: 'Underlayment', qty_per_square: 0.15, price: 53 },
+      { name: 'Drip Edge', category: 'Accessories', qty_per_square: 1, price: 17 },
+      { name: 'Ventilation Base', category: 'Ventilation', qty_per_square: 0.33, price: 45 }
+    ]},
+    { manufacturer: 'Owens Corning', tier: 'Better', name: 'Platinum Preferred', warranty_years: 25, components: [
+      { name: 'Duration Premium Shingles', category: 'Shingles', qty_per_square: 1, price: 76 },
+      { name: 'Starter Strip Premium', category: 'Starter Strip', qty_per_square: 1, price: 24 },
+      { name: 'Ridge Cap Premium', category: 'Ridge Cap', qty_per_square: 0.33, price: 37 },
+      { name: 'Underlayment Premium', category: 'Underlayment', qty_per_square: 1, price: 43 },
+      { name: 'Ice & Water Shield', category: 'Underlayment', qty_per_square: 0.25, price: 56 },
+      { name: 'Drip Edge Premium', category: 'Accessories', qty_per_square: 1, price: 18 },
+      { name: 'Ventilation Premium', category: 'Ventilation', qty_per_square: 0.33, price: 50 }
+    ]},
+    { manufacturer: 'Owens Corning', tier: 'Best', name: 'Platinum', warranty_years: 40, components: [
+      { name: 'Duration Premium Architectural', category: 'Shingles', qty_per_square: 1, price: 92 },
+      { name: 'Starter Strip Elite', category: 'Starter Strip', qty_per_square: 1, price: 27 },
+      { name: 'Ridge Cap Elite', category: 'Ridge Cap', qty_per_square: 0.33, price: 40 },
+      { name: 'Underlayment Elite', category: 'Underlayment', qty_per_square: 1, price: 46 },
+      { name: 'Ice & Water Shield Elite', category: 'Underlayment', qty_per_square: 0.35, price: 59 },
+      { name: 'Flashing System', category: 'Flashing', qty_per_square: 1, price: 26 },
+      { name: 'Ventilation Elite', category: 'Ventilation', qty_per_square: 0.33, price: 53 }
+    ]},
+    // CertainTeed
+    { manufacturer: 'CertainTeed', tier: 'Good', name: '3-Star SureStart', warranty_years: 15, components: [
+      { name: 'Landmark Shingles', category: 'Shingles', qty_per_square: 1, price: 60 },
+      { name: 'Starter Strip', category: 'Starter Strip', qty_per_square: 1, price: 20 },
+      { name: 'Ridge Cap', category: 'Ridge Cap', qty_per_square: 0.33, price: 33 },
+      { name: 'Underlayment', category: 'Underlayment', qty_per_square: 1, price: 39 },
+      { name: 'Ice & Water Shield', category: 'Underlayment', qty_per_square: 0.1, price: 51 },
+      { name: 'Drip Edge', category: 'Accessories', qty_per_square: 1, price: 16 },
+      { name: 'Attic Rafter Vent', category: 'Ventilation', qty_per_square: 0.33, price: 44 }
+    ]},
+    { manufacturer: 'CertainTeed', tier: 'Better', name: '4-Star SureStart', warranty_years: 30, components: [
+      { name: 'Landmark Pro Shingles', category: 'Shingles', qty_per_square: 1, price: 74 },
+      { name: 'Starter Strip Pro', category: 'Starter Strip', qty_per_square: 1, price: 23 },
+      { name: 'Ridge Cap Pro', category: 'Ridge Cap', qty_per_square: 0.33, price: 36 },
+      { name: 'Underlayment Pro', category: 'Underlayment', qty_per_square: 1, price: 42 },
+      { name: 'Ice & Water Shield Pro', category: 'Underlayment', qty_per_square: 0.2, price: 54 },
+      { name: 'Drip Edge Pro', category: 'Accessories', qty_per_square: 1, price: 17 },
+      { name: 'Ventilation Pro', category: 'Ventilation', qty_per_square: 0.33, price: 49 }
+    ]},
+    { manufacturer: 'CertainTeed', tier: 'Best', name: '5-Star SureStart', warranty_years: 50, components: [
+      { name: 'Landmark Architectural Premium', category: 'Shingles', qty_per_square: 1, price: 90 },
+      { name: 'Starter Strip Elite', category: 'Starter Strip', qty_per_square: 1, price: 26 },
+      { name: 'Ridge Cap Elite', category: 'Ridge Cap', qty_per_square: 0.33, price: 39 },
+      { name: 'Underlayment Elite', category: 'Underlayment', qty_per_square: 1, price: 45 },
+      { name: 'Ice & Water Shield Elite', category: 'Underlayment', qty_per_square: 0.3, price: 57 },
+      { name: 'Flashing Kit', category: 'Flashing', qty_per_square: 1, price: 25 },
+      { name: 'Ridge Vent Elite', category: 'Ventilation', qty_per_square: 0.33, price: 52 }
+    ]}
+  ];
+}
+
+function renderSystems() {
+  generateSystems();
+  const grid = document.getElementById('systems-grid');
+  if (!grid) return;
+
+  const mfgFilter = document.getElementById('systems-mfg-filter')?.value || 'All';
+  const tierFilter = document.getElementById('systems-tier-filter')?.value || 'All';
+
+  let filtered = state.systems;
+  if (mfgFilter !== 'All') filtered = filtered.filter(s => s.manufacturer === mfgFilter);
+  if (tierFilter !== 'All') filtered = filtered.filter(s => s.tier === tierFilter);
+
+  grid.innerHTML = filtered.map(system => {
+    const totalCost = system.components.reduce((s, c) => s + (c.qty_per_square * c.price), 0).toFixed(2);
+    const tierColor = system.tier === 'Good' ? 'good' : system.tier === 'Better' ? 'better' : 'best';
+
+    return `
+      <div class="system-card">
+        <div class="system-card-header">
+          <div>
+            <div class="system-card-mfg">${system.manufacturer}</div>
+            <div class="system-card-title">${system.name}</div>
+          </div>
+          <span class="tier-badge ${tierColor}">${system.tier}</span>
+        </div>
+        <div class="system-card-body">
+          <div class="system-warranty">
+            <strong>${system.warranty_years} Year</strong> Limited Warranty
+          </div>
+          <button class="system-bom-toggle" onclick="toggleBOM(this)">
+            <span>▶</span> View BOM (${system.components.length} items)
+          </button>
+          <div class="system-bom" style="display:none;">
+            ${system.components.map(c => `
+              <div class="bom-item">
+                <div class="bom-item-name">${c.name}<br/><span style="font-size:11px; color:var(--text-tertiary);">${c.category}</span></div>
+                <div class="bom-item-qty">${c.qty_per_square} per sq</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="system-cost">Est. Material Cost: $${totalCost}/sq</div>
+          <div class="system-actions role-admin-only">
+            <button class="btn btn-secondary btn-sm" onclick="editSystem(${JSON.stringify(system).replace(/"/g, '&quot;')})">Edit</button>
+            <button class="btn btn-secondary btn-sm" onclick="cloneSystem(${JSON.stringify(system).replace(/"/g, '&quot;')})">Clone</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleBOM(btn) {
+  const bom = btn.closest('.system-card-body').querySelector('.system-bom');
+  if (!bom) return;
+  const span = btn.querySelector('span');
+  bom.style.display = bom.style.display === 'none' ? 'block' : 'none';
+  span.textContent = bom.style.display === 'none' ? '▶' : '▼';
+}
+
+function addSystem() {
+  showToast('Add system feature coming soon', 'info');
+}
+
+function editSystem(system) {
+  showToast('Edit system: ' + system.name, 'info');
+}
+
+function cloneSystem(system) {
+  showToast('Cloned ' + system.name, 'success');
+}
+
+// ── LABOR MANAGEMENT ──
+function generateLaborRates() {
+  state.laborRates = [
+    { service_line: 'Roofing (steep slope)', market: 'Midwest', trade: 'Lead Installer', job_type: 'Residential', base_rate: 65, complexity_multiplier: 1.0, overtime_rate: 97.5, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Midwest', trade: 'Helper', job_type: 'Residential', base_rate: 42, complexity_multiplier: 0.95, overtime_rate: 63.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Midwest', trade: 'Project Manager', job_type: 'Residential', base_rate: 55, complexity_multiplier: 1.1, overtime_rate: 82.5, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Northeast', trade: 'Lead Installer', job_type: 'Residential', base_rate: 72, complexity_multiplier: 1.0, overtime_rate: 108.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Northeast', trade: 'Helper', job_type: 'Residential', base_rate: 48, complexity_multiplier: 0.95, overtime_rate: 72.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Northeast', trade: 'Project Manager', job_type: 'Residential', base_rate: 62, complexity_multiplier: 1.1, overtime_rate: 93.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Mid-Atlantic', trade: 'Lead Installer', job_type: 'Residential', base_rate: 68, complexity_multiplier: 1.0, overtime_rate: 102.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Pacific NW', trade: 'Lead Installer', job_type: 'Residential', base_rate: 70, complexity_multiplier: 1.0, overtime_rate: 105.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Southeast', trade: 'Lead Installer', job_type: 'Residential', base_rate: 62, complexity_multiplier: 1.0, overtime_rate: 93.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Canada', trade: 'Lead Installer', job_type: 'Residential', base_rate: 75, complexity_multiplier: 1.0, overtime_rate: 112.5, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (low slope)', market: 'Midwest', trade: 'Lead Installer', job_type: 'Commercial', base_rate: 72, complexity_multiplier: 1.2, overtime_rate: 108.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (low slope)', market: 'Midwest', trade: 'Helper', job_type: 'Commercial', base_rate: 45, complexity_multiplier: 1.15, overtime_rate: 67.5, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (low slope)', market: 'Northeast', trade: 'Lead Installer', job_type: 'Commercial', base_rate: 80, complexity_multiplier: 1.2, overtime_rate: 120.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Siding', market: 'Midwest', trade: 'Lead Installer', job_type: 'Residential', base_rate: 58, complexity_multiplier: 0.9, overtime_rate: 87.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Siding', market: 'Northeast', trade: 'Lead Installer', job_type: 'Residential', base_rate: 64, complexity_multiplier: 0.9, overtime_rate: 96.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Windows', market: 'Midwest', trade: 'Lead Installer', job_type: 'Residential', base_rate: 52, complexity_multiplier: 0.85, overtime_rate: 78.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Windows', market: 'Northeast', trade: 'Lead Installer', job_type: 'Residential', base_rate: 58, complexity_multiplier: 0.85, overtime_rate: 87.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Gutters', market: 'Midwest', trade: 'Lead Installer', job_type: 'Residential', base_rate: 45, complexity_multiplier: 0.8, overtime_rate: 67.5, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Gutters', market: 'Northeast', trade: 'Lead Installer', job_type: 'Residential', base_rate: 50, complexity_multiplier: 0.8, overtime_rate: 75.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Solar', market: 'Pacific NW', trade: 'Lead Installer', job_type: 'Residential', base_rate: 85, complexity_multiplier: 1.3, overtime_rate: 127.5, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Insulation', market: 'Midwest', trade: 'Helper', job_type: 'Residential', base_rate: 38, complexity_multiplier: 0.9, overtime_rate: 57.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Midwest', trade: 'Lead Installer', job_type: 'Multi-Family', base_rate: 70, complexity_multiplier: 1.1, overtime_rate: 105.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Northeast', trade: 'Lead Installer', job_type: 'Multi-Family', base_rate: 78, complexity_multiplier: 1.1, overtime_rate: 117.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Mid-Atlantic', trade: 'Helper', job_type: 'Residential', base_rate: 46, complexity_multiplier: 0.95, overtime_rate: 69.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (steep slope)', market: 'Mid-Atlantic', trade: 'Project Manager', job_type: 'Residential', base_rate: 58, complexity_multiplier: 1.1, overtime_rate: 87.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Siding', market: 'Mid-Atlantic', trade: 'Lead Installer', job_type: 'Residential', base_rate: 62, complexity_multiplier: 0.9, overtime_rate: 93.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Windows', market: 'Mid-Atlantic', trade: 'Lead Installer', job_type: 'Residential', base_rate: 56, complexity_multiplier: 0.85, overtime_rate: 84.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Solar', market: 'Northeast', trade: 'Lead Installer', job_type: 'Residential', base_rate: 88, complexity_multiplier: 1.3, overtime_rate: 132.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Roofing (low slope)', market: 'Mid-Atlantic', trade: 'Lead Installer', job_type: 'Commercial', base_rate: 76, complexity_multiplier: 1.2, overtime_rate: 114.0, effective_date: '2026-01-15', status: 'Active' },
+    { service_line: 'Gutters', market: 'Mid-Atlantic', trade: 'Lead Installer', job_type: 'Residential', base_rate: 48, complexity_multiplier: 0.8, overtime_rate: 72.0, effective_date: '2026-01-15', status: 'Active' },
+  ];
+}
+
+function renderLabor() {
+  generateLaborRates();
+  const serviceFilter = document.getElementById('labor-service-filter')?.value || 'All';
+  const marketFilter = document.getElementById('labor-market-filter')?.value || 'All';
+  const tradeFilter = document.getElementById('labor-trade-filter')?.value || 'All';
+
+  let filtered = state.laborRates;
+  if (serviceFilter !== 'All') filtered = filtered.filter(r => r.service_line === serviceFilter);
+  if (marketFilter !== 'All') filtered = filtered.filter(r => r.market === marketFilter);
+  if (tradeFilter !== 'All') filtered = filtered.filter(r => r.trade === tradeFilter);
+
+  // Render KPIs
+  const kpiContainer = document.getElementById('labor-kpis');
+  if (kpiContainer) {
+    const avgRate = (filtered.reduce((s, r) => s + r.base_rate, 0) / filtered.length || 0).toFixed(2);
+    const uniqueTrades = new Set(filtered.map(r => r.trade)).size;
+    const uniqueMarkets = new Set(filtered.map(r => r.market)).size;
+
+    kpiContainer.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-value">$${avgRate}</div>
+        <div class="stat-label">Avg Labor Rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${uniqueTrades}</div>
+        <div class="stat-label">Total Trades</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${uniqueMarkets}</div>
+        <div class="stat-label">Markets Covered</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">Jan 15</div>
+        <div class="stat-label">Last Updated</div>
+      </div>
+    `;
+  }
+
+  // Render table
+  const table = document.getElementById('labor-table');
+  if (!table) return;
+
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Service Line</th>
+        <th>Market</th>
+        <th>Trade</th>
+        <th>Job Type</th>
+        <th>Base Rate ($/hr)</th>
+        <th>Complexity</th>
+        <th>OT Rate ($/hr)</th>
+        <th>Effective</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${filtered.map(rate => `
+        <tr>
+          <td>${rate.service_line}</td>
+          <td>${rate.market}</td>
+          <td>${rate.trade}</td>
+          <td>${rate.job_type}</td>
+          <td><strong>$${rate.base_rate}</strong></td>
+          <td>${rate.complexity_multiplier.toFixed(2)}x</td>
+          <td>$${rate.overtime_rate}</td>
+          <td>${rate.effective_date}</td>
+          <td><span style="padding:2px 8px; border-radius:4px; background:var(--accent-green-light); color:var(--accent-green); font-size:11px; font-weight:600;">${rate.status}</span></td>
+        </tr>
+      `).join('')}
+    </tbody>
+  `;
+}
+
+function addLaborRate() {
+  showToast('Add labor rate feature coming soon', 'info');
+}
+
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
   // Clear old state to pick up new data model
@@ -4325,6 +4961,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
   });
+
+  // Initialize service line selector
+  initServiceLineSelector();
 });
 </script>
 </body>
