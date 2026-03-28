@@ -2821,53 +2821,51 @@ function saveState() {
 }
 
 function switchTab(tabName, navItem) {
-  requestAnimationFrame(() => {
-    // Remove active from nav items
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  // Remove active from nav items
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-    // Hide ALL active tab panels
-    document.querySelectorAll('.tab-panel.active').forEach(t => t.classList.remove('active'));
+  // Hide ALL active tab panels
+  document.querySelectorAll('.tab-panel.active').forEach(t => t.classList.remove('active'));
 
-    // Show new tab panel
-    const tab = document.getElementById(`tab-${tabName}`);
-    if (tab) tab.classList.add('active');
-    if (navItem) navItem.classList.add('active');
+  // Show new tab panel
+  const tab = document.getElementById(`tab-${tabName}`);
+  if (tab) tab.classList.add('active');
+  if (navItem) navItem.classList.add('active');
 
-    state.currentTab = tabName;
-    updatePageHeader(tabName);
-    updateCompassSuggestions(tabName);
+  state.currentTab = tabName;
+  updatePageHeader(tabName);
+  updateCompassSuggestions(tabName);
 
-    // Close detail panel when switching tabs
-    closeDetailPanel();
+  // Close detail panel when switching tabs
+  closeDetailPanel();
 
-    if (tabName === 'dashboard') renderDashboard();
-    else if (tabName === 'item-master') renderItemMaster();
-    else if (tabName === 'anomaly') renderAnomalyDashboard();
-    else if (tabName === 'systems') renderSystems();
-    else if (tabName === 'labor') renderLabor();
-    else if (tabName === 'reports') {
-      // Re-activate default sub-tab since switchTab clears all .tab-panel.active
-      const builder = document.getElementById('reports-builder');
-      if (builder) builder.classList.add('active');
-      const pills = document.querySelectorAll('#tab-reports .tab-pill');
-      pills.forEach(p => p.classList.remove('active'));
-      if (pills[0]) pills[0].classList.add('active');
+  if (tabName === 'dashboard') renderDashboard();
+  else if (tabName === 'item-master') renderItemMaster();
+  else if (tabName === 'anomaly') renderAnomalyDashboard();
+  else if (tabName === 'systems') renderSystems();
+  else if (tabName === 'labor') renderLabor();
+  else if (tabName === 'reports') {
+    // Re-activate default sub-tab since switchTab clears all .tab-panel.active
+    const builder = document.getElementById('reports-builder');
+    if (builder) builder.classList.add('active');
+    const pills = document.querySelectorAll('#tab-reports .tab-pill');
+    pills.forEach(p => p.classList.remove('active'));
+    if (pills[0]) pills[0].classList.add('active');
+  }
+  else if (tabName === 'price-sheet') renderPriceSheetInit();
+  else if (tabName === 'brand-dashboard') {
+    // Populate brand selector if empty
+    const sel = document.getElementById('brand-dash-selector');
+    if (sel && sel.options.length <= 1) {
+      state.brands.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b;
+        opt.textContent = b;
+        sel.appendChild(opt);
+      });
     }
-    else if (tabName === 'price-sheet') renderPriceSheetInit();
-    else if (tabName === 'brand-dashboard') {
-      // Populate brand selector if empty
-      const sel = document.getElementById('brand-dash-selector');
-      if (sel && sel.options.length <= 1) {
-        state.brands.forEach(b => {
-          const opt = document.createElement('option');
-          opt.value = b;
-          opt.textContent = b;
-          sel.appendChild(opt);
-        });
-      }
-    }
-    else if (tabName === 'audit-log') renderAuditLog();
-  });
+  }
+  else if (tabName === 'audit-log') renderAuditLog();
 }
 
 function updateApprovalsBadge() {
