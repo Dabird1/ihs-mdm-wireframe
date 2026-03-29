@@ -2012,6 +2012,10 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 0 0-5.356-1.362M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.862m-10 1.862H7m0 0v-2c0-.656.126-1.283.356-1.862M7 20a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4m-13-2a4 4 0 1 1 8 0 4 4 0 0 1-8 0z"/></svg>
       <span>Labor Management</span>
     </button>
+    <button class="nav-item" data-tooltip="Labor capacity vs booked revenue by service line" onclick="switchTab('capacity', this)">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      <span>Capacity Planner</span>
+    </button>
     <button class="nav-item" data-tooltip="Compare distributor pricing by brand" onclick="switchTab('price-sheet', this)">
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm0 2c-2.209 0-4 1.791-4 4 0 .891.328 1.711.887 2.35H6a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2h-2.887c.559-.639.887-1.459.887-2.35 0-2.209-1.791-4-4-4z"/></svg>
       <span>Brand Price Sheet</span>
@@ -2580,6 +2584,66 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       Action Items</div><div class="card-body" id="labor-actions" style="font-size:12px;"></div></div>
   </div>
 
+  <!-- ═══ CAPACITY PLANNER TAB ═══ -->
+  <div id="tab-capacity" class="tab-panel">
+    <!-- Time Horizon Toggle -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+      <div style="display:flex; gap:6px;" id="capacity-horizon-pills"></div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <span style="font-size:11px; color:var(--text-tertiary);">Data Sources:</span>
+        <span style="font-size:10px; background:var(--bg-tertiary); padding:3px 8px; border-radius:var(--radius); color:var(--text-secondary);">Acumatica&ensp;·&ensp;DST&ensp;·&ensp;Zoho</span>
+      </div>
+    </div>
+
+    <!-- Revenue-at-Risk KPIs -->
+    <div class="kpi-grid" id="capacity-kpis" style="grid-template-columns:repeat(5,1fr); margin-bottom:16px;"></div>
+
+    <!-- Demand vs Capacity Gauges -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+        Demand vs. Capacity by Service Line
+        <span style="font-size:11px; color:var(--text-tertiary); font-weight:400;">Bar fills past 100% = over-committed &bull; Hatched = 1099 (reliability-discounted)</span>
+      </div>
+      <div class="card-body" id="capacity-gauges"></div>
+    </div>
+
+    <!-- W2/1099 Split + Crew Roster -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+      <div class="card">
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+          W2 vs 1099 Labor Mix
+          <span style="font-size:11px; color:var(--text-tertiary); font-weight:400;">Solid = W2 (deterministic) &bull; Striped = 1099 (probabilistic)</span>
+        </div>
+        <div class="card-body" id="capacity-labor-mix"></div>
+      </div>
+      <div class="card">
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+          Crew Roster Summary
+          <span style="font-size:11px; color:var(--text-tertiary); font-weight:400;">Source: Acumatica ERP</span>
+        </div>
+        <div class="card-body" id="capacity-crew-roster"></div>
+      </div>
+    </div>
+
+    <!-- Velocity + Revenue-at-Risk Detail -->
+    <div style="display:grid; grid-template-columns:2fr 1fr; gap:16px;">
+      <div class="card">
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+          Crew Velocity &amp; Throughput
+          <span style="font-size:11px; color:var(--text-tertiary); font-weight:400;">Avg jobs/crew/week derived from last 90 days of job completion data</span>
+        </div>
+        <div class="card-body" id="capacity-velocity"></div>
+      </div>
+      <div class="card">
+        <div class="card-header" style="display:flex; align-items:center; gap:8px;">
+          <svg width="16" height="16" fill="none" stroke="var(--accent-red)" viewBox="0 0 24 24" stroke-width="2"><path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Revenue at Risk — Detail
+        </div>
+        <div class="card-body" id="capacity-risk-detail" style="font-size:12px;"></div>
+      </div>
+    </div>
+  </div>
+
   </div>
 </div>
 
@@ -3104,6 +3168,7 @@ function switchTab(tabName, navItem) {
     if (currentBrand) sel.value = currentBrand;
     renderBrandDashboard(currentBrand);
   }
+  else if (tabName === 'capacity') renderCapacityPlanner();
   else if (tabName === 'audit-log') renderAuditLog();
   else if (tabName === 'settings') renderSettings();
 }
@@ -3149,6 +3214,7 @@ function updatePageHeader(tabName) {
     anomaly: { title: 'Anomaly Dashboard', subtitle: 'Review and resolve pricing anomalies' },
     systems: { title: 'System Assemblies', subtitle: 'Job-ready packages linking governed products + labor' },
     labor: { title: 'Labor Management', subtitle: 'Manage labor rates and trade pricing by market' },
+    capacity: { title: 'Capacity Planner', subtitle: 'Labor capacity vs booked revenue by service line' },
     'price-sheet': { title: 'Brand Price Sheet', subtitle: 'Compare distributor pricing by brand' },
     'brand-dashboard': { title: 'Brand Dashboard', subtitle: 'Executive brand performance and pricing intelligence' },
     settings: { title: 'Rules & Thresholds', subtitle: 'Configure governance thresholds and notifications' },
@@ -3162,6 +3228,7 @@ function updatePageHeader(tabName) {
     'item-master': 'Single source of truth for every governed SKU. The "Governed Price" is the benchmark rate across all brands. Click any row to see per-brand pricing, margins, and audit trail. Changes here flow to the Price Sheet.',
     systems: 'Each assembly is a job-ready package linking Item Master SKUs into a complete BOM. Click any component to view it in the Item Master. Filter by brand to see which assemblies each brand offers.',
     labor: 'The matrix shows base rates by brand × market, color-coded by variance from the market median (green = within 10%, amber = 10–20%, red = >20%). Hover any cell for burdened rate and detail. Action items below flag gaps and outliers.',
+    capacity: 'Capacity Cockpit — see at a glance whether you have the labor to deliver booked revenue. W2 crews are deterministic; 1099 subs are discounted by a reliability factor. The demand marker (vertical line) shows booked revenue against total capacity bars. Red = revenue at risk.',
     'price-sheet': 'Governed view of pricing derived from the Item Master. Select a brand to drill into SKU-level pricing, margins, and distributor comparisons. Changes originate in the Item Master.',
     'brand-dashboard': 'Start on Enterprise view to see portfolio health at a glance, then select any brand to see its SKUs, margins, anomalies, and distributor scorecard.',
     anomaly: 'Anomalies surface pricing, margin, and sync problems automatically. High severity = immediate revenue impact. Click any anomaly to see root cause and action.',
@@ -6460,6 +6527,182 @@ function saveLaborRate() {
   closeModal('labor-rate-modal');
   showToast('Labor rate added successfully', 'success');
   logAudit('ADD', serviceLine + ' - ' + trade, 'Labor Rate', '—', 'Active');
+}
+
+// ── CAPACITY PLANNER ──
+let capacityHorizon = 'april';
+
+function renderCapacityPlanner() {
+  // ── Horizon config ──
+  const horizons = {
+    april:  { label: 'April 2026', weeks: 4, revenueTarget: 55000000 },
+    q2:     { label: 'Q2 2026',    weeks: 13, revenueTarget: 145000000 },
+    next90: { label: 'Next 90 Days', weeks: 13, revenueTarget: 138000000 }
+  };
+  const hz = horizons[capacityHorizon];
+
+  // ── Service-line capacity data (simulated — would come from Acumatica + DST + Zoho) ──
+  const serviceLines = [
+    { name: 'Roofing',    bookedRevenue: 18200000, w2Crews: 42, w2Velocity: 3.2, w2AvgJob: 14800, sub1099: 28, subVelocity: 2.6, subAvgJob: 13200, subReliability: 0.65, color: '#3b82f6' },
+    { name: 'Siding',     bookedRevenue: 12400000, w2Crews: 31, w2Velocity: 2.8, w2AvgJob: 11500, sub1099: 12, subVelocity: 2.1, subAvgJob: 10800, subReliability: 0.60, color: '#8b5cf6' },
+    { name: 'Windows',    bookedRevenue: 9800000,  w2Crews: 24, w2Velocity: 3.5, w2AvgJob: 9200,  sub1099: 8,  subVelocity: 2.8, subAvgJob: 8500,  subReliability: 0.70, color: '#06b6d4' },
+    { name: 'Gutters',    bookedRevenue: 5100000,  w2Crews: 15, w2Velocity: 5.1, w2AvgJob: 4200,  sub1099: 10, subVelocity: 4.2, subAvgJob: 3900,  subReliability: 0.55, color: '#10b981' },
+    { name: 'Insulation', bookedRevenue: 4900000,  w2Crews: 12, w2Velocity: 4.0, w2AvgJob: 6800,  sub1099: 6,  subVelocity: 3.2, subAvgJob: 6100,  subReliability: 0.60, color: '#f59e0b' },
+    { name: 'Bath',       bookedRevenue: 4600000,  w2Crews: 10, w2Velocity: 2.2, w2AvgJob: 12400, sub1099: 5,  subVelocity: 1.8, subAvgJob: 11000, subReliability: 0.65, color: '#ef4444' }
+  ];
+
+  // ── Compute capacity per service line ──
+  serviceLines.forEach(sl => {
+    sl.w2Capacity    = sl.w2Crews * sl.w2Velocity * sl.w2AvgJob * hz.weeks;
+    sl.subCapRaw     = sl.sub1099 * sl.subVelocity * sl.subAvgJob * hz.weeks;
+    sl.subCapAdj     = sl.subCapRaw * sl.subReliability;
+    sl.totalCapacity = sl.w2Capacity + sl.subCapAdj;
+    sl.gap           = sl.bookedRevenue - sl.totalCapacity;
+    sl.utilization   = sl.totalCapacity > 0 ? (sl.bookedRevenue / sl.totalCapacity * 100) : 0;
+  });
+
+  const totalBooked   = serviceLines.reduce((s, l) => s + l.bookedRevenue, 0);
+  const totalCapacity  = serviceLines.reduce((s, l) => s + l.totalCapacity, 0);
+  const totalW2Cap     = serviceLines.reduce((s, l) => s + l.w2Capacity, 0);
+  const totalSubCap    = serviceLines.reduce((s, l) => s + l.subCapAdj, 0);
+  const totalGap       = totalBooked - totalCapacity;
+  const totalW2Crews   = serviceLines.reduce((s, l) => s + l.w2Crews, 0);
+  const totalSubCrews  = serviceLines.reduce((s, l) => s + l.sub1099, 0);
+  const overCommitted  = serviceLines.filter(sl => sl.gap > 0).length;
+
+  function fmtM(v) { return '$' + (Math.abs(v) / 1e6).toFixed(1) + 'M'; }
+  function fmtK(v) { return '$' + (Math.abs(v) / 1e3).toFixed(0) + 'K'; }
+  function pct(v)  { return v.toFixed(1) + '%'; }
+
+  // ── Horizon pills ──
+  const pillBox = document.getElementById('capacity-horizon-pills');
+  if (pillBox) {
+    pillBox.innerHTML = Object.entries(horizons).map(([key, h]) =>
+      '<button class="service-line-pill' + (key === capacityHorizon ? ' active' : '') + '" onclick="capacityHorizon=\'' + key + '\'; renderCapacityPlanner();">' + h.label + '</button>'
+    ).join('');
+  }
+
+  // ── KPI Cards ──
+  const kpiGrid = document.getElementById('capacity-kpis');
+  if (kpiGrid) {
+    const gapIsPositive = totalGap > 0;
+    kpiGrid.innerHTML = [
+      { label: 'Booked Revenue', value: fmtM(totalBooked), sub: hz.label, accent: '' },
+      { label: 'Total Capacity', value: fmtM(totalCapacity), sub: pct(totalW2Cap / totalCapacity * 100) + ' W2 · ' + pct(totalSubCap / totalCapacity * 100) + ' 1099', accent: '' },
+      { label: 'Revenue-at-Risk', value: gapIsPositive ? fmtM(totalGap) : '$0', sub: gapIsPositive ? overCommitted + ' service lines over-committed' : 'All lines within capacity', accent: gapIsPositive ? 'color:var(--accent-red)' : 'color:var(--accent-green)' },
+      { label: 'Utilization', value: pct(totalBooked / totalCapacity * 100), sub: totalBooked > totalCapacity ? 'OVER-COMMITTED' : 'Healthy', accent: totalBooked > totalCapacity ? 'color:var(--accent-red)' : 'color:var(--accent-green)' },
+      { label: 'Active Crews', value: (totalW2Crews + totalSubCrews).toString(), sub: totalW2Crews + ' W2 · ' + totalSubCrews + ' 1099', accent: '' }
+    ].map(k => '<div class="kpi-card"><div class="kpi-label">' + k.label + '</div><div class="kpi-value" style="' + k.accent + '">' + k.value + '</div><div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">' + k.sub + '</div></div>').join('');
+  }
+
+  // ── Demand vs Capacity Gauges ──
+  const gaugeBox = document.getElementById('capacity-gauges');
+  if (gaugeBox) {
+    gaugeBox.innerHTML = serviceLines.map(sl => {
+      const maxVal = Math.max(sl.bookedRevenue, sl.totalCapacity) * 1.1;
+      const w2Pct  = (sl.w2Capacity / maxVal * 100).toFixed(1);
+      const subPct = (sl.subCapAdj / maxVal * 100).toFixed(1);
+      const demandPct = (sl.bookedRevenue / maxVal * 100).toFixed(1);
+      const overCap = sl.gap > 0;
+      return '<div style="margin-bottom:14px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">' +
+          '<span style="font-weight:600; font-size:13px; color:var(--text-primary);">' + sl.name + '</span>' +
+          '<span style="font-size:11px; color:var(--text-tertiary);">Booked ' + fmtM(sl.bookedRevenue) + ' / Capacity ' + fmtM(sl.totalCapacity) + '&ensp;' +
+            '<span style="font-weight:600; color:' + (overCap ? 'var(--accent-red)' : 'var(--accent-green)') + ';">' + pct(sl.utilization) + '</span></span>' +
+        '</div>' +
+        '<div style="position:relative; height:28px; background:var(--bg-tertiary); border-radius:6px; overflow:hidden;">' +
+          '<!-- W2 capacity -->' +
+          '<div style="position:absolute; left:0; top:0; height:100%; width:' + w2Pct + '%; background:' + sl.color + '; opacity:0.85; border-radius:6px 0 0 6px;" title="W2: ' + fmtM(sl.w2Capacity) + '"></div>' +
+          '<!-- 1099 capacity (hatched) -->' +
+          '<div style="position:absolute; left:' + w2Pct + '%; top:0; height:100%; width:' + subPct + '%; background:repeating-linear-gradient(45deg, ' + sl.color + '33, ' + sl.color + '33 4px, ' + sl.color + '66 4px, ' + sl.color + '66 8px); border-radius:0;" title="1099 (adj): ' + fmtM(sl.subCapAdj) + '"></div>' +
+          '<!-- Demand marker -->' +
+          '<div style="position:absolute; left:' + demandPct + '%; top:-2px; width:3px; height:32px; background:' + (overCap ? 'var(--accent-red)' : 'var(--text-primary)') + '; border-radius:2px;" title="Demand: ' + fmtM(sl.bookedRevenue) + '"></div>' +
+          (overCap ? '<div style="position:absolute; right:4px; top:50%; transform:translateY(-50%); font-size:10px; font-weight:700; color:var(--accent-red);">GAP ' + fmtM(sl.gap) + '</div>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ── W2 vs 1099 Labor Mix ──
+  const mixBox = document.getElementById('capacity-labor-mix');
+  if (mixBox) {
+    mixBox.innerHTML = serviceLines.map(sl => {
+      const total = sl.w2Crews + sl.sub1099;
+      const w2Frac = (sl.w2Crews / total * 100).toFixed(0);
+      const subFrac = (sl.sub1099 / total * 100).toFixed(0);
+      return '<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">' +
+        '<span style="width:80px; font-size:12px; font-weight:600; color:var(--text-primary);">' + sl.name + '</span>' +
+        '<div style="flex:1; display:flex; height:22px; border-radius:4px; overflow:hidden;">' +
+          '<div style="width:' + w2Frac + '%; background:' + sl.color + '; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:#fff;" title="W2: ' + sl.w2Crews + ' crews">' + (parseInt(w2Frac) > 15 ? sl.w2Crews + ' W2' : '') + '</div>' +
+          '<div style="width:' + subFrac + '%; background:repeating-linear-gradient(45deg, ' + sl.color + '55, ' + sl.color + '55 3px, ' + sl.color + '88 3px, ' + sl.color + '88 6px); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:#fff;" title="1099: ' + sl.sub1099 + ' crews (' + (sl.subReliability * 100).toFixed(0) + '% reliability)">' + (parseInt(subFrac) > 15 ? sl.sub1099 + ' 1099' : '') + '</div>' +
+        '</div>' +
+        '<span style="font-size:11px; color:var(--text-tertiary); width:40px; text-align:right;">' + total + '</span>' +
+      '</div>';
+    }).join('') +
+    '<div style="display:flex; gap:16px; margin-top:8px; font-size:11px; color:var(--text-tertiary);">' +
+      '<span style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:var(--accent-blue); border-radius:2px;"></span> W2 (deterministic)</span>' +
+      '<span style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:repeating-linear-gradient(45deg, var(--accent-blue)55, var(--accent-blue)55 2px, var(--accent-blue)88 2px, var(--accent-blue)88 4px); border-radius:2px;"></span> 1099 (reliability-discounted)</span>' +
+    '</div>';
+  }
+
+  // ── Crew Roster Summary ──
+  const rosterBox = document.getElementById('capacity-crew-roster');
+  if (rosterBox) {
+    rosterBox.innerHTML = '<div class="table-wrapper"><table style="font-size:12px; width:100%;">' +
+      '<thead><tr style="background:var(--bg-tertiary);"><th style="padding:6px 10px; text-align:left;">Service Line</th><th style="padding:6px 10px; text-align:center;">W2</th><th style="padding:6px 10px; text-align:center;">1099</th><th style="padding:6px 10px; text-align:center;">Reliability</th><th style="padding:6px 10px; text-align:right;">Eff. Capacity</th></tr></thead>' +
+      '<tbody>' + serviceLines.map(sl =>
+        '<tr><td style="padding:6px 10px; font-weight:500;">' + sl.name + '</td>' +
+        '<td style="padding:6px 10px; text-align:center;">' + sl.w2Crews + '</td>' +
+        '<td style="padding:6px 10px; text-align:center;">' + sl.sub1099 + '</td>' +
+        '<td style="padding:6px 10px; text-align:center;">' + (sl.subReliability * 100).toFixed(0) + '%</td>' +
+        '<td style="padding:6px 10px; text-align:right; font-weight:600; color:' + (sl.gap > 0 ? 'var(--accent-red)' : 'var(--accent-green)') + ';">' + fmtM(sl.totalCapacity) + '</td></tr>'
+      ).join('') +
+      '<tr style="font-weight:700; border-top:2px solid var(--border-primary);"><td style="padding:6px 10px;">TOTAL</td><td style="padding:6px 10px; text-align:center;">' + totalW2Crews + '</td><td style="padding:6px 10px; text-align:center;">' + totalSubCrews + '</td><td style="padding:6px 10px; text-align:center;">—</td><td style="padding:6px 10px; text-align:right;">' + fmtM(totalCapacity) + '</td></tr>' +
+      '</tbody></table></div>';
+  }
+
+  // ── Crew Velocity & Throughput ──
+  const velBox = document.getElementById('capacity-velocity');
+  if (velBox) {
+    velBox.innerHTML = '<div class="table-wrapper"><table style="font-size:12px; width:100%;">' +
+      '<thead><tr style="background:var(--bg-tertiary);"><th style="padding:6px 10px; text-align:left;">Service Line</th><th style="padding:6px 10px; text-align:center;">W2 Jobs/Crew/Wk</th><th style="padding:6px 10px; text-align:center;">1099 Jobs/Crew/Wk</th><th style="padding:6px 10px; text-align:center;">Avg Ticket (W2)</th><th style="padding:6px 10px; text-align:center;">Avg Ticket (1099)</th><th style="padding:6px 10px; text-align:right;">Weekly Throughput</th></tr></thead>' +
+      '<tbody>' + serviceLines.map(sl => {
+        const weeklyThru = (sl.w2Crews * sl.w2Velocity * sl.w2AvgJob) + (sl.sub1099 * sl.subVelocity * sl.subAvgJob * sl.subReliability);
+        return '<tr><td style="padding:6px 10px; font-weight:500;">' + sl.name + '</td>' +
+        '<td style="padding:6px 10px; text-align:center;">' + sl.w2Velocity.toFixed(1) + '</td>' +
+        '<td style="padding:6px 10px; text-align:center;">' + sl.subVelocity.toFixed(1) + '</td>' +
+        '<td style="padding:6px 10px; text-align:center;">' + fmtK(sl.w2AvgJob) + '</td>' +
+        '<td style="padding:6px 10px; text-align:center;">' + fmtK(sl.subAvgJob) + '</td>' +
+        '<td style="padding:6px 10px; text-align:right; font-weight:600;">' + fmtK(weeklyThru) + '/wk</td></tr>';
+      }).join('') +
+      '</tbody></table></div>' +
+      '<div style="margin-top:8px; font-size:11px; color:var(--text-tertiary);">Velocity metrics derived from last 90 days of job completion data (DST + Zoho). 1099 throughput adjusted by reliability factor.</div>';
+  }
+
+  // ── Revenue at Risk Detail ──
+  const riskBox = document.getElementById('capacity-risk-detail');
+  if (riskBox) {
+    const atRisk = serviceLines.filter(sl => sl.gap > 0).sort((a, b) => b.gap - a.gap);
+    if (atRisk.length === 0) {
+      riskBox.innerHTML = '<div style="text-align:center; padding:20px; color:var(--accent-green);"><svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom:8px;"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><div style="font-weight:600;">All Clear</div><div style="font-size:11px; color:var(--text-tertiary); margin-top:4px;">All service lines within capacity for ' + hz.label + '</div></div>';
+    } else {
+      riskBox.innerHTML = atRisk.map(sl => {
+        const crewsNeeded = Math.ceil(sl.gap / (sl.w2Velocity * sl.w2AvgJob * hz.weeks));
+        return '<div style="padding:8px 0; border-bottom:1px solid var(--border-primary);">' +
+          '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+            '<span style="font-weight:600; color:var(--text-primary);">' + sl.name + '</span>' +
+            '<span class="badge badge-red" style="font-size:10px;">' + fmtM(sl.gap) + ' at risk</span>' +
+          '</div>' +
+          '<div style="font-size:11px; color:var(--text-tertiary); margin-top:4px;">' +
+            'Need ~' + crewsNeeded + ' additional W2-equivalent crews &bull; Utilization: ' + pct(sl.utilization) +
+          '</div>' +
+        '</div>';
+      }).join('') +
+      '<div style="margin-top:10px; padding:8px 12px; background:var(--accent-red-light, rgba(239,68,68,0.08)); border-radius:var(--radius); font-size:11px; color:var(--accent-red);">' +
+        '<strong>Total revenue at risk:</strong> ' + fmtM(totalGap) + ' across ' + atRisk.length + ' service line' + (atRisk.length > 1 ? 's' : '') + ' for ' + hz.label +
+      '</div>';
+    }
+  }
 }
 
 // ── INIT ──
