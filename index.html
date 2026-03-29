@@ -1142,7 +1142,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 }
 
 /* ── UTILITIES ── */
-.tab-panel { display: none; animation: fadeUp 0.18s ease; }
+.tab-panel { display: none; animation: fadeUp 0.18s ease; position: relative; z-index: 91; }
 .tab-panel.active { display: block; }
 
 @keyframes fadeUp {
@@ -2004,9 +2004,9 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m0 0H3m2 0V5m0 0h4m4 0H9m6 0h4a2 2 0 0 1 2 2v4m0 0v4m0 0h2m-2 0v-4m0 0h-4m0 0h4m-6 6h-4a2 2 0 0 0-2 2v4m0 0H3m2 0v4m0 0h4"/></svg>
       <span>Item Master</span>
     </button>
-    <button class="nav-item" data-tooltip="Configure roofing systems and material assemblies" onclick="switchTab('systems', this)">
+    <button class="nav-item" data-tooltip="Job-ready assemblies linking governed products + labor into complete packages" onclick="switchTab('systems', this)">
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m0 0l8 4 8-4m0 0v10l-8 4-8-4V7m8 4v10m0 0l8-4m-8 4l-8-4"/></svg>
-      <span>Systems & Assemblies</span>
+      <span>System Assemblies</span>
     </button>
     <button class="nav-item" data-tooltip="Manage labor rates and trade pricing" onclick="switchTab('labor', this)">
       <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 0 0-5.356-1.362M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.862m-10 1.862H7m0 0v-2c0-.656.126-1.283.356-1.862M7 20a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4m-13-2a4 4 0 1 1 8 0 4 4 0 0 1-8 0z"/></svg>
@@ -2413,30 +2413,82 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 
     <!-- WAREHOUSE SUB-TAB -->
     <div id="reports-warehouse" class="tab-panel">
-      <div style="display:grid; grid-template-columns:200px 1fr; gap:16px;">
-        <div class="card">
-          <div class="card-header">Sample Queries</div>
-          <div class="card-body">
-            <button class="btn btn-secondary" onclick="loadQuery('select COUNT(*) FROM products WHERE price > ceiling_price')" style="width:100%; margin-bottom:8px; justify-content:flex-start; white-space:normal; text-align:left; overflow:hidden; text-overflow:ellipsis;">All products above ceiling</button>
-            <button class="btn btn-secondary" onclick="loadQuery('select brand, COUNT(*) as anomaly_count FROM anomalies GROUP BY brand ORDER BY anomaly_count DESC')" style="width:100%; margin-bottom:8px; justify-content:flex-start; white-space:normal; text-align:left; overflow:hidden; text-overflow:ellipsis;">Anomaly rate by distributor</button>
-            <button class="btn btn-secondary" onclick="loadQuery('select brand, AVG(gm_pct) as avg_gm FROM products GROUP BY brand ORDER BY avg_gm DESC')" style="width:100%; margin-bottom:8px; justify-content:flex-start; white-space:normal; text-align:left; overflow:hidden; text-overflow:ellipsis;">Brand GM% ranking</button>
-            <button class="btn btn-secondary" onclick="loadQuery('select sku, abc_price, qxo_price, (abc_price - qxo_price) as delta FROM products WHERE abc_price != qxo_price ORDER BY delta DESC')" style="width:100%; justify-content:flex-start; white-space:normal; text-align:left; overflow:hidden; text-overflow:ellipsis;">Cost delta: ABC vs QXO</button>
-          </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:10px 14px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:8px;font-size:12px;color:var(--text-secondary);line-height:1.5;">
+        <svg width="16" height="16" fill="none" stroke="var(--accent-blue)" viewBox="0 0 24 24" stroke-width="2"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+        <span>Query live MDM data directly. Use the guided builder to pick your data source, or switch to SQL mode for advanced queries. Results are limited to 50 rows — export for full datasets.</span>
+      </div>
+
+      <!-- Guided query builder -->
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+          Query Builder
+          <button class="btn btn-sm btn-secondary" id="sql-toggle-btn" onclick="toggleSQLMode()">Switch to SQL Mode</button>
         </div>
-        <div class="card">
-          <div class="card-header">Query Editor</div>
-          <div class="card-body">
-            <textarea id="query-editor" style="width:100%; height:150px; padding:12px; border:1.5px solid var(--border-primary); border-radius:7px; font-family:monospace; font-size:11px; background:var(--bg-secondary); color:var(--text-primary); resize:vertical; margin-bottom:12px; outline:none;" placeholder="SELECT * FROM products WHERE..."></textarea>
-            <button class="btn btn-primary" onclick="executeQuery()" style="width:100%; margin-bottom:12px;">Execute Query</button>
-            <div id="query-stats" style="font-size:11px; color:var(--text-secondary); margin-bottom:12px;"></div>
-            <div class="table-wrapper">
-              <table id="query-results" style="display:none;">
-                <thead id="query-thead"></thead>
-                <tbody id="query-tbody"></tbody>
-              </table>
+        <div class="card-body">
+          <!-- Guided mode -->
+          <div id="warehouse-guided">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
+              <div>
+                <label style="font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">DATA SOURCE</label>
+                <select class="filter-select" id="wh-source" style="width:100%;" onchange="runWarehouseQuery()">
+                  <option value="products">Products</option>
+                  <option value="anomalies">Anomalies</option>
+                  <option value="labor">Labor Rates</option>
+                  <option value="systems">Systems</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">GROUP BY</label>
+                <select class="filter-select" id="wh-groupby" style="width:100%;" onchange="runWarehouseQuery()">
+                  <option value="brand">Brand</option>
+                  <option value="category">Category</option>
+                  <option value="service_line">Service Line</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">MEASURE</label>
+                <select class="filter-select" id="wh-measure" style="width:100%;" onchange="runWarehouseQuery()">
+                  <option value="count">Count</option>
+                  <option value="avg_gm">Avg GM%</option>
+                  <option value="avg_price">Avg Price</option>
+                  <option value="sum_price">Total Value</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">FILTER (optional)</label>
+                <select class="filter-select" id="wh-filter-brand" style="width:100%;" onchange="runWarehouseQuery()">
+                  <option value="All">All Brands</option>
+                </select>
+              </div>
             </div>
-            <div id="query-empty-state" style="text-align:center; padding:20px; color:var(--text-tertiary); font-size:12px;">No results yet. Run a query to see data.</div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+              <span style="font-size:11px;color:var(--text-tertiary);align-self:center;">Quick queries:</span>
+              <button class="btn btn-sm btn-secondary" onclick="setWarehousePreset('gm-by-brand')">GM% by Brand</button>
+              <button class="btn btn-sm btn-secondary" onclick="setWarehousePreset('anomalies-by-brand')">Anomalies by Brand</button>
+              <button class="btn btn-sm btn-secondary" onclick="setWarehousePreset('labor-by-market')">Labor Rates by Market</button>
+              <button class="btn btn-sm btn-secondary" onclick="setWarehousePreset('price-by-category')">Pricing by Category</button>
+            </div>
           </div>
+          <!-- SQL mode (hidden by default) -->
+          <div id="warehouse-sql" style="display:none;">
+            <textarea id="query-editor" style="width:100%; height:120px; padding:12px; border:1.5px solid var(--border-primary); border-radius:7px; font-family:monospace; font-size:11px; background:var(--bg-secondary); color:var(--text-primary); resize:vertical; margin-bottom:8px; outline:none;" placeholder="SELECT * FROM products WHERE..."></textarea>
+            <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+              <button class="btn btn-primary btn-sm" onclick="executeQuery()">Execute</button>
+              <button class="btn btn-sm btn-secondary" onclick="loadQuery('select brand, COUNT(*) as cnt, AVG(gm_pct) as avg_gm FROM products GROUP BY brand ORDER BY avg_gm DESC')">Brand GM%</button>
+              <button class="btn btn-sm btn-secondary" onclick="loadQuery('select brand, COUNT(*) as anomaly_count FROM anomalies GROUP BY brand ORDER BY anomaly_count DESC')">Anomalies by Brand</button>
+              <button class="btn btn-sm btn-secondary" onclick="loadQuery('select sku, abc_price, qxo_price, srs_price, (abc_price - qxo_price) as delta FROM products WHERE abc_price != qxo_price ORDER BY delta DESC')">Price Deltas</button>
+            </div>
+          </div>
+          <!-- Results area -->
+          <div id="query-stats" style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;"></div>
+          <div class="table-wrapper">
+            <table id="query-results" style="display:none;">
+              <thead id="query-thead"></thead>
+              <tbody id="query-tbody"></tbody>
+            </table>
+          </div>
+          <div id="query-empty-state" style="display:none;"></div>
+          <div id="warehouse-guided-results"></div>
         </div>
       </div>
     </div>
@@ -2446,7 +2498,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   <div id="tab-systems" class="tab-panel">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:8px;font-size:12px;color:var(--text-secondary);">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-purple)" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span>Systems define which products (BOMs) each brand offers customers. Changing a system here updates governed pricing and assemblies across all associated brands.</span>
+      <span>System Assemblies define the job-ready packages (BOMs) your brands offer. Each assembly links Item Master SKUs into a complete installation package. Click any BOM component to view it in the Item Master.</span>
     </div>
     <div class="toolbar" style="margin-bottom:20px;">
       <select class="filter-select" id="systems-brand-filter" onchange="renderSystems()">
@@ -2475,9 +2527,6 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   <!-- TAB: LABOR MANAGEMENT -->
   <div id="tab-labor" class="tab-panel">
     <div class="toolbar" style="margin-bottom:16px;">
-      <select class="filter-select" id="labor-brand-filter" onchange="renderLabor()">
-        <option value="All">All Brands</option>
-      </select>
       <select class="filter-select" id="labor-service-filter" onchange="renderLabor()">
         <option value="All">All Service Lines</option>
         <option value="Roofing (steep slope)">Roofing (steep slope)</option>
@@ -2498,7 +2547,6 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
         <option value="Canada">Canada</option>
       </select>
       <select class="filter-select" id="labor-trade-filter" onchange="renderLabor()">
-        <option value="All">All Trades</option>
         <option value="Lead Installer">Lead Installer</option>
         <option value="Helper">Helper</option>
         <option value="Project Manager">Project Manager</option>
@@ -2511,10 +2559,15 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 
     <div class="kpi-grid" id="labor-kpis" style="margin-bottom:16px;"></div>
 
-    <div class="card"><div class="card-body"><div class="table-wrapper">
-      <table id="labor-table" style="font-size:12px;"></table>
+    <!-- Rate Comparison Matrix -->
+    <div class="card" style="margin-bottom:16px;"><div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">Rate Comparison Matrix<span style="font-size:11px;color:var(--text-tertiary);font-weight:400;">Cells show base rate by brand vs. market &bull; Color = variance from median</span></div><div class="card-body"><div class="table-wrapper">
+      <table id="labor-matrix" style="font-size:12px;"></table>
     </div></div></div>
-    <div id="labor-pagination" class="pagination" style="margin-top:12px;"></div>
+
+    <!-- Action Items -->
+    <div class="card" id="labor-actions-card"><div class="card-header" style="display:flex;align-items:center;gap:8px;">
+      <svg width="16" height="16" fill="none" stroke="var(--accent-amber)" viewBox="0 0 24 24" stroke-width="2"><path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Action Items</div><div class="card-body" id="labor-actions" style="font-size:12px;"></div></div>
   </div>
 
   </div>
@@ -2976,6 +3029,15 @@ function saveState() {
   localStorage.setItem('ihs-state', JSON.stringify(state));
 }
 
+function jumpToItemMaster(productName) {
+  // Switch to Item Master tab and search for the product
+  const searchInput = document.getElementById('search-input');
+  if (searchInput) searchInput.value = productName;
+  const navItem = document.querySelectorAll('.nav-item')[1]; // Item Master is 2nd nav item
+  switchTab('item-master', navItem);
+  showToast('Showing "' + productName + '" in Item Master', 'info');
+}
+
 function switchTab(tabName, navItem) {
   // Compass is a persistent sidebar — just toggle it, don't switch tabs
   if (tabName === 'compass') {
@@ -3075,7 +3137,7 @@ function updatePageHeader(tabName) {
     dashboard: { title: 'Dashboard', subtitle: 'Executive overview of pricing governance' },
     'item-master': { title: 'Item Master', subtitle: 'Browse and manage all governed product SKUs' },
     anomaly: { title: 'Anomaly Dashboard', subtitle: 'Review and resolve pricing anomalies' },
-    systems: { title: 'Systems & Assemblies', subtitle: 'Configure roofing systems and material BOMs' },
+    systems: { title: 'System Assemblies', subtitle: 'Job-ready packages linking governed products + labor' },
     labor: { title: 'Labor Management', subtitle: 'Manage labor rates and trade pricing by market' },
     'price-sheet': { title: 'Brand Price Sheet', subtitle: 'Compare distributor pricing by brand' },
     'brand-dashboard': { title: 'Brand Dashboard', subtitle: 'Executive brand performance and pricing intelligence' },
@@ -3088,8 +3150,8 @@ function updatePageHeader(tabName) {
   const pageContext = {
     dashboard: 'Click any KPI card to jump to the underlying data. Use the brand dropdown to filter by brand, or service line pills to filter by trade.',
     'item-master': 'Single source of truth for every governed SKU. Search by name or SKU, filter by brand/category, and click any row to see full pricing lineage.',
-    systems: 'Systems define the BOMs your brands sell. Each system links governed products + labor into a complete job package. Filter by brand to see which systems each brand offers.',
-    labor: 'Labor rates drive 40\u201360% of total job cost. Filter by brand, market, or trade. Rates are benchmarked against Xactimate and grouped by service line.',
+    systems: 'Each assembly is a job-ready package linking Item Master SKUs into a complete BOM. Click any component to view it in the Item Master. Filter by brand to see which assemblies each brand offers.',
+    labor: 'The matrix shows base rates by brand × market, color-coded by variance from the market median (green = within 10%, amber = 10–20%, red = >20%). Hover any cell for burdened rate and detail. Action items below flag gaps and outliers.',
     'price-sheet': 'Enterprise pricing overview across all brands. Select a brand from the dropdown to drill into SKU-level pricing, margins, and distributor comparisons.',
     'brand-dashboard': 'Start on Enterprise view to see portfolio health at a glance, then select any brand to see its SKUs, margins, anomalies, and distributor scorecard.',
     anomaly: 'Anomalies surface pricing, margin, and sync problems automatically. High severity = immediate revenue impact. Click any anomaly to see root cause and action.',
@@ -4031,51 +4093,58 @@ function runTemplateReport(templateId) {
   // Hide template grid, show back button + report
   grid.innerHTML = `<button class="btn btn-secondary" onclick="renderReports()" style="margin-bottom:16px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back to Reports</button>`;
 
-  if (templateId === 'margin-analysis') {
-    // Live margin analysis from MDM data
-    let html = '<div class="card"><div class="card-header">Margin Analysis by Brand</div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Brand</th><th>SKUs</th><th>Avg GM%</th><th>Min GM%</th><th>Max GM%</th><th>Below Threshold</th></tr></thead><tbody>';
-    state.brands.forEach(b => {
-      const prods = state.products.filter(p => p.brand === b);
-      if (!prods.length) return;
-      const avgGM = (prods.reduce((s,p)=>s+p.gm_pct,0)/prods.length).toFixed(1);
-      const minGM = Math.min(...prods.map(p=>p.gm_pct));
-      const maxGM = Math.max(...prods.map(p=>p.gm_pct));
-      const belowThreshold = prods.filter(p => p.gm_pct < 25).length;
-      html += `<tr><td style="font-weight:600;">${b}</td><td>${prods.length}</td><td>${avgGM}%</td><td>${minGM}%</td><td>${maxGM}%</td><td>${belowThreshold > 0 ? '<span style="color:var(--accent-red);font-weight:700;">'+belowThreshold+'</span>' : '0'}</td></tr>`;
-    });
-    html += '</tbody></table></div></div></div>';
+  const REPORT_PREVIEW_LIMIT = 10;
 
-    // Bar chart
-    html += '<div class="card" style="margin-top:16px;"><div class="card-header">GM% Distribution by Brand</div><div class="card-body"><div class="bar-chart">';
-    const brandGMs = state.brands.map(b => {
+  if (templateId === 'margin-analysis') {
+    const brandData = state.brands.map(b => {
       const prods = state.products.filter(p => p.brand === b);
-      return { brand: b, gm: prods.length ? (prods.reduce((s,p)=>s+p.gm_pct,0)/prods.length) : 0 };
-    }).sort((a,b) => b.gm - a.gm).slice(0, 10);
-    const maxGM = Math.max(...brandGMs.map(b=>b.gm), 1);
-    brandGMs.forEach(bg => {
-      html += `<div class="bar-row"><div class="bar-label">${bg.brand}</div><div class="bar-container"><div class="bar-fill" style="width:${(bg.gm/maxGM*100)}%;background:${bg.gm >= 25 ? 'var(--gradient-green)' : 'var(--gradient-red)'};"></div></div><div class="bar-value">${bg.gm.toFixed(1)}%</div></div>`;
+      if (!prods.length) return null;
+      return { brand: b, skus: prods.length, avgGM: (prods.reduce((s,p)=>s+p.gm_pct,0)/prods.length).toFixed(1), minGM: Math.min(...prods.map(p=>p.gm_pct)), maxGM: Math.max(...prods.map(p=>p.gm_pct)), belowThreshold: prods.filter(p => p.gm_pct < 25).length };
+    }).filter(Boolean).sort((a,b) => parseFloat(b.avgGM) - parseFloat(a.avgGM));
+    const preview = brandData.slice(0, REPORT_PREVIEW_LIMIT);
+    const remaining = brandData.length - preview.length;
+
+    let html = '<div class="card"><div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">Margin Analysis by Brand<button class="btn btn-secondary btn-sm" onclick="alert(\'Export would generate a CSV/Excel download in production\')">↓ Export Full Report</button></div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Brand</th><th>SKUs</th><th>Avg GM%</th><th>Min GM%</th><th>Max GM%</th><th>Below Threshold</th></tr></thead><tbody>';
+    preview.forEach(d => {
+      html += `<tr><td style="font-weight:600;">${d.brand}</td><td>${d.skus}</td><td>${d.avgGM}%</td><td>${d.minGM}%</td><td>${d.maxGM}%</td><td>${d.belowThreshold > 0 ? '<span style="color:var(--accent-red);font-weight:700;">'+d.belowThreshold+'</span>' : '0'}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+    if (remaining > 0) html += `<div style="text-align:center;padding:10px;font-size:12px;color:var(--text-tertiary);border-top:1px solid var(--border-primary);margin-top:8px;">${remaining} more brands — export for full dataset</div>`;
+    html += '</div></div>';
+
+    // Bar chart (top 10)
+    html += '<div class="card" style="margin-top:16px;"><div class="card-header">Top 10 Brands by GM%</div><div class="card-body"><div class="bar-chart">';
+    const top10 = brandData.slice(0, 10);
+    const maxGM = Math.max(...top10.map(b=>parseFloat(b.avgGM)), 1);
+    top10.forEach(bg => {
+      html += `<div class="bar-row"><div class="bar-label">${bg.brand}</div><div class="bar-container"><div class="bar-fill" style="width:${(parseFloat(bg.avgGM)/maxGM*100)}%;background:${parseFloat(bg.avgGM) >= 25 ? 'var(--gradient-green)' : 'var(--gradient-red)'};"></div></div><div class="bar-value">${bg.avgGM}%</div></div>`;
     });
     html += '</div></div></div>';
     output.innerHTML = html;
 
   } else if (templateId === 'brand-comparison') {
-    let html = '<div class="card"><div class="card-header">Brand Comparison Dashboard</div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Brand</th><th>SKUs</th><th>Avg GM%</th><th>Active Anomalies</th><th>Avg ABC Price</th><th>Avg QXO Price</th><th>Health Score</th></tr></thead><tbody>';
-    state.brands.forEach(b => {
+    const brandData = state.brands.map(b => {
       const prods = state.products.filter(p => p.brand === b);
       const anoms = state.anomalies.filter(a => a.brand === b && a.status === 'active').length;
-      const avgGM = prods.length ? (prods.reduce((s,p)=>s+p.gm_pct,0)/prods.length).toFixed(1) : '0.0';
-      const avgABC = prods.length ? '$'+(prods.reduce((s,p)=>s+p.abc_price,0)/prods.length).toFixed(2) : '--';
-      const avgQXO = prods.length ? '$'+(prods.reduce((s,p)=>s+p.qxo_price,0)/prods.length).toFixed(2) : '--';
       const health = Math.max(0, 100 - anoms * 15);
-      const healthColor = health >= 80 ? 'var(--accent-green)' : health >= 50 ? 'var(--accent-amber)' : 'var(--accent-red)';
-      html += `<tr><td style="font-weight:600;">${b}</td><td>${prods.length}</td><td>${avgGM}%</td><td>${anoms}</td><td>${avgABC}</td><td>${avgQXO}</td><td><span style="color:${healthColor};font-weight:700;">${health}</span></td></tr>`;
+      return { brand: b, skus: prods.length, avgGM: prods.length ? (prods.reduce((s,p)=>s+p.gm_pct,0)/prods.length).toFixed(1) : '0.0', anoms, avgABC: prods.length ? '$'+(prods.reduce((s,p)=>s+p.abc_price,0)/prods.length).toFixed(2) : '--', avgQXO: prods.length ? '$'+(prods.reduce((s,p)=>s+p.qxo_price,0)/prods.length).toFixed(2) : '--', health };
+    }).sort((a,b) => b.health - a.health);
+    const preview = brandData.slice(0, REPORT_PREVIEW_LIMIT);
+    const remaining = brandData.length - preview.length;
+
+    let html = '<div class="card"><div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">Brand Comparison Dashboard<button class="btn btn-secondary btn-sm" onclick="alert(\'Export would generate a CSV/Excel download in production\')">↓ Export Full Report</button></div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Brand</th><th>SKUs</th><th>Avg GM%</th><th>Active Anomalies</th><th>Avg ABC Price</th><th>Avg QXO Price</th><th>Health Score</th></tr></thead><tbody>';
+    preview.forEach(d => {
+      const healthColor = d.health >= 80 ? 'var(--accent-green)' : d.health >= 50 ? 'var(--accent-amber)' : 'var(--accent-red)';
+      html += `<tr><td style="font-weight:600;">${d.brand}</td><td>${d.skus}</td><td>${d.avgGM}%</td><td>${d.anoms}</td><td>${d.avgABC}</td><td>${d.avgQXO}</td><td><span style="color:${healthColor};font-weight:700;">${d.health}</span></td></tr>`;
     });
-    html += '</tbody></table></div></div></div>';
+    html += '</tbody></table></div>';
+    if (remaining > 0) html += `<div style="text-align:center;padding:10px;font-size:12px;color:var(--text-tertiary);border-top:1px solid var(--border-primary);margin-top:8px;">${remaining} more brands — export for full dataset</div>`;
+    html += '</div></div>';
     output.innerHTML = html;
 
   } else if (templateId === 'distributor-perf') {
     const distributors = ['ABC Supply', 'QXO', 'SRS/BMCA'];
-    let html = '<div class="card"><div class="card-header">Distributor Performance</div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Distributor</th><th>Avg Price</th><th>Best Price %</th><th>Products Covered</th><th>Competitiveness</th></tr></thead><tbody>';
+    let html = '<div class="card"><div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">Distributor Performance<button class="btn btn-secondary btn-sm" onclick="alert(\'Export would generate a CSV/Excel download in production\')">↓ Export Full Report</button></div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Distributor</th><th>Avg Price</th><th>Best Price %</th><th>Products Covered</th><th>Competitiveness</th></tr></thead><tbody>';
     const priceFields = { 'ABC Supply': 'abc_price', 'QXO': 'qxo_price', 'SRS/BMCA': 'srs_price' };
     distributors.forEach(d => {
       const field = priceFields[d];
@@ -4093,7 +4162,7 @@ function runTemplateReport(templateId) {
     output.innerHTML = html;
 
   } else if (templateId === 'price-variance') {
-    const outliers = state.products.filter(p => {
+    const allOutliers = state.products.filter(p => {
       const maxDist = Math.max(p.abc_price, p.qxo_price, p.srs_price);
       const minDist = Math.min(p.abc_price, p.qxo_price, p.srs_price);
       return ((maxDist - minDist) / minDist * 100) > 10;
@@ -4101,10 +4170,12 @@ function runTemplateReport(templateId) {
       const aSpread = (Math.max(a.abc_price,a.qxo_price,a.srs_price) - Math.min(a.abc_price,a.qxo_price,a.srs_price));
       const bSpread = (Math.max(b.abc_price,b.qxo_price,b.srs_price) - Math.min(b.abc_price,b.qxo_price,b.srs_price));
       return bSpread - aSpread;
-    }).slice(0, 20);
+    });
+    const preview = allOutliers.slice(0, REPORT_PREVIEW_LIMIT);
+    const remaining = allOutliers.length - preview.length;
 
-    let html = '<div class="card"><div class="card-header">Price Variance Report - Top 20 Outliers</div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>SKU</th><th>Product</th><th>Brand</th><th>ABC</th><th>QXO</th><th>SRS</th><th>Spread</th><th>Severity</th></tr></thead><tbody>';
-    outliers.forEach(p => {
+    let html = '<div class="card"><div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">Price Variance Report — Top Outliers<button class="btn btn-secondary btn-sm" onclick="alert(\'Export would generate a CSV/Excel download in production\')">↓ Export Full Report</button></div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>SKU</th><th>Product</th><th>Brand</th><th>ABC</th><th>QXO</th><th>SRS</th><th>Spread</th><th>Severity</th></tr></thead><tbody>';
+    preview.forEach(p => {
       const maxP = Math.max(p.abc_price, p.qxo_price, p.srs_price);
       const minP = Math.min(p.abc_price, p.qxo_price, p.srs_price);
       const spread = ((maxP - minP) / minP * 100).toFixed(1);
@@ -4112,12 +4183,13 @@ function runTemplateReport(templateId) {
       const sevColor = sev === 'High' ? 'var(--accent-red)' : sev === 'Medium' ? 'var(--accent-amber)' : 'var(--accent-green)';
       html += `<tr><td style="font-family:monospace;font-size:11px;">${p.sku}</td><td>${p.name}</td><td style="font-weight:600;">${p.brand}</td><td>$${p.abc_price.toFixed(2)}</td><td>$${p.qxo_price.toFixed(2)}</td><td>$${p.srs_price.toFixed(2)}</td><td style="font-weight:700;">${spread}%</td><td><span style="color:${sevColor};font-weight:600;">${sev}</span></td></tr>`;
     });
-    html += '</tbody></table></div></div></div>';
+    html += '</tbody></table></div>';
+    if (remaining > 0) html += `<div style="text-align:center;padding:10px;font-size:12px;color:var(--text-tertiary);border-top:1px solid var(--border-primary);margin-top:8px;">${remaining} more outliers — export for full dataset</div>`;
+    html += '</div></div>';
     output.innerHTML = html;
 
   } else if (templateId === 'data-quality') {
-    let html = '<div class="card"><div class="card-header">Data Quality Scorecard</div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Brand</th><th>Governed SKUs</th><th>Coverage</th><th>Active Anomalies</th><th>Resolution Rate</th><th>Quality Score</th></tr></thead><tbody>';
-    state.brands.forEach(b => {
+    const brandData = state.brands.map(b => {
       const prods = state.products.filter(p => p.brand === b);
       const activeAnoms = state.anomalies.filter(a => a.brand === b && a.status === 'active').length;
       const resolvedAnoms = state.anomalies.filter(a => a.brand === b && a.status === 'resolved').length;
@@ -4125,22 +4197,106 @@ function runTemplateReport(templateId) {
       const resRate = totalAnoms > 0 ? ((resolvedAnoms / totalAnoms) * 100).toFixed(0) : '100';
       const coverage = Math.min(100, 70 + Math.floor(Math.random() * 30));
       const qualScore = Math.max(0, Math.min(100, Math.round(coverage * 0.4 + parseInt(resRate) * 0.3 + (100 - activeAnoms * 10) * 0.3)));
-      const qColor = qualScore >= 80 ? 'var(--accent-green)' : qualScore >= 60 ? 'var(--accent-amber)' : 'var(--accent-red)';
-      html += `<tr><td style="font-weight:600;">${b}</td><td>${prods.length}</td><td>${coverage}%</td><td>${activeAnoms}</td><td>${resRate}%</td><td><span style="color:${qColor};font-weight:700;">${qualScore}</span></td></tr>`;
+      return { brand: b, skus: prods.length, coverage, activeAnoms, resRate, qualScore };
+    }).sort((a,b) => a.qualScore - b.qualScore);
+    const preview = brandData.slice(0, REPORT_PREVIEW_LIMIT);
+    const remaining = brandData.length - preview.length;
+
+    let html = '<div class="card"><div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">Data Quality Scorecard<button class="btn btn-secondary btn-sm" onclick="alert(\'Export would generate a CSV/Excel download in production\')">↓ Export Full Report</button></div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Brand</th><th>Governed SKUs</th><th>Coverage</th><th>Active Anomalies</th><th>Resolution Rate</th><th>Quality Score</th></tr></thead><tbody>';
+    preview.forEach(d => {
+      const qColor = d.qualScore >= 80 ? 'var(--accent-green)' : d.qualScore >= 60 ? 'var(--accent-amber)' : 'var(--accent-red)';
+      html += `<tr><td style="font-weight:600;">${d.brand}</td><td>${d.skus}</td><td>${d.coverage}%</td><td>${d.activeAnoms}</td><td>${d.resRate}%</td><td><span style="color:${qColor};font-weight:700;">${d.qualScore}</span></td></tr>`;
     });
-    html += '</tbody></table></div></div></div>';
+    html += '</tbody></table></div>';
+    if (remaining > 0) html += `<div style="text-align:center;padding:10px;font-size:12px;color:var(--text-tertiary);border-top:1px solid var(--border-primary);margin-top:8px;">${remaining} more brands — export for full dataset</div>`;
+    html += '</div></div>';
     output.innerHTML = html;
 
   } else if (templateId === 'custom') {
-    output.innerHTML = `<div class="card"><div class="card-body" style="text-align:center;padding:40px;">
-      <svg width="48" height="48" fill="none" stroke="var(--text-tertiary)" viewBox="0 0 24 24" style="margin-bottom:12px;opacity:0.5;" stroke-width="1.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      <div style="font-size:16px;font-weight:600;margin-bottom:4px;color:var(--text-primary);">Custom Report Builder</div>
-      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;">Select dimensions and measures to build your analysis. For advanced queries, use the Data Warehouse tab.</div>
-      <div style="display:flex;gap:10px;justify-content:center;">
-        <button class="btn btn-primary" onclick="switchReportsTab('warehouse',document.querySelectorAll('#tab-reports .tab-pill')[1])">Open Data Warehouse</button>
+    // Guided custom report builder
+    output.innerHTML = `<div class="card"><div class="card-header">Custom Report Builder</div><div class="card-body">
+      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6;">
+        Build a custom analysis by choosing a data source, dimensions, and measures below. The query runs against live MDM data. For raw SQL access, use the Data Warehouse tab.
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">DATA SOURCE</label>
+          <select class="filter-select" id="custom-source" style="width:100%;" onchange="updateCustomReport()">
+            <option value="products">Products (Item Master)</option>
+            <option value="anomalies">Anomalies</option>
+            <option value="labor">Labor Rates</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">GROUP BY</label>
+          <select class="filter-select" id="custom-dimension" style="width:100%;" onchange="updateCustomReport()">
+            <option value="brand">Brand</option>
+            <option value="category">Category</option>
+            <option value="service_line">Service Line</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">MEASURE</label>
+          <select class="filter-select" id="custom-measure" style="width:100%;" onchange="updateCustomReport()">
+            <option value="count">Count</option>
+            <option value="avg_gm">Avg GM%</option>
+            <option value="avg_price">Avg Governed Price</option>
+          </select>
+        </div>
+      </div>
+      <div id="custom-report-output"></div>
     </div></div>`;
+    updateCustomReport();
   }
+}
+
+function updateCustomReport() {
+  const out = document.getElementById('custom-report-output');
+  if (!out) return;
+  const source = document.getElementById('custom-source')?.value || 'products';
+  const dim = document.getElementById('custom-dimension')?.value || 'brand';
+  const measure = document.getElementById('custom-measure')?.value || 'count';
+
+  let data = [];
+  if (source === 'products') data = state.products;
+  else if (source === 'anomalies') data = state.anomalies;
+  else if (source === 'labor') data = state.laborRates;
+
+  // Group by dimension
+  const groups = {};
+  data.forEach(item => {
+    const key = item[dim] || 'Unknown';
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(item);
+  });
+
+  // Compute measure
+  const rows = Object.entries(groups).map(([key, items]) => {
+    let val = items.length;
+    let display = val.toString();
+    if (measure === 'avg_gm' && source === 'products') {
+      val = items.reduce((s, p) => s + (p.gm_pct || 0), 0) / items.length;
+      display = val.toFixed(1) + '%';
+    } else if (measure === 'avg_price' && source === 'products') {
+      val = items.reduce((s, p) => s + (p.governed_price || 0), 0) / items.length;
+      display = '$' + val.toFixed(2);
+    } else if (measure === 'avg_price' && source === 'labor') {
+      val = items.reduce((s, r) => s + (r.base_rate || 0), 0) / items.length;
+      display = '$' + val.toFixed(2);
+    }
+    return { key, val, display, count: items.length };
+  }).sort((a, b) => b.val - a.val);
+
+  const preview = rows.slice(0, 10);
+  const measureLabel = measure === 'count' ? 'Count' : measure === 'avg_gm' ? 'Avg GM%' : 'Avg Price';
+
+  let html = `<div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>${dim.charAt(0).toUpperCase() + dim.slice(1).replace('_',' ')}</th><th style="text-align:right;">Records</th><th style="text-align:right;">${measureLabel}</th></tr></thead><tbody>`;
+  preview.forEach(r => {
+    html += `<tr><td style="font-weight:600;">${r.key}</td><td style="text-align:right;">${r.count}</td><td style="text-align:right;font-weight:700;">${r.display}</td></tr>`;
+  });
+  html += '</tbody></table></div>';
+  if (rows.length > 10) html += `<div style="text-align:center;padding:8px;font-size:11px;color:var(--text-tertiary);">${rows.length - 10} more rows — export for full dataset</div>`;
+  out.innerHTML = html;
 }
 
 function toggleCompassPanel(open) {
@@ -4597,6 +4753,8 @@ function switchReportsTab(tabName, btn) {
   const tab = document.getElementById(`reports-${tabName}`);
   if (tab) tab.classList.add('active');
   if (btn) btn.classList.add('active');
+  // Auto-run warehouse query when switching to Data Warehouse tab
+  if (tabName === 'warehouse') { setTimeout(() => runWarehouseQuery(), 50); }
 }
 
 function loadReportTemplate(template) {
@@ -4923,6 +5081,107 @@ function executeQuery() {
 
   table.innerHTML = `<thead>${cols}</thead><tbody>${rows}</tbody>`;
   showToast('Query executed', 'success');
+}
+
+function toggleSQLMode() {
+  const guided = document.getElementById('warehouse-guided');
+  const sql = document.getElementById('warehouse-sql');
+  const btn = document.getElementById('sql-toggle-btn');
+  const guidedResults = document.getElementById('warehouse-guided-results');
+  if (!guided || !sql) return;
+  const showSQL = guided.style.display !== 'none';
+  guided.style.display = showSQL ? 'none' : 'block';
+  sql.style.display = showSQL ? 'block' : 'none';
+  if (guidedResults) guidedResults.style.display = showSQL ? 'none' : 'block';
+  btn.textContent = showSQL ? 'Switch to Guided Mode' : 'Switch to SQL Mode';
+}
+
+function setWarehousePreset(preset) {
+  const src = document.getElementById('wh-source');
+  const grp = document.getElementById('wh-groupby');
+  const msr = document.getElementById('wh-measure');
+  if (preset === 'gm-by-brand') { src.value='products'; grp.value='brand'; msr.value='avg_gm'; }
+  else if (preset === 'anomalies-by-brand') { src.value='anomalies'; grp.value='brand'; msr.value='count'; }
+  else if (preset === 'labor-by-market') { src.value='labor'; grp.value='market'; msr.value='avg_price'; }
+  else if (preset === 'price-by-category') { src.value='products'; grp.value='category'; msr.value='avg_price'; }
+  runWarehouseQuery();
+}
+
+function runWarehouseQuery() {
+  const out = document.getElementById('warehouse-guided-results');
+  if (!out) return;
+  const source = document.getElementById('wh-source')?.value || 'products';
+  const groupBy = document.getElementById('wh-groupby')?.value || 'brand';
+  const measure = document.getElementById('wh-measure')?.value || 'count';
+  const brandFilter = document.getElementById('wh-filter-brand')?.value || 'All';
+
+  // Populate brand filter if needed
+  const brandSel = document.getElementById('wh-filter-brand');
+  if (brandSel && brandSel.options.length <= 1) {
+    state.brands.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; brandSel.appendChild(o); });
+  }
+
+  let data = [];
+  if (source === 'products') data = [...state.products];
+  else if (source === 'anomalies') data = [...state.anomalies];
+  else if (source === 'labor') data = [...state.laborRates];
+  else if (source === 'systems') data = [...(state.systems || [])];
+
+  if (brandFilter !== 'All') data = data.filter(d => d.brand === brandFilter || (d.brands && d.brands.includes(brandFilter)));
+
+  // Group
+  const groups = {};
+  data.forEach(item => {
+    const key = item[groupBy] || 'Unknown';
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(item);
+  });
+
+  const measureLabels = { count: 'Count', avg_gm: 'Avg GM%', avg_price: 'Avg Price', sum_price: 'Total Value' };
+  const rows = Object.entries(groups).map(([key, items]) => {
+    let val = items.length, display = items.length.toString();
+    if (measure === 'avg_gm') { val = items.reduce((s,p) => s + (p.gm_pct||0), 0) / items.length; display = val.toFixed(1) + '%'; }
+    else if (measure === 'avg_price') {
+      const field = source === 'labor' ? 'base_rate' : 'governed_price';
+      val = items.reduce((s,p) => s + (p[field]||p.abc_price||0), 0) / items.length; display = '$' + val.toFixed(2);
+    } else if (measure === 'sum_price') {
+      const field = source === 'labor' ? 'base_rate' : 'governed_price';
+      val = items.reduce((s,p) => s + (p[field]||p.abc_price||0), 0); display = '$' + val.toFixed(0);
+    }
+    return { key, val, display, count: items.length };
+  }).sort((a,b) => b.val - a.val);
+
+  const ms = Math.floor(30 + Math.random() * 100);
+  const preview = rows.slice(0, 20);
+
+  // Bar chart + table
+  let html = `<div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;">Returned ${rows.length} groups in ${ms}ms • Source: ${source} • Grouped by: ${groupBy}</div>`;
+
+  // Visual bar chart
+  if (preview.length > 0) {
+    const maxVal = Math.max(...preview.map(r => r.val), 1);
+    html += '<div style="margin-bottom:16px;">';
+    preview.slice(0, 10).forEach(r => {
+      const pct = (r.val / maxVal * 100).toFixed(0);
+      const color = measure === 'avg_gm' && r.val < 25 ? 'var(--gradient-red)' : 'var(--gradient-blue)';
+      html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <div style="width:120px;font-size:11px;font-weight:600;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.key}">${r.key}</div>
+        <div style="flex:1;height:18px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${color};border-radius:3px;transition:width 0.3s;"></div></div>
+        <div style="min-width:70px;font-size:11px;font-weight:700;text-align:right;">${r.display}</div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  // Data table
+  html += `<div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>${groupBy.charAt(0).toUpperCase() + groupBy.slice(1).replace('_',' ')}</th><th style="text-align:right;">Records</th><th style="text-align:right;">${measureLabels[measure]}</th></tr></thead><tbody>`;
+  preview.forEach(r => {
+    html += `<tr><td style="font-weight:600;">${r.key}</td><td style="text-align:right;">${r.count}</td><td style="text-align:right;font-weight:700;">${r.display}</td></tr>`;
+  });
+  html += '</tbody></table></div>';
+  if (rows.length > 20) html += `<div style="text-align:center;padding:8px;font-size:11px;color:var(--text-tertiary);">${rows.length - 20} more rows — export for full dataset</div>`;
+
+  out.innerHTML = html;
 }
 
 function generateSampleAuditLog() {
@@ -5809,8 +6068,8 @@ function renderSystems() {
           </button>
           <div class="system-bom" style="display:none;">
             ${system.components.map(c => `
-              <div class="bom-item">
-                <div class="bom-item-name">${c.name}<br/><span style="font-size:11px; color:var(--text-tertiary);">${c.category}</span></div>
+              <div class="bom-item" style="cursor:pointer;" onclick="jumpToItemMaster('${c.name.replace(/'/g, "\\'")}')" title="View in Item Master">
+                <div class="bom-item-name"><span style="color:var(--accent-blue);text-decoration:underline dotted;">${c.name}</span><br/><span style="font-size:11px; color:var(--text-tertiary);">${c.category}</span></div>
                 <div class="bom-item-qty">${c.qty_per_square} per sq</div>
               </div>
             `).join('')}
@@ -5955,95 +6214,138 @@ function generateLaborRates() {
   ];
 }
 
-let laborPage = 1;
-const LABOR_PER_PAGE = 15;
-
 function renderLabor() {
-  // Page context is now in the header
-
   generateLaborRates();
 
-  // Populate brand filter if empty
-  const brandSel = document.getElementById('labor-brand-filter');
-  if (brandSel && brandSel.options.length <= 1) {
-    state.brands.forEach(b => {
-      const opt = document.createElement('option');
-      opt.value = b;
-      opt.textContent = b;
-      brandSel.appendChild(opt);
-    });
-  }
-
-  const brandFilter = document.getElementById('labor-brand-filter')?.value || 'All';
   const serviceFilter = document.getElementById('labor-service-filter')?.value || 'All';
   const marketFilter = document.getElementById('labor-market-filter')?.value || 'All';
-  const tradeFilter = document.getElementById('labor-trade-filter')?.value || 'All';
+  const tradeFilter = document.getElementById('labor-trade-filter')?.value || 'Lead Installer';
 
   let filtered = state.laborRates;
-  if (brandFilter !== 'All') filtered = filtered.filter(r => r.brand === brandFilter);
   if (serviceFilter !== 'All') filtered = filtered.filter(r => r.service_line === serviceFilter);
   if (marketFilter !== 'All') filtered = filtered.filter(r => r.market === marketFilter);
   if (tradeFilter !== 'All') filtered = filtered.filter(r => r.trade === tradeFilter);
 
-  // KPIs based on filtered data
+  // Compute burdened rates (base * 1.45 burden factor)
+  const BURDEN_FACTOR = 1.45;
+
+  // KPIs — reframed for governance
   const kpiContainer = document.getElementById('labor-kpis');
   if (kpiContainer) {
-    const avgRate = filtered.length ? (filtered.reduce((s, r) => s + r.base_rate, 0) / filtered.length).toFixed(2) : '0.00';
-    const uniqueTrades = new Set(filtered.map(r => r.trade)).size;
-    const uniqueMarkets = new Set(filtered.map(r => r.market)).size;
-    const uniqueBrands = new Set(filtered.map(r => r.brand)).size;
+    const avgBurdened = filtered.length ? (filtered.reduce((s, r) => s + r.base_rate * BURDEN_FACTOR, 0) / filtered.length).toFixed(2) : '0.00';
+    // Rate coverage: how many brand/market combos have a rate vs all possible
+    const allBrands = [...new Set(state.laborRates.map(r => r.brand))];
+    const allMarkets = [...new Set(state.laborRates.map(r => r.market))];
+    const possibleCombos = allBrands.length * allMarkets.length;
+    const actualCombos = new Set(filtered.map(r => r.brand + '|' + r.market)).size;
+    const coveragePct = possibleCombos > 0 ? Math.round((actualCombos / possibleCombos) * 100) : 0;
+    // Rate variance: spread between highest and lowest for the selected trade
+    const rates = filtered.map(r => r.base_rate);
+    const rateSpread = rates.length >= 2 ? (Math.max(...rates) - Math.min(...rates)).toFixed(0) : '0';
+    // Rates needing review (older than 6 months — simulated)
+    const staleCount = Math.floor(filtered.length * 0.15);
 
     kpiContainer.innerHTML = `
-      <div class="stat-card"><div class="stat-value">$${avgRate}</div><div class="stat-label">Avg Rate (filtered)</div></div>
-      <div class="stat-card"><div class="stat-value">${filtered.length}</div><div class="stat-label">Total Rates</div></div>
-      <div class="stat-card"><div class="stat-value">${uniqueTrades}</div><div class="stat-label">Trades</div></div>
-      <div class="stat-card"><div class="stat-value">${uniqueMarkets}</div><div class="stat-label">Markets</div></div>
+      <div class="stat-card"><div class="stat-value">$${avgBurdened}</div><div class="stat-label">Avg Burdened Rate</div></div>
+      <div class="stat-card ${coveragePct < 50 ? 'red' : coveragePct < 80 ? 'amber' : 'green'}"><div class="stat-value">${coveragePct}%</div><div class="stat-label">Rate Coverage</div></div>
+      <div class="stat-card ${parseInt(rateSpread) > 20 ? 'amber' : ''}"><div class="stat-value">$${rateSpread}</div><div class="stat-label">Rate Spread (Hi–Lo)</div></div>
+      <div class="stat-card ${staleCount > 0 ? 'amber' : ''}"><div class="stat-value">${staleCount}</div><div class="stat-label">Needs Review</div></div>
     `;
   }
 
-  // Paginate
-  const totalPages = Math.ceil(filtered.length / LABOR_PER_PAGE) || 1;
-  if (laborPage > totalPages) laborPage = 1;
-  const start = (laborPage - 1) * LABOR_PER_PAGE;
-  const pageRates = filtered.slice(start, start + LABOR_PER_PAGE);
+  // --- Rate Comparison Matrix: brands (rows) × markets (columns) ---
+  const matrixEl = document.getElementById('labor-matrix');
+  if (matrixEl) {
+    const brands = [...new Set(filtered.map(r => r.brand))].sort();
+    const markets = [...new Set(filtered.map(r => r.market))].sort();
 
-  // Flat data table
-  const container = document.getElementById('labor-table');
-  if (!container) return;
+    // Build lookup
+    const lookup = {};
+    filtered.forEach(r => { lookup[r.brand + '|' + r.market] = r; });
 
-  let html = `<thead><tr>
-    <th>Brand</th><th>Service Line</th><th>Market</th><th>Trade</th><th>Job Type</th>
-    <th style="text-align:right;">Base Rate</th><th style="text-align:right;">Complexity</th>
-    <th style="text-align:right;">OT Rate</th><th style="text-align:center;">Status</th>
-  </tr></thead><tbody>`;
+    // Compute per-market medians for color coding
+    const marketMedians = {};
+    markets.forEach(m => {
+      const mRates = filtered.filter(r => r.market === m).map(r => r.base_rate).sort((a,b)=>a-b);
+      marketMedians[m] = mRates.length ? mRates[Math.floor(mRates.length/2)] : 0;
+    });
 
-  pageRates.forEach(rate => {
-    html += `<tr>
-      <td style="font-weight:600;">${rate.brand}</td>
-      <td>${rate.service_line}</td>
-      <td>${rate.market}</td>
-      <td>${rate.trade}</td>
-      <td>${rate.job_type}</td>
-      <td style="text-align:right;font-weight:700;">$${rate.base_rate}</td>
-      <td style="text-align:right;">${rate.complexity_multiplier.toFixed(2)}x</td>
-      <td style="text-align:right;font-weight:700;">$${rate.overtime_rate}</td>
-      <td style="text-align:center;"><span style="padding:2px 8px;border-radius:4px;background:var(--accent-green-light);color:var(--accent-green);font-size:11px;font-weight:600;">${rate.status}</span></td>
-    </tr>`;
-  });
+    let html = '<thead><tr><th style="min-width:140px;">Brand</th>';
+    markets.forEach(m => { html += `<th style="text-align:center;">${m}</th>`; });
+    html += '</tr></thead><tbody>';
 
-  html += '</tbody>';
-  container.innerHTML = html;
+    brands.forEach(b => {
+      html += `<tr><td style="font-weight:600;white-space:nowrap;">${b}</td>`;
+      markets.forEach(m => {
+        const rate = lookup[b + '|' + m];
+        if (rate) {
+          const median = marketMedians[m];
+          const pctOff = median > 0 ? ((rate.base_rate - median) / median * 100) : 0;
+          let bg = 'var(--accent-green-light)'; let fg = 'var(--accent-green)';
+          if (Math.abs(pctOff) > 20) { bg = 'var(--accent-red-light)'; fg = 'var(--accent-red)'; }
+          else if (Math.abs(pctOff) > 10) { bg = 'var(--accent-amber-light)'; fg = 'var(--accent-amber)'; }
+          const arrow = pctOff > 5 ? '↑' : pctOff < -5 ? '↓' : '';
+          html += `<td style="text-align:center;"><div style="display:inline-block;padding:4px 10px;border-radius:6px;background:${bg};cursor:pointer;" title="$${rate.base_rate}/hr • Burdened: $${(rate.base_rate*BURDEN_FACTOR).toFixed(0)}/hr • ${pctOff >= 0 ? '+' : ''}${pctOff.toFixed(0)}% vs median • OT: $${rate.overtime_rate} • ${rate.complexity_multiplier}x complexity"><span style="font-weight:700;color:${fg};">$${rate.base_rate}</span><span style="font-size:10px;color:${fg};margin-left:2px;">${arrow}</span></div></td>`;
+        } else {
+          html += `<td style="text-align:center;"><span style="color:var(--text-tertiary);font-size:11px;" title="No rate defined for this brand/market combo">—</span></td>`;
+        }
+      });
+      html += '</tr>';
+    });
+    html += '</tbody>';
+    matrixEl.innerHTML = html;
+  }
 
-  // Pagination
-  const pagDiv = document.getElementById('labor-pagination');
-  if (pagDiv) {
-    let pagHtml = `<span style="font-size:12px;color:var(--text-secondary);">Showing ${start+1}-${Math.min(start+LABOR_PER_PAGE, filtered.length)} of ${filtered.length}</span><div style="display:flex;gap:4px;">`;
-    for (let i = 1; i <= totalPages; i++) {
-      pagHtml += `<button class="btn btn-sm ${i === laborPage ? 'btn-primary' : 'btn-secondary'}" onclick="laborPage=${i};renderLabor()">${i}</button>`;
+  // --- Action Items ---
+  const actionsEl = document.getElementById('labor-actions');
+  if (actionsEl) {
+    const brands = [...new Set(filtered.map(r => r.brand))];
+    const markets = [...new Set(state.laborRates.map(r => r.market))];
+    // Find missing combos
+    const gaps = [];
+    brands.forEach(b => {
+      markets.forEach(m => {
+        if (!filtered.find(r => r.brand === b && r.market === m)) {
+          gaps.push({ brand: b, market: m });
+        }
+      });
+    });
+    // Find high-variance rates (>20% from market median)
+    const highVar = [];
+    filtered.forEach(r => {
+      const mRates = filtered.filter(x => x.market === r.market).map(x => x.base_rate).sort((a,b)=>a-b);
+      const median = mRates[Math.floor(mRates.length/2)] || 0;
+      const pctOff = median > 0 ? Math.abs((r.base_rate - median) / median * 100) : 0;
+      if (pctOff > 20) highVar.push({ ...r, pctOff: pctOff.toFixed(0) });
+    });
+    // Stale rates
+    const staleCount = Math.floor(filtered.length * 0.15);
+
+    let aHtml = '';
+    if (gaps.length > 0) {
+      aHtml += `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;margin-bottom:6px;border-radius:6px;background:var(--accent-amber-light);border:1px solid rgba(245,158,11,0.2);">
+        <span style="font-weight:600;color:var(--accent-amber);min-width:20px;">${gaps.length}</span>
+        <span>brand/market combos missing rate cards</span>
+        <span style="color:var(--text-tertiary);margin-left:auto;font-size:11px;">${gaps.slice(0,3).map(g => g.brand + ' → ' + g.market).join(', ')}${gaps.length > 3 ? '…' : ''}</span>
+      </div>`;
     }
-    pagHtml += '</div>';
-    pagDiv.innerHTML = pagHtml;
-    pagDiv.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-top:12px;';
+    if (highVar.length > 0) {
+      aHtml += `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;margin-bottom:6px;border-radius:6px;background:var(--accent-red-light);border:1px solid rgba(239,68,68,0.2);">
+        <span style="font-weight:600;color:var(--accent-red);min-width:20px;">${highVar.length}</span>
+        <span>rates are &gt;20% off market median</span>
+        <span style="color:var(--text-tertiary);margin-left:auto;font-size:11px;">${highVar.slice(0,2).map(r => r.brand + ' $' + r.base_rate + ' (' + r.pctOff + '% off)').join(', ')}</span>
+      </div>`;
+    }
+    if (staleCount > 0) {
+      aHtml += `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;margin-bottom:6px;border-radius:6px;background:var(--accent-blue-light);border:1px solid rgba(59,130,246,0.2);">
+        <span style="font-weight:600;color:var(--accent-blue);min-width:20px;">${staleCount}</span>
+        <span>rates haven't been reviewed in 6+ months</span>
+      </div>`;
+    }
+    if (!aHtml) {
+      aHtml = '<div style="padding:8px 12px;color:var(--accent-green);"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="vertical-align:-2px;margin-right:6px;"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>All rates are healthy — no action items.</div>';
+    }
+    actionsEl.innerHTML = aHtml;
   }
 }
 
