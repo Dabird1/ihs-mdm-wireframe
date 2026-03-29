@@ -2474,7 +2474,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 
   <!-- TAB: LABOR MANAGEMENT -->
   <div id="tab-labor" class="tab-panel">
-    <div class="labor-kpis" id="labor-kpis"></div>
+    <div class="kpi-grid" id="labor-kpis" style="margin-bottom:16px;"></div>
 
     <div class="toolbar" style="margin-bottom:20px;">
       <select class="filter-select" id="labor-brand-filter" onchange="renderLabor()">
@@ -6119,6 +6119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   populateBrandFilters();
   updateApprovalsBadge();
+  updatePageHeader('dashboard');
   renderDashboard();
   renderBrandTags();
   updateCompassSuggestions('dashboard');
