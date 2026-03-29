@@ -4447,7 +4447,7 @@ function editGovernedPrice(sku, name, currentPrice) {
   const overlay = document.createElement('div');
   overlay.id = 'price-edit-overlay';
   overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:500;display:flex;align-items:center;justify-content:center;';
-  overlay.innerHTML = \`
+  overlay.innerHTML = `
     <div style="background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:24px;width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
         <h3 style="margin:0;font-size:16px;color:var(--text-primary);">Edit Governed Price</h3>
@@ -4486,7 +4486,7 @@ function editGovernedPrice(sku, name, currentPrice) {
         Price changes require approval from a Pricing Admin before taking effect.
       </div>
     </div>
-  \`;
+  `;
   document.body.appendChild(overlay);
   document.getElementById('new-price-input').focus();
   document.getElementById('new-price-input').select();
