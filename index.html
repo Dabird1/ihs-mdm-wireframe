@@ -2078,9 +2078,10 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   <!-- TOP BAR -->
   <div class="top-bar">
     <div class="page-header">
-      <div>
+      <div style="flex:1;">
         <div class="page-title" id="page-title">Dashboard</div>
         <div class="page-subtitle" id="page-subtitle"></div>
+        <div id="page-context" style="display:none;margin-top:6px;font-size:12px;color:var(--text-secondary);line-height:1.5;max-width:700px;"></div>
       </div>
     </div>
     <div class="header-actions" id="header-actions">
@@ -2217,15 +2218,10 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 
   <!-- TAB 4: BRAND PRICE SHEET -->
   <div id="tab-price-sheet" class="tab-panel">
-    <div class="toolbar">
-      <div class="search-wrap">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" class="search-input" id="brand-search" placeholder="Search brands...">
-      </div>
-      <button class="btn btn-secondary" id="back-to-brands" onclick="renderPriceSheetInit()" style="display:none;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        Back to All Brands
-      </button>
+    <div class="toolbar" style="margin-bottom:20px; display:flex; gap:12px; align-items:center;">
+      <select class="filter-select" id="price-sheet-brand-selector" onchange="renderPriceSheetView(this.value)" style="min-width:200px;">
+        <option value="">Enterprise Overview</option>
+      </select>
       <button class="btn btn-secondary" onclick="exportPriceSheet()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Export
@@ -2405,81 +2401,13 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   <!-- TAB 8: MYDRILL (REPORTS) -->
   <div id="tab-reports" class="tab-panel">
     <div class="tab-pills">
-      <button class="tab-pill active" onclick="switchReportsTab('builder', this)">Dashboard Builder</button>
+      <button class="tab-pill active" onclick="switchReportsTab('builder', this)">Reports</button>
       <button class="tab-pill" onclick="switchReportsTab('warehouse', this)">Data Warehouse</button>
     </div>
 
-    <!-- BUILDER SUB-TAB -->
+    <!-- REPORTS SUB-TAB (Template-First) -->
     <div id="reports-builder" class="tab-panel active">
-      <div style="margin-bottom: 16px;">
-        <label style="font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:8px; display:block;">Quick Start Templates</label>
-        <select id="report-template-select" class="filter-select" onchange="loadReportTemplate(this.value)">
-          <option value="">Select a template...</option>
-          <option value="overcharges">Top Overcharges by Brand</option>
-          <option value="gm-trend">GM% Trend by Category</option>
-          <option value="distributor">Distributor Cost Comparison</option>
-          <option value="heatmap">Price Variance Heatmap</option>
-        </select>
-      </div>
-
-      <div class="builder-container">
-        <!-- LEFT PANEL: AVAILABLE FIELDS -->
-        <div class="builder-panel">
-          <div class="builder-panel-title">Available Fields</div>
-          <div class="chip" draggable="true">Brand</div>
-          <div class="chip" draggable="true">Distributor</div>
-          <div class="chip" draggable="true">Category</div>
-          <div class="chip" draggable="true">Product</div>
-          <div class="chip" draggable="true">Date Range</div>
-          <div class="chip" draggable="true">GM%</div>
-          <div class="chip" draggable="true">Variance</div>
-          <div class="chip" draggable="true">Price Type</div>
-        </div>
-
-        <!-- CENTER PANEL: CANVAS -->
-        <div class="builder-panel">
-          <div class="builder-panel-title">Report Canvas</div>
-          <div class="drop-zone">
-            <div class="drop-zone-label">Rows</div>
-            <div class="canvas-area" id="rows-canvas" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">Drop fields here</div>
-          </div>
-          <div class="drop-zone">
-            <div class="drop-zone-label">Columns</div>
-            <div class="canvas-area" id="cols-canvas" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">Drop fields here</div>
-          </div>
-          <div class="drop-zone">
-            <div class="drop-zone-label">Filters</div>
-            <div class="canvas-area" id="filter-canvas" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">Drop fields here</div>
-          </div>
-        </div>
-
-        <!-- RIGHT PANEL: CHART TYPE -->
-        <div class="builder-panel">
-          <div class="builder-panel-title">Chart Type</div>
-          <label style="display:flex; align-items:center; gap:8px; margin-bottom:10px; cursor:pointer; font-size:12px;">
-            <input type="radio" name="chart-type" value="table" checked onchange="updateReportChart()"> Table
-          </label>
-          <label style="display:flex; align-items:center; gap:8px; margin-bottom:10px; cursor:pointer; font-size:12px;">
-            <input type="radio" name="chart-type" value="bar" onchange="updateReportChart()"> Bar Chart
-          </label>
-          <label style="display:flex; align-items:center; gap:8px; margin-bottom:10px; cursor:pointer; font-size:12px;">
-            <input type="radio" name="chart-type" value="line" onchange="updateReportChart()"> Line Chart
-          </label>
-          <label style="display:flex; align-items:center; gap:8px; margin-bottom:10px; cursor:pointer; font-size:12px;">
-            <input type="radio" name="chart-type" value="pivot" onchange="updateReportChart()"> Pivot Table
-          </label>
-          <label style="display:flex; align-items:center; gap:8px; margin-bottom:20px; cursor:pointer; font-size:12px;">
-            <input type="radio" name="chart-type" value="heatmap" onchange="updateReportChart()"> Heat Map
-          </label>
-          <button class="btn btn-primary" onclick="runReport()" style="width:100%; margin-bottom:8px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Run Report
-          </button>
-          <button class="btn btn-secondary" onclick="exportReportExcel()" style="width:100%; margin-bottom:8px;">Export Excel</button>
-          <button class="btn btn-secondary" onclick="openExcelConnectionModal()" style="width:100%;">Connect Excel</button>
-        </div>
-      </div>
-
+      <div id="report-templates-grid"></div>
       <div id="report-output" style="margin-top:20px;"></div>
     </div>
 
@@ -2577,19 +2505,16 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
         <option value="Helper">Helper</option>
         <option value="Project Manager">Project Manager</option>
       </select>
-      <button class="btn btn-primary role-admin-only" style="margin-left:auto;" onclick="addLaborRate()">
+      <button class="btn btn-primary role-admin-only" style="margin-left:auto;" onclick="openAddLaborRateModal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Add Rate
       </button>
     </div>
 
-    <div class="table-wrapper">
-      <table class="labor-table" id="labor-table"></table>
-    </div>
-
-    <div class="labor-note">
-      Labor rates benchmarked against Xactimate. Labor represents 40-60% of total job cost.
-    </div>
+    <div class="card"><div class="card-body"><div class="table-wrapper">
+      <table id="labor-table" style="font-size:12px;"></table>
+    </div></div></div>
+    <div id="labor-pagination" class="pagination" style="margin-top:12px;"></div>
   </div>
 
   </div>
@@ -2937,26 +2862,37 @@ const state = {
 function generateProducts() {
   state.products = [];
   const baseProducts = [
-    { name: 'Architectural Shingle Bundle', category: 'Shingles', base: 62 },
-    { name: '3-Tab Shingle Bundle', category: 'Shingles', base: 45 },
-    { name: 'Designer Shingle Premium', category: 'Shingles', base: 110 },
-    { name: 'Impact Resistant Shingle', category: 'Shingles', base: 85 },
-    { name: 'Wood Shake Shingle', category: 'Shingles', base: 95 },
-    { name: 'Synthetic Underlayment Roll', category: 'Underlayment', base: 42 },
-    { name: 'Felt Underlayment 30lb', category: 'Underlayment', base: 28 },
-    { name: 'Ice & Water Shield', category: 'Underlayment', base: 55 },
-    { name: 'Self-Adhering Membrane', category: 'Underlayment', base: 48 },
-    { name: 'Roof Deck Protection', category: 'Underlayment', base: 38 },
-    { name: 'Ridge Cap Shingle', category: 'Ridge Cap', base: 35 },
-    { name: 'Hip & Ridge Shingle', category: 'Ridge Cap', base: 40 },
-    { name: 'Ventilated Ridge Cap', category: 'Ridge Cap', base: 52 },
-    { name: 'Universal Ridge Cap', category: 'Ridge Cap', base: 32 },
-    { name: 'High Profile Ridge', category: 'Ridge Cap', base: 45 },
-    { name: 'Drip Edge Aluminum', category: 'Accessories', base: 18 },
-    { name: 'Starter Strip Shingle', category: 'Accessories', base: 22 },
-    { name: 'Pipe Boot Flashing', category: 'Accessories', base: 15 },
-    { name: 'Step Flashing Kit', category: 'Accessories', base: 28 },
-    { name: 'Roof Cement 1gal', category: 'Accessories', base: 12 },
+    // Roofing
+    { name: 'Architectural Shingle Bundle', category: 'Shingles', service_line: 'Roofing', base: 62 },
+    { name: '3-Tab Shingle Bundle', category: 'Shingles', service_line: 'Roofing', base: 45 },
+    { name: 'Designer Shingle Premium', category: 'Shingles', service_line: 'Roofing', base: 110 },
+    { name: 'Impact Resistant Shingle', category: 'Shingles', service_line: 'Roofing', base: 85 },
+    { name: 'Synthetic Underlayment Roll', category: 'Underlayment', service_line: 'Roofing', base: 42 },
+    { name: 'Ice & Water Shield', category: 'Underlayment', service_line: 'Roofing', base: 55 },
+    { name: 'Ridge Cap Shingle', category: 'Ridge Cap', service_line: 'Roofing', base: 35 },
+    { name: 'Hip & Ridge Shingle', category: 'Ridge Cap', service_line: 'Roofing', base: 40 },
+    { name: 'Drip Edge Aluminum', category: 'Accessories', service_line: 'Roofing', base: 18 },
+    { name: 'Starter Strip Shingle', category: 'Accessories', service_line: 'Roofing', base: 22 },
+    { name: 'Pipe Boot Flashing', category: 'Accessories', service_line: 'Roofing', base: 15 },
+    // Siding
+    { name: 'Vinyl Siding Panel', category: 'Siding', service_line: 'Siding', base: 48 },
+    { name: 'Fiber Cement Board', category: 'Siding', service_line: 'Siding', base: 72 },
+    { name: 'Insulated Vinyl Siding', category: 'Siding', service_line: 'Siding', base: 65 },
+    { name: 'Siding J-Channel Trim', category: 'Siding Accessories', service_line: 'Siding', base: 12 },
+    // Windows
+    { name: 'Double-Hung Window', category: 'Windows', service_line: 'Windows', base: 280 },
+    { name: 'Casement Window', category: 'Windows', service_line: 'Windows', base: 320 },
+    { name: 'Bay Window Unit', category: 'Windows', service_line: 'Windows', base: 850 },
+    // Gutters
+    { name: '5" K-Style Gutter (10ft)', category: 'Gutters', service_line: 'Gutters', base: 22 },
+    { name: '6" Half-Round Gutter (10ft)', category: 'Gutters', service_line: 'Gutters', base: 35 },
+    { name: 'Gutter Guard Screen', category: 'Gutters', service_line: 'Gutters', base: 18 },
+    // Solar
+    { name: 'Solar Panel 400W Module', category: 'Solar Panels', service_line: 'Solar', base: 320 },
+    { name: 'Micro-Inverter Unit', category: 'Solar Panels', service_line: 'Solar', base: 180 },
+    // Insulation
+    { name: 'Blown-In Cellulose (bag)', category: 'Insulation', service_line: 'Insulation', base: 28 },
+    { name: 'Spray Foam Kit', category: 'Insulation', service_line: 'Insulation', base: 95 },
   ];
 
   let id = 0;
@@ -2975,6 +2911,7 @@ function generateProducts() {
         sku: `SKU-${String(id).padStart(4, '0')}`,
         name: base.name,
         category: base.category,
+        service_line: base.service_line,
         brand: state.brands[b],
         manufacturer: state.manufacturers[Math.floor(Math.random() * state.manufacturers.length)],
         governed_price: parseFloat(govPrice.toFixed(2)),
@@ -3148,52 +3085,39 @@ function updatePageHeader(tabName) {
     reports: { title: 'MyDrill', subtitle: 'Build custom reports and query the data warehouse' }
   };
 
+  const pageContext = {
+    dashboard: 'Click any KPI card to jump to the underlying data. Use the brand dropdown to filter by brand, or service line pills to filter by trade.',
+    'item-master': 'Single source of truth for every governed SKU. Search by name or SKU, filter by brand/category, and click any row to see full pricing lineage.',
+    systems: 'Systems define the BOMs your brands sell. Each system links governed products + labor into a complete job package. Filter by brand to see which systems each brand offers.',
+    labor: 'Labor rates drive 40\u201360% of total job cost. Filter by brand, market, or trade. Rates are benchmarked against Xactimate and grouped by service line.',
+    'price-sheet': 'Enterprise pricing overview across all brands. Select a brand from the dropdown to drill into SKU-level pricing, margins, and distributor comparisons.',
+    'brand-dashboard': 'Start on Enterprise view to see portfolio health at a glance, then select any brand to see its SKUs, margins, anomalies, and distributor scorecard.',
+    anomaly: 'Anomalies surface pricing, margin, and sync problems automatically. High severity = immediate revenue impact. Click any anomaly to see root cause and action.',
+    'audit-log': 'Every price change, approval, and system edit is logged here with who/what/when. Use this for compliance reporting and tracking governance adoption.',
+    reports: 'Run pre-built reports for instant insight, or create a custom analysis. Use the Data Warehouse tab for direct SQL access.',
+    compass: 'Ask natural language questions like "Which brands have the most anomalies?" or "Show me margin trends for roofing products."',
+    settings: 'Configure GM% thresholds, tolerance bands, approval workflows, and distributor sync connections. Changes take effect immediately across all brands.'
+  };
+
   const info = titles[tabName] || titles.dashboard;
   const titleEl = document.getElementById('page-title');
   const subtitleEl = document.getElementById('page-subtitle');
+  const contextEl = document.getElementById('page-context');
   if (titleEl) titleEl.textContent = info.title;
   if (subtitleEl) subtitleEl.textContent = info.subtitle;
-}
-
-function renderTutorial(tabName, container) {
-  const storageKey = `tutorial-dismissed-${tabName}`;
-  if (localStorage.getItem(storageKey) === 'true') return;
-  if (container.querySelector(`[data-tutorial="${tabName}"]`)) return;
-
-  const tips = {
-    dashboard: 'Start here — click any KPI card to jump straight to the underlying data. Use the brand dropdown to see one brand\'s metrics or compare across all 25.',
-    'item-master': 'This is your single source of truth for every governed SKU. Search by name or SKU, filter by brand/category, and click any row to see full pricing lineage and distributor comparisons.',
-    systems: 'Systems define the BOMs your brands sell to customers. Each system links governed products + labor into a complete job package. Filter by brand to see which systems each brand offers.',
-    labor: 'Labor rates drive 40-60% of total job cost. Filter by brand to see rate differences across your portfolio. Rates are benchmarked against Xactimate and grouped by service line.',
-    'price-sheet': 'View and edit governed pricing by brand. Click Edit on any SKU to submit a price change for approval — all changes are tracked in the audit log with full before/after history.',
-    'brand-dashboard': 'Your command center for any brand. Start on Enterprise view to see portfolio health at a glance, then click into any brand to see its SKUs, margins, anomalies, and distributor scorecard.',
-    anomaly: 'Anomalies surface pricing, margin, and sync problems automatically. High severity = immediate revenue impact. Click any anomaly to see root cause and recommended action.',
-    'audit-log': 'Every price change, approval, and system edit is logged here with who/what/when. Use this for compliance reporting, dispute resolution, and tracking governance adoption.',
-    reports: 'Build custom analyses: margin trends, brand comparisons, distributor performance. Use Quick Start templates or write SQL directly against the data warehouse.',
-    compass: 'Your AI copilot for MDM data. Ask natural language questions like "Which brands have the most anomalies?" or "Show me margin trends for roofing products across the Midwest."',
-    settings: 'Configure approval workflows, notification preferences, and distributor sync connections. Changes take effect immediately across all brands.'
-  };
-
-  const tip = tips[tabName];
-  if (!tip) return;
-
-  const el = document.createElement('div');
-  el.setAttribute('data-tutorial', tabName);
-  el.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 16px;margin-bottom:16px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.35);border-radius:10px;border-left:3px solid var(--accent-blue);';
-  el.innerHTML = `<svg style="width:18px;height:18px;color:var(--accent-blue);flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span style="flex:1;font-size:13px;color:var(--text-primary);line-height:1.5;font-weight:500;">${tip}</span><button onclick="dismissTutorial('${tabName}')" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;padding:4px;font-size:18px;line-height:1;flex-shrink:0;font-weight:700;">&times;</button>`;
-  container.insertBefore(el, container.firstChild);
-}
-
-function dismissTutorial(tabName) {
-  const storageKey = `tutorial-dismissed-${tabName}`;
-  localStorage.setItem(storageKey, 'true');
-  const tutorial = document.querySelector(`[data-tutorial="${tabName}"]`);
-  if (tutorial) {
-    tutorial.parentElement.removeChild(tutorial);
-  } else {
-    location.reload();
+  if (contextEl) {
+    const ctx = pageContext[tabName];
+    if (ctx) {
+      contextEl.textContent = ctx;
+      contextEl.style.display = 'block';
+    } else {
+      contextEl.style.display = 'none';
+    }
   }
 }
+
+// Page context is now rendered persistently in the page header via updatePageHeader()
+// Old renderTutorial/dismissTutorial removed — instructions are always visible
 
 function loadBrandDashboard(brandName) {
   const selector = document.getElementById('brand-dash-selector');
@@ -3212,14 +3136,17 @@ function renderDashboard() {
   const contentArea = kpiGrid.parentElement;
 
   // Render tutorial if not dismissed
-  renderTutorial('dashboard', contentArea);
 
-  // Filter products and anomalies by selected brand
+
+  // Filter products and anomalies by selected brand and service line
   let filteredProducts = state.products;
   let filteredAnomalies = state.anomalies;
+  if (state.currentServiceLine && state.currentServiceLine !== 'Roofing') {
+    filteredProducts = filteredProducts.filter(p => p.service_line === state.currentServiceLine);
+  }
   if (state.brandFilter !== 'All Brands') {
-    filteredProducts = state.products.filter(p => p.brand === state.brandFilter);
-    filteredAnomalies = state.anomalies.filter(a => a.brand === state.brandFilter);
+    filteredProducts = filteredProducts.filter(p => p.brand === state.brandFilter);
+    filteredAnomalies = filteredAnomalies.filter(a => a.brand === state.brandFilter);
   }
 
   const activeAnomalies = filteredAnomalies.filter(a => a.status === 'active').length;
@@ -3329,11 +3256,6 @@ const ITEMS_PER_PAGE = 15;
 function renderItemMaster() {
   const tbody = document.getElementById('item-tbody');
   const tabPanel = document.getElementById('tab-item-master');
-
-  // Render tutorial if not dismissed
-  if (tabPanel) {
-    renderTutorial('item-master', tabPanel);
-  }
 
   tbody.innerHTML = '';
 
@@ -3660,9 +3582,6 @@ function rejectApproval(approvalId) {
 
 function renderAnomalyDashboard() {
   const tabPanel = document.getElementById('tab-anomaly');
-  if (tabPanel) {
-    renderTutorial('anomaly', tabPanel);
-  }
 
   let allAnomalies = state.anomalies;
   if (state.brandFilter !== 'All Brands') {
@@ -3791,9 +3710,6 @@ function runNewScan() {
 
 function renderBrandDashboard(brand) {
   const tabPanel = document.getElementById('tab-brand-dashboard');
-  if (tabPanel) {
-    renderTutorial('brand-dashboard', tabPanel);
-  }
 
   const content = document.getElementById('brand-dash-content');
   if (!brand || brand === 'enterprise') {
@@ -4073,16 +3989,157 @@ function exportBrandDashboard() {
 }
 
 function renderSettings() {
-  const tabPanel = document.getElementById('tab-settings');
-  if (tabPanel) {
-    renderTutorial('settings', tabPanel);
-  }
+  // Page context is now in the header
 }
 
 function renderReports() {
-  const tabPanel = document.getElementById('tab-reports');
-  if (tabPanel) {
-    renderTutorial('reports', tabPanel);
+  const grid = document.getElementById('report-templates-grid');
+  const output = document.getElementById('report-output');
+  if (!grid) return;
+  output.innerHTML = '';
+
+  const templates = [
+    { id: 'margin-analysis', icon: '<svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>', title: 'Margin Analysis', desc: 'GM% by brand, category, and distributor with trend lines', color: 'var(--accent-blue)' },
+    { id: 'brand-comparison', icon: '<svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><rect x="3" y="10" width="4" height="11"/><rect x="10" y="3" width="4" height="18"/><rect x="17" y="7" width="4" height="14"/></svg>', title: 'Brand Comparison', desc: 'Side-by-side brand performance: SKUs, pricing, anomalies', color: 'var(--accent-purple)' },
+    { id: 'distributor-perf', icon: '<svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>', title: 'Distributor Performance', desc: 'Price competitiveness and sync health across ABC, QXO, SRS', color: 'var(--accent-green)' },
+    { id: 'price-variance', icon: '<svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>', title: 'Price Variance Report', desc: 'Products outside tolerance bands with severity ranking', color: 'var(--accent-red)' },
+    { id: 'data-quality', icon: '<svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>', title: 'Data Quality Scorecard', desc: 'Governance coverage, completeness, and compliance by brand', color: 'var(--accent-amber)' },
+    { id: 'custom', icon: '<svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>', title: 'Create Custom Report', desc: 'Build your own analysis from scratch with any data fields', color: 'var(--text-tertiary)' }
+  ];
+
+  let html = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">';
+  templates.forEach(t => {
+    html += `<div class="card" style="cursor:pointer;transition:all 0.15s;border:1.5px solid var(--border-primary);" onmouseover="this.style.borderColor='${t.color}';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-primary)';this.style.transform='none'" onclick="runTemplateReport('${t.id}')">
+      <div class="card-body" style="padding:20px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div style="color:${t.color};flex-shrink:0;">${t.icon}</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text-primary);">${t.title}</div>
+        </div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">${t.desc}</div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  grid.innerHTML = html;
+}
+
+function runTemplateReport(templateId) {
+  const output = document.getElementById('report-output');
+  const grid = document.getElementById('report-templates-grid');
+  if (!output) return;
+
+  // Hide template grid, show back button + report
+  grid.innerHTML = `<button class="btn btn-secondary" onclick="renderReports()" style="margin-bottom:16px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back to Reports</button>`;
+
+  if (templateId === 'margin-analysis') {
+    // Live margin analysis from MDM data
+    let html = '<div class="card"><div class="card-header">Margin Analysis by Brand</div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Brand</th><th>SKUs</th><th>Avg GM%</th><th>Min GM%</th><th>Max GM%</th><th>Below Threshold</th></tr></thead><tbody>';
+    state.brands.forEach(b => {
+      const prods = state.products.filter(p => p.brand === b);
+      if (!prods.length) return;
+      const avgGM = (prods.reduce((s,p)=>s+p.gm_pct,0)/prods.length).toFixed(1);
+      const minGM = Math.min(...prods.map(p=>p.gm_pct));
+      const maxGM = Math.max(...prods.map(p=>p.gm_pct));
+      const belowThreshold = prods.filter(p => p.gm_pct < 25).length;
+      html += `<tr><td style="font-weight:600;">${b}</td><td>${prods.length}</td><td>${avgGM}%</td><td>${minGM}%</td><td>${maxGM}%</td><td>${belowThreshold > 0 ? '<span style="color:var(--accent-red);font-weight:700;">'+belowThreshold+'</span>' : '0'}</td></tr>`;
+    });
+    html += '</tbody></table></div></div></div>';
+
+    // Bar chart
+    html += '<div class="card" style="margin-top:16px;"><div class="card-header">GM% Distribution by Brand</div><div class="card-body"><div class="bar-chart">';
+    const brandGMs = state.brands.map(b => {
+      const prods = state.products.filter(p => p.brand === b);
+      return { brand: b, gm: prods.length ? (prods.reduce((s,p)=>s+p.gm_pct,0)/prods.length) : 0 };
+    }).sort((a,b) => b.gm - a.gm).slice(0, 10);
+    const maxGM = Math.max(...brandGMs.map(b=>b.gm), 1);
+    brandGMs.forEach(bg => {
+      html += `<div class="bar-row"><div class="bar-label">${bg.brand}</div><div class="bar-container"><div class="bar-fill" style="width:${(bg.gm/maxGM*100)}%;background:${bg.gm >= 25 ? 'var(--gradient-green)' : 'var(--gradient-red)'};"></div></div><div class="bar-value">${bg.gm.toFixed(1)}%</div></div>`;
+    });
+    html += '</div></div></div>';
+    output.innerHTML = html;
+
+  } else if (templateId === 'brand-comparison') {
+    let html = '<div class="card"><div class="card-header">Brand Comparison Dashboard</div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Brand</th><th>SKUs</th><th>Avg GM%</th><th>Active Anomalies</th><th>Avg ABC Price</th><th>Avg QXO Price</th><th>Health Score</th></tr></thead><tbody>';
+    state.brands.forEach(b => {
+      const prods = state.products.filter(p => p.brand === b);
+      const anoms = state.anomalies.filter(a => a.brand === b && a.status === 'active').length;
+      const avgGM = prods.length ? (prods.reduce((s,p)=>s+p.gm_pct,0)/prods.length).toFixed(1) : '0.0';
+      const avgABC = prods.length ? '$'+(prods.reduce((s,p)=>s+p.abc_price,0)/prods.length).toFixed(2) : '--';
+      const avgQXO = prods.length ? '$'+(prods.reduce((s,p)=>s+p.qxo_price,0)/prods.length).toFixed(2) : '--';
+      const health = Math.max(0, 100 - anoms * 15);
+      const healthColor = health >= 80 ? 'var(--accent-green)' : health >= 50 ? 'var(--accent-amber)' : 'var(--accent-red)';
+      html += `<tr><td style="font-weight:600;">${b}</td><td>${prods.length}</td><td>${avgGM}%</td><td>${anoms}</td><td>${avgABC}</td><td>${avgQXO}</td><td><span style="color:${healthColor};font-weight:700;">${health}</span></td></tr>`;
+    });
+    html += '</tbody></table></div></div></div>';
+    output.innerHTML = html;
+
+  } else if (templateId === 'distributor-perf') {
+    const distributors = ['ABC Supply', 'QXO', 'SRS/BMCA'];
+    let html = '<div class="card"><div class="card-header">Distributor Performance</div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Distributor</th><th>Avg Price</th><th>Best Price %</th><th>Products Covered</th><th>Competitiveness</th></tr></thead><tbody>';
+    const priceFields = { 'ABC Supply': 'abc_price', 'QXO': 'qxo_price', 'SRS/BMCA': 'srs_price' };
+    distributors.forEach(d => {
+      const field = priceFields[d];
+      const avgPrice = (state.products.reduce((s,p) => s + p[field], 0) / state.products.length).toFixed(2);
+      let bestCount = 0;
+      state.products.forEach(p => {
+        const prices = [p.abc_price, p.qxo_price, p.srs_price];
+        if (p[field] === Math.min(...prices)) bestCount++;
+      });
+      const bestPct = ((bestCount / state.products.length) * 100).toFixed(1);
+      const compColor = parseFloat(bestPct) >= 40 ? 'var(--accent-green)' : parseFloat(bestPct) >= 25 ? 'var(--accent-amber)' : 'var(--accent-red)';
+      html += `<tr><td style="font-weight:600;">${d}</td><td>$${avgPrice}</td><td><span style="color:${compColor};font-weight:700;">${bestPct}%</span></td><td>${state.products.length}</td><td><div style="width:100px;height:8px;background:var(--bg-tertiary);border-radius:4px;overflow:hidden;"><div style="width:${bestPct}%;height:100%;background:${compColor};border-radius:4px;"></div></div></td></tr>`;
+    });
+    html += '</tbody></table></div></div></div>';
+    output.innerHTML = html;
+
+  } else if (templateId === 'price-variance') {
+    const outliers = state.products.filter(p => {
+      const maxDist = Math.max(p.abc_price, p.qxo_price, p.srs_price);
+      const minDist = Math.min(p.abc_price, p.qxo_price, p.srs_price);
+      return ((maxDist - minDist) / minDist * 100) > 10;
+    }).sort((a,b) => {
+      const aSpread = (Math.max(a.abc_price,a.qxo_price,a.srs_price) - Math.min(a.abc_price,a.qxo_price,a.srs_price));
+      const bSpread = (Math.max(b.abc_price,b.qxo_price,b.srs_price) - Math.min(b.abc_price,b.qxo_price,b.srs_price));
+      return bSpread - aSpread;
+    }).slice(0, 20);
+
+    let html = '<div class="card"><div class="card-header">Price Variance Report - Top 20 Outliers</div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>SKU</th><th>Product</th><th>Brand</th><th>ABC</th><th>QXO</th><th>SRS</th><th>Spread</th><th>Severity</th></tr></thead><tbody>';
+    outliers.forEach(p => {
+      const maxP = Math.max(p.abc_price, p.qxo_price, p.srs_price);
+      const minP = Math.min(p.abc_price, p.qxo_price, p.srs_price);
+      const spread = ((maxP - minP) / minP * 100).toFixed(1);
+      const sev = parseFloat(spread) > 20 ? 'High' : parseFloat(spread) > 15 ? 'Medium' : 'Low';
+      const sevColor = sev === 'High' ? 'var(--accent-red)' : sev === 'Medium' ? 'var(--accent-amber)' : 'var(--accent-green)';
+      html += `<tr><td style="font-family:monospace;font-size:11px;">${p.sku}</td><td>${p.name}</td><td style="font-weight:600;">${p.brand}</td><td>$${p.abc_price.toFixed(2)}</td><td>$${p.qxo_price.toFixed(2)}</td><td>$${p.srs_price.toFixed(2)}</td><td style="font-weight:700;">${spread}%</td><td><span style="color:${sevColor};font-weight:600;">${sev}</span></td></tr>`;
+    });
+    html += '</tbody></table></div></div></div>';
+    output.innerHTML = html;
+
+  } else if (templateId === 'data-quality') {
+    let html = '<div class="card"><div class="card-header">Data Quality Scorecard</div><div class="card-body"><div class="table-wrapper"><table style="font-size:12px;"><thead><tr><th>Brand</th><th>Governed SKUs</th><th>Coverage</th><th>Active Anomalies</th><th>Resolution Rate</th><th>Quality Score</th></tr></thead><tbody>';
+    state.brands.forEach(b => {
+      const prods = state.products.filter(p => p.brand === b);
+      const activeAnoms = state.anomalies.filter(a => a.brand === b && a.status === 'active').length;
+      const resolvedAnoms = state.anomalies.filter(a => a.brand === b && a.status === 'resolved').length;
+      const totalAnoms = activeAnoms + resolvedAnoms;
+      const resRate = totalAnoms > 0 ? ((resolvedAnoms / totalAnoms) * 100).toFixed(0) : '100';
+      const coverage = Math.min(100, 70 + Math.floor(Math.random() * 30));
+      const qualScore = Math.max(0, Math.min(100, Math.round(coverage * 0.4 + parseInt(resRate) * 0.3 + (100 - activeAnoms * 10) * 0.3)));
+      const qColor = qualScore >= 80 ? 'var(--accent-green)' : qualScore >= 60 ? 'var(--accent-amber)' : 'var(--accent-red)';
+      html += `<tr><td style="font-weight:600;">${b}</td><td>${prods.length}</td><td>${coverage}%</td><td>${activeAnoms}</td><td>${resRate}%</td><td><span style="color:${qColor};font-weight:700;">${qualScore}</span></td></tr>`;
+    });
+    html += '</tbody></table></div></div></div>';
+    output.innerHTML = html;
+
+  } else if (templateId === 'custom') {
+    output.innerHTML = `<div class="card"><div class="card-body" style="text-align:center;padding:40px;">
+      <svg width="48" height="48" fill="none" stroke="var(--text-tertiary)" viewBox="0 0 24 24" style="margin-bottom:12px;opacity:0.5;" stroke-width="1.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      <div style="font-size:16px;font-weight:600;margin-bottom:4px;color:var(--text-primary);">Custom Report Builder</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;">Select dimensions and measures to build your analysis. For advanced queries, use the Data Warehouse tab.</div>
+      <div style="display:flex;gap:10px;justify-content:center;">
+        <button class="btn btn-primary" onclick="switchReportsTab('warehouse',document.querySelectorAll('#tab-reports .tab-pill')[1])">Open Data Warehouse</button>
+      </div>
+    </div></div>`;
   }
 }
 
@@ -4118,54 +4175,72 @@ function renderCompass() {
 }
 
 function renderPriceSheetInit() {
-  const tabPanel = document.getElementById('tab-price-sheet');
-  if (tabPanel) {
-    renderTutorial('price-sheet', tabPanel);
+  // Populate brand selector if empty
+  const sel = document.getElementById('price-sheet-brand-selector');
+  if (sel && sel.options.length <= 1) {
+    state.brands.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b;
+      opt.textContent = b;
+      sel.appendChild(opt);
+    });
   }
+  // Default to enterprise view
+  const currentBrand = sel && sel.value ? sel.value : '';
+  renderPriceSheetView(currentBrand);
+}
 
+function renderPriceSheetView(brand) {
   const content = document.getElementById('price-sheet-content');
-  const search = document.getElementById('brand-search');
-  const backBtn = document.getElementById('back-to-brands');
+  if (!content) return;
 
-  backBtn.style.display = 'none';
-  let html = '<div class="brand-grid" id="brand-grid">';
+  if (!brand) {
+    // Enterprise overview — summary table of all brands
+    const totalProducts = state.products.length;
+    const totalBrands = state.brands.length;
+    const overallGM = (state.products.reduce((s, p) => s + p.gm_pct, 0) / totalProducts || 0).toFixed(1);
+    const activeAnoms = state.anomalies.filter(a => a.status === 'active').length;
 
-  state.brands.forEach(b => {
-    const products = state.products.filter(p => p.brand === b);
-    const avgGM = products.length ? (products.reduce((s, p) => s + p.gm_pct, 0) / products.length).toFixed(1) : 0;
-    const anomCount = state.anomalies.filter(a => a.brand === b && a.status === 'active').length;
-    const health = anomCount === 0 ? 'good' : anomCount < 5 ? 'warning' : 'critical';
-
-    html += `
-      <div class="brand-card" onclick="showBrandPriceSheet('${b}')">
-        <div class="brand-name">${b}</div>
-        <div style="border-bottom:1px solid var(--border-primary); margin-bottom:8px;"></div>
-        <div class="brand-stat"><span class="brand-stat-label">Products</span><span class="brand-stat-value">${products.length}</span></div>
-        <div class="brand-stat"><span class="brand-stat-label">Avg GM%</span><span class="brand-stat-value">${avgGM}%</span></div>
-        <div class="brand-stat"><span class="brand-stat-label">Anomalies</span><span class="brand-stat-value">${anomCount}</span></div>
-        <div class="brand-stat"><span class="brand-stat-label">Health</span><span><span class="health-indicator ${health}"></span><span style="font-size:11px; font-weight:600;">${health}</span></span></div>
+    let html = `
+      <div class="kpi-grid" style="margin-bottom:20px;">
+        <div class="stat-card"><div class="stat-value">${totalBrands}</div><div class="stat-label">Total Brands</div></div>
+        <div class="stat-card"><div class="stat-value">${totalProducts}</div><div class="stat-label">Governed SKUs</div></div>
+        <div class="stat-card green"><div class="stat-value">${overallGM}%</div><div class="stat-label">Avg Gross Margin</div></div>
+        <div class="stat-card red"><div class="stat-value">${activeAnoms}</div><div class="stat-label">Active Anomalies</div></div>
       </div>
-    `;
-  });
+      <div class="card"><div class="card-header">Brand Pricing Health</div><div class="card-body"><div class="table-wrapper">
+        <table style="font-size:12px;">
+          <thead><tr>
+            <th>Brand</th><th>SKUs</th><th>Avg GM%</th><th>Anomalies</th><th>Health</th><th>Action</th>
+          </tr></thead><tbody>`;
 
-  html += '</div>';
-  content.innerHTML = html;
+    state.brands.forEach(b => {
+      const products = state.products.filter(p => p.brand === b);
+      const avgGM = products.length ? (products.reduce((s, p) => s + p.gm_pct, 0) / products.length).toFixed(1) : 0;
+      const anomCount = state.anomalies.filter(a => a.brand === b && a.status === 'active').length;
+      const health = anomCount === 0 ? 'good' : anomCount < 5 ? 'warning' : 'critical';
+      const healthColor = health === 'good' ? 'var(--accent-green)' : health === 'warning' ? 'var(--accent-amber)' : 'var(--accent-red)';
 
-  if (search) {
-    search.onkeyup = () => {
-      const query = search.value.toLowerCase();
-      document.querySelectorAll('.brand-card').forEach(card => {
-        const brandName = card.querySelector('.brand-name').textContent.toLowerCase();
-        card.style.display = brandName.includes(query) ? '' : 'none';
-      });
-    };
+      html += `<tr>
+        <td style="font-weight:600;">${b}</td>
+        <td>${products.length}</td>
+        <td>${avgGM}%</td>
+        <td>${anomCount}</td>
+        <td><span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:${healthColor};display:inline-block;"></span>${health}</span></td>
+        <td><button class="btn btn-sm btn-primary" onclick="document.getElementById('price-sheet-brand-selector').value='${b}';renderPriceSheetView('${b}')">View</button></td>
+      </tr>`;
+    });
+
+    html += '</tbody></table></div></div></div>';
+    content.innerHTML = html;
+  } else {
+    // Show brand-specific price sheet (existing showBrandPriceSheet logic)
+    showBrandPriceSheet(brand);
   }
 }
 
 function showBrandPriceSheet(brand) {
   const content = document.getElementById('price-sheet-content');
-  const backBtn = document.getElementById('back-to-brands');
-  backBtn.style.display = 'inline-flex';
 
   // Store current brand for drill-through
   state._activeBrand = brand;
@@ -4892,9 +4967,6 @@ const AUDIT_PER_PAGE = 20;
 
 function renderAuditLog() {
   const tabPanel = document.getElementById('tab-audit-log');
-  if (tabPanel) {
-    renderTutorial('audit-log', tabPanel);
-  }
 
   const tbody = document.getElementById('audit-tbody');
   if (!tbody) return;
@@ -5582,8 +5654,17 @@ function switchServiceLine(line) {
   document.querySelectorAll('.service-pill').forEach(p => {
     if (p.textContent.includes(line)) p.classList.add('active');
   });
-  if (state.currentTab === 'systems') renderSystems();
+  // Re-render current tab with new service line filter
+  if (state.currentTab === 'dashboard') renderDashboard();
+  else if (state.currentTab === 'systems') renderSystems();
   else if (state.currentTab === 'labor') renderLabor();
+  else if (state.currentTab === 'item-master') renderItemMaster();
+  else if (state.currentTab === 'anomaly') renderAnomalyDashboard();
+  else if (state.currentTab === 'price-sheet') renderPriceSheetInit();
+  else if (state.currentTab === 'brand-dashboard') {
+    const sel = document.getElementById('brand-dash-selector');
+    renderBrandDashboard(sel ? sel.value : '');
+  }
 }
 
 // ── SYSTEMS & ASSEMBLIES ──
@@ -5678,9 +5759,6 @@ function generateSystems() {
 
 function renderSystems() {
   const tabPanel = document.getElementById('tab-systems');
-  if (tabPanel) {
-    renderTutorial('systems', tabPanel);
-  }
 
   generateSystems();
   const grid = document.getElementById('systems-grid');
@@ -5877,11 +5955,11 @@ function generateLaborRates() {
   ];
 }
 
+let laborPage = 1;
+const LABOR_PER_PAGE = 15;
+
 function renderLabor() {
-  const tabPanel = document.getElementById('tab-labor');
-  if (tabPanel) {
-    renderTutorial('labor', tabPanel);
-  }
+  // Page context is now in the header
 
   generateLaborRates();
 
@@ -5907,122 +5985,69 @@ function renderLabor() {
   if (marketFilter !== 'All') filtered = filtered.filter(r => r.market === marketFilter);
   if (tradeFilter !== 'All') filtered = filtered.filter(r => r.trade === tradeFilter);
 
-  // Render KPIs with calculated values
+  // KPIs based on filtered data
   const kpiContainer = document.getElementById('labor-kpis');
   if (kpiContainer) {
-    const allRates = state.laborRates;
-    const avgRate = (allRates.reduce((s, r) => s + r.base_rate, 0) / allRates.length || 0).toFixed(2);
-    const uniqueTrades = new Set(allRates.map(r => r.trade)).size;
-    const uniqueMarkets = new Set(allRates.map(r => r.market)).size;
-    const lastUpdated = allRates.length > 0 ? new Date(allRates[0].effective_date).toLocaleDateString() : 'N/A';
+    const avgRate = filtered.length ? (filtered.reduce((s, r) => s + r.base_rate, 0) / filtered.length).toFixed(2) : '0.00';
+    const uniqueTrades = new Set(filtered.map(r => r.trade)).size;
+    const uniqueMarkets = new Set(filtered.map(r => r.market)).size;
+    const uniqueBrands = new Set(filtered.map(r => r.brand)).size;
 
     kpiContainer.innerHTML = `
-      <div class="stat-card">
-        <div class="stat-value">$${avgRate}</div>
-        <div class="stat-label">Avg Labor Rate</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">${uniqueTrades}</div>
-        <div class="stat-label">Total Trades</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">${uniqueMarkets}</div>
-        <div class="stat-label">Markets Covered</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">${lastUpdated}</div>
-        <div class="stat-label">Last Updated</div>
-      </div>
+      <div class="stat-card"><div class="stat-value">$${avgRate}</div><div class="stat-label">Avg Rate (filtered)</div></div>
+      <div class="stat-card"><div class="stat-value">${filtered.length}</div><div class="stat-label">Total Rates</div></div>
+      <div class="stat-card"><div class="stat-value">${uniqueTrades}</div><div class="stat-label">Trades</div></div>
+      <div class="stat-card"><div class="stat-value">${uniqueMarkets}</div><div class="stat-label">Markets</div></div>
     `;
   }
 
-  // Group rates by service line
-  const grouped = {};
-  filtered.forEach(rate => {
-    if (!grouped[rate.service_line]) {
-      grouped[rate.service_line] = [];
-    }
-    grouped[rate.service_line].push(rate);
-  });
+  // Paginate
+  const totalPages = Math.ceil(filtered.length / LABOR_PER_PAGE) || 1;
+  if (laborPage > totalPages) laborPage = 1;
+  const start = (laborPage - 1) * LABOR_PER_PAGE;
+  const pageRates = filtered.slice(start, start + LABOR_PER_PAGE);
 
-  // Render accordion
+  // Flat data table
   const container = document.getElementById('labor-table');
   if (!container) return;
 
-  let html = '<div class="labor-accordion">';
-  let isFirst = true;
+  let html = `<thead><tr>
+    <th>Brand</th><th>Service Line</th><th>Market</th><th>Trade</th><th>Job Type</th>
+    <th style="text-align:right;">Base Rate</th><th style="text-align:right;">Complexity</th>
+    <th style="text-align:right;">OT Rate</th><th style="text-align:center;">Status</th>
+  </tr></thead><tbody>`;
 
-  Object.entries(grouped).forEach(([serviceLine, rates]) => {
-    const avgRateForService = (rates.reduce((s, r) => s + r.base_rate, 0) / rates.length).toFixed(2);
-    const isExpanded = isFirst;
-
-    html += `
-      <div class="accordion-item">
-        <div class="accordion-header" onclick="toggleLaborSection(this, '${serviceLine}')">
-          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-            <div style="display:flex; align-items:center; gap:12px; flex:1;">
-              <span style="font-size:14px; color:var(--text-tertiary);">${isExpanded ? '▾' : '▸'}</span>
-              <span style="font-size:14px; font-weight:700; color:var(--text-primary);">${serviceLine}</span>
-              <span style="font-size:12px; color:var(--text-secondary); background:var(--bg-secondary); padding:2px 8px; border-radius:4px;">${rates.length} rates</span>
-            </div>
-            <div style="font-size:13px; font-weight:700; color:var(--accent-blue);">Avg: $${avgRateForService}/hr</div>
-          </div>
-        </div>
-        <div class="accordion-content" style="display: ${isExpanded ? 'block' : 'none'};">
-          <table style="width:100%; border-collapse:collapse;">
-            <thead>
-              <tr style="background:var(--bg-secondary); border-bottom:1px solid var(--border-primary);">
-                <th style="padding:12px; text-align:left; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Brand</th>
-                <th style="padding:12px; text-align:left; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Market</th>
-                <th style="padding:12px; text-align:left; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Trade</th>
-                <th style="padding:12px; text-align:left; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Job Type</th>
-                <th style="padding:12px; text-align:right; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Base Rate</th>
-                <th style="padding:12px; text-align:right; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Complexity</th>
-                <th style="padding:12px; text-align:right; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">OT Rate</th>
-                <th style="padding:12px; text-align:center; font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rates.map(rate => `
-                <tr style="border-bottom:1px solid var(--border-primary); hover-background:var(--bg-secondary);">
-                  <td style="padding:10px 12px; font-size:13px; font-weight:600;">${rate.brand}</td>
-                  <td style="padding:10px 12px; font-size:13px;">${rate.market}</td>
-                  <td style="padding:10px 12px; font-size:13px;">${rate.trade}</td>
-                  <td style="padding:10px 12px; font-size:13px;">${rate.job_type}</td>
-                  <td style="padding:10px 12px; text-align:right; font-size:13px; font-weight:700;">$${rate.base_rate}</td>
-                  <td style="padding:10px 12px; text-align:right; font-size:13px;">${rate.complexity_multiplier.toFixed(2)}x</td>
-                  <td style="padding:10px 12px; text-align:right; font-size:13px; font-weight:700;">$${rate.overtime_rate}</td>
-                  <td style="padding:10px 12px; text-align:center;"><span style="padding:2px 8px; border-radius:4px; background:var(--accent-green-light); color:var(--accent-green); font-size:11px; font-weight:600;">${rate.status}</span></td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    `;
-    isFirst = false;
+  pageRates.forEach(rate => {
+    html += `<tr>
+      <td style="font-weight:600;">${rate.brand}</td>
+      <td>${rate.service_line}</td>
+      <td>${rate.market}</td>
+      <td>${rate.trade}</td>
+      <td>${rate.job_type}</td>
+      <td style="text-align:right;font-weight:700;">$${rate.base_rate}</td>
+      <td style="text-align:right;">${rate.complexity_multiplier.toFixed(2)}x</td>
+      <td style="text-align:right;font-weight:700;">$${rate.overtime_rate}</td>
+      <td style="text-align:center;"><span style="padding:2px 8px;border-radius:4px;background:var(--accent-green-light);color:var(--accent-green);font-size:11px;font-weight:600;">${rate.status}</span></td>
+    </tr>`;
   });
 
-  html += '</div>';
-  html += '<div style="margin-top:20px; padding:12px; background:var(--bg-secondary); border-radius:6px; font-size:12px; color:var(--text-secondary); border-left:3px solid var(--accent-blue);">📊 Labor rates benchmarked against Xactimate. Labor represents 40-60% of total job cost.</div>';
-  html += '<div style="margin-top:16px;"><button class="btn btn-primary role-admin-only" onclick="openAddLaborRateModal()">+ Add Labor Rate</button></div>';
-
+  html += '</tbody>';
   container.innerHTML = html;
-}
 
-function toggleLaborSection(header, serviceLine) {
-  const content = header.closest('.accordion-item').querySelector('.accordion-content');
-  const arrow = header.querySelector('span');
-  const isHidden = content.style.display === 'none' || content.style.display === '';
-
-  if (isHidden) {
-    content.style.display = 'block';
-    arrow.textContent = '▾';
-  } else {
-    content.style.display = 'none';
-    arrow.textContent = '▸';
+  // Pagination
+  const pagDiv = document.getElementById('labor-pagination');
+  if (pagDiv) {
+    let pagHtml = `<span style="font-size:12px;color:var(--text-secondary);">Showing ${start+1}-${Math.min(start+LABOR_PER_PAGE, filtered.length)} of ${filtered.length}</span><div style="display:flex;gap:4px;">`;
+    for (let i = 1; i <= totalPages; i++) {
+      pagHtml += `<button class="btn btn-sm ${i === laborPage ? 'btn-primary' : 'btn-secondary'}" onclick="laborPage=${i};renderLabor()">${i}</button>`;
+    }
+    pagHtml += '</div>';
+    pagDiv.innerHTML = pagHtml;
+    pagDiv.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-top:12px;';
   }
 }
+
+// toggleLaborSection removed — labor now uses flat data table
 
 function openAddLaborRateModal() {
   const modal = document.getElementById('labor-rate-modal');
