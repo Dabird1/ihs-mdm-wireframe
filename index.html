@@ -2586,12 +2586,28 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 
   <!-- ═══ CAPACITY PLANNER TAB ═══ -->
   <div id="tab-capacity" class="tab-panel">
-    <!-- Time Horizon Toggle -->
+    <!-- Controls Bar: Org Hierarchy + Horizon + Actions -->
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
-      <div style="display:flex; gap:6px;" id="capacity-horizon-pills"></div>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <select id="cap-org-level" onchange="renderCapacityPlanner()" style="font-size:12px; padding:6px 10px; border-radius:var(--radius); border:1px solid var(--border-primary); background:var(--bg-secondary); color:var(--text-primary);">
+          <option value="enterprise">Enterprise (All IHS)</option>
+          <option value="division-us">Division: US</option>
+          <option value="division-ca">Division: Canada</option>
+          <option value="region-midwest">Region: Midwest</option>
+          <option value="region-northeast">Region: Northeast</option>
+          <option value="region-midatlantic">Region: Mid-Atlantic</option>
+          <option value="region-pacificnw">Region: Pacific NW</option>
+          <option value="region-southeast">Region: Southeast</option>
+          <option value="region-canada">Region: Canada</option>
+        </select>
+        <select id="cap-brand-filter" onchange="renderCapacityPlanner()" style="font-size:12px; padding:6px 10px; border-radius:var(--radius); border:1px solid var(--border-primary); background:var(--bg-secondary); color:var(--text-primary);">
+          <option value="">All Brands</option>
+        </select>
+        <div style="display:flex; gap:4px;" id="capacity-horizon-pills"></div>
+      </div>
       <div style="display:flex; gap:8px; align-items:center;">
-        <span style="font-size:11px; color:var(--text-tertiary);">Data Sources:</span>
-        <span style="font-size:10px; background:var(--bg-tertiary); padding:3px 8px; border-radius:var(--radius); color:var(--text-secondary);">Acumatica&ensp;·&ensp;DST&ensp;·&ensp;Zoho</span>
+        <span style="font-size:10px; background:var(--bg-tertiary); padding:3px 8px; border-radius:var(--radius); color:var(--text-tertiary);">Acumatica · DST · Zoho</span>
+        <button class="btn btn-primary" style="font-size:12px; padding:6px 14px;" onclick="openCrewWizard()">+ Add Crew</button>
       </div>
     </div>
 
@@ -2602,7 +2618,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
     <div class="card" style="margin-bottom:16px;">
       <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
         Demand vs. Capacity by Service Line
-        <span style="font-size:11px; color:var(--text-tertiary); font-weight:400;">Bar fills past 100% = over-committed &bull; Hatched = 1099 (reliability-discounted)</span>
+        <span style="font-size:11px; color:var(--text-tertiary); font-weight:400;">Click a bar to drill in &bull; Hatched = 1099 (reliability-discounted)</span>
       </div>
       <div class="card-body" id="capacity-gauges"></div>
     </div>
@@ -2612,14 +2628,14 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       <div class="card">
         <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
           W2 vs 1099 Labor Mix
-          <span style="font-size:11px; color:var(--text-tertiary); font-weight:400;">Solid = W2 (deterministic) &bull; Striped = 1099 (probabilistic)</span>
+          <span style="font-size:11px; color:var(--text-tertiary); font-weight:400;">Solid = W2 &bull; Striped = 1099</span>
         </div>
         <div class="card-body" id="capacity-labor-mix"></div>
       </div>
       <div class="card">
         <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-          Crew Roster Summary
-          <span style="font-size:11px; color:var(--text-tertiary); font-weight:400;">Source: Acumatica ERP</span>
+          Crew Roster
+          <button style="font-size:11px; color:var(--accent-blue); background:none; border:none; cursor:pointer; font-weight:500;" onclick="openCrewWizard()">+ Add Crew</button>
         </div>
         <div class="card-body" id="capacity-crew-roster"></div>
       </div>
@@ -2630,16 +2646,89 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
       <div class="card">
         <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
           Crew Velocity &amp; Throughput
-          <span style="font-size:11px; color:var(--text-tertiary); font-weight:400;">Avg jobs/crew/week derived from last 90 days of job completion data</span>
+          <span style="font-size:11px; color:var(--text-tertiary); font-weight:400;">Avg jobs/crew/week from last 90 days</span>
         </div>
         <div class="card-body" id="capacity-velocity"></div>
       </div>
       <div class="card">
         <div class="card-header" style="display:flex; align-items:center; gap:8px;">
           <svg width="16" height="16" fill="none" stroke="var(--accent-red)" viewBox="0 0 24 24" stroke-width="2"><path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Revenue at Risk — Detail
+          Revenue at Risk
         </div>
         <div class="card-body" id="capacity-risk-detail" style="font-size:12px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREW WIZARD MODAL -->
+  <div id="crew-wizard-modal" class="modal-overlay">
+    <div class="modal" style="max-width:560px;">
+      <div class="modal-header">
+        <div class="modal-title" id="crew-wizard-title">Add Crew</div>
+        <button class="modal-close" onclick="closeModal('crew-wizard-modal')">✕</button>
+      </div>
+      <div class="modal-body" style="padding:20px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Crew Name / ID *</label>
+            <input id="crew-name" type="text" placeholder="e.g. Martinez Crew #4" style="width:100%; padding:8px 10px; border:1px solid var(--border-primary); border-radius:var(--radius); background:var(--bg-tertiary); color:var(--text-primary); font-size:12px;">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Service Line *</label>
+            <select id="crew-service-line" style="width:100%; padding:8px 10px; border:1px solid var(--border-primary); border-radius:var(--radius); background:var(--bg-tertiary); color:var(--text-primary); font-size:12px;">
+              <option value="">Select...</option>
+              <option>Roofing</option><option>Siding</option><option>Windows</option><option>Gutters</option><option>Insulation</option><option>Bath</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Classification *</label>
+            <select id="crew-classification" onchange="toggleReliability()" style="width:100%; padding:8px 10px; border:1px solid var(--border-primary); border-radius:var(--radius); background:var(--bg-tertiary); color:var(--text-primary); font-size:12px;">
+              <option value="W2">W2 — Employee</option>
+              <option value="1099">1099 — Subcontractor</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Brand / Branch *</label>
+            <select id="crew-brand" style="width:100%; padding:8px 10px; border:1px solid var(--border-primary); border-radius:var(--radius); background:var(--bg-tertiary); color:var(--text-primary); font-size:12px;">
+              <option value="">Select...</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px;">
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Crew Size</label>
+            <input id="crew-size" type="number" value="3" min="1" max="20" style="width:100%; padding:8px 10px; border:1px solid var(--border-primary); border-radius:var(--radius); background:var(--bg-tertiary); color:var(--text-primary); font-size:12px;">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Avg Jobs/Week</label>
+            <input id="crew-velocity" type="number" step="0.1" value="3.0" min="0.5" max="10" style="width:100%; padding:8px 10px; border:1px solid var(--border-primary); border-radius:var(--radius); background:var(--bg-tertiary); color:var(--text-primary); font-size:12px;">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Avg Ticket ($)</label>
+            <input id="crew-avg-ticket" type="number" value="12000" min="1000" max="100000" step="500" style="width:100%; padding:8px 10px; border:1px solid var(--border-primary); border-radius:var(--radius); background:var(--bg-tertiary); color:var(--text-primary); font-size:12px;">
+          </div>
+        </div>
+        <div id="crew-reliability-row" style="display:none; margin-bottom:16px;">
+          <label style="font-size:11px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Reliability Factor (1099 only)</label>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <input id="crew-reliability" type="range" min="20" max="100" value="65" style="flex:1;" oninput="document.getElementById('crew-rel-val').textContent=this.value+'%'">
+            <span id="crew-rel-val" style="font-size:13px; font-weight:600; color:var(--text-primary); min-width:36px;">65%</span>
+          </div>
+          <div style="font-size:10px; color:var(--text-tertiary); margin-top:4px;">How likely is this sub to show up and complete the scheduled work? 100% = fully reliable, 50% = coin flip.</div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="font-size:11px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Notes</label>
+          <textarea id="crew-notes" rows="2" placeholder="Optional notes (e.g., specializes in steep-slope, available weekends)" style="width:100%; padding:8px 10px; border:1px solid var(--border-primary); border-radius:var(--radius); background:var(--bg-tertiary); color:var(--text-primary); font-size:12px; resize:vertical;"></textarea>
+        </div>
+        <div style="background:var(--bg-tertiary); border-radius:var(--radius); padding:10px 14px; margin-bottom:16px; font-size:11px; color:var(--text-tertiary);">
+          <strong style="color:var(--text-secondary);">Where does this data live?</strong> Crew rosters will sync from Acumatica ERP once the integration is live. Until then, this wizard is the source of truth. Changes here feed the Capacity Planner, Dashboard risk KPIs, and DST scheduling engine.
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button class="btn" onclick="closeModal('crew-wizard-modal')" style="padding:8px 16px; font-size:12px;">Cancel</button>
+          <button class="btn btn-primary" onclick="saveCrew()" style="padding:8px 16px; font-size:12px;">Save Crew</button>
+        </div>
       </div>
     </div>
   </div>
@@ -6041,7 +6130,8 @@ function switchServiceLine(line) {
     if (p.textContent.includes(line)) p.classList.add('active');
   });
   // Re-render current tab with new service line filter
-  if (state.currentTab === 'dashboard') renderDashboard();
+  if (state.currentTab === 'capacity') { capacityServiceFilter = (line === state.currentServiceLine ? line : null); renderCapacityPlanner(); }
+  else if (state.currentTab === 'dashboard') renderDashboard();
   else if (state.currentTab === 'systems') renderSystems();
   else if (state.currentTab === 'labor') renderLabor();
   else if (state.currentTab === 'item-master') renderItemMaster();
@@ -6531,27 +6621,263 @@ function saveLaborRate() {
 
 // ── CAPACITY PLANNER ──
 let capacityHorizon = 'april';
+let capacityServiceFilter = null; // null = all service lines
+
+// ── Org hierarchy mapping ──
+const capOrgTree = {
+  enterprise: { label: 'Enterprise (All IHS)', brands: null },
+  'division-us': { label: 'US Division', brands: ['Infinity Exteriors','Overhead Solutions','Cochran Exteriors','Exterior Heroes','Parkhill Roofing','Werner Roofing','Premier Roofing','Henderson Roofing','GF Sprague','Resnick Roofing','High Point Roofing','Couto Construction','G. Fedale','Franzoso','American Home Contractors','Exterior Medics','Skywalker Roofing','Valentine Roofing','Interstate Roofing','Specialty Exteriors','Altec Roofing','Carpenter\'s','Watkins Construction'] },
+  'division-ca': { label: 'Canada Division', brands: ['D\'Angelo & Sons','Wheatland Roofing'] },
+  'region-midwest': { label: 'Midwest', brands: ['Infinity Exteriors','Overhead Solutions','Cochran Exteriors','Exterior Heroes','Parkhill Roofing','Werner Roofing','Premier Roofing'] },
+  'region-northeast': { label: 'Northeast', brands: ['Henderson Roofing','GF Sprague','Resnick Roofing','High Point Roofing','Couto Construction','G. Fedale','Franzoso'] },
+  'region-midatlantic': { label: 'Mid-Atlantic', brands: ['American Home Contractors','Exterior Medics','Skywalker Roofing'] },
+  'region-pacificnw': { label: 'Pacific NW', brands: ['Valentine Roofing','Interstate Roofing','Specialty Exteriors'] },
+  'region-southeast': { label: 'Southeast', brands: ['Altec Roofing','Carpenter\'s','Watkins Construction'] },
+  'region-canada': { label: 'Canada', brands: ['D\'Angelo & Sons','Wheatland Roofing'] }
+};
+
+// ── Full crew roster (the source of truth!) ──
+const capCrewData = [
+  // Roofing — heavy W2 presence
+  { id:'R-W01', name:'Martinez Crew #1', sl:'Roofing', type:'W2', brand:'Infinity Exteriors', size:4, velocity:3.4, avgJob:15200, reliability:1.0 },
+  { id:'R-W02', name:'Johnson Crew #2', sl:'Roofing', type:'W2', brand:'Infinity Exteriors', size:3, velocity:3.1, avgJob:14800, reliability:1.0 },
+  { id:'R-W03', name:'Williams Crew', sl:'Roofing', type:'W2', brand:'Overhead Solutions', size:4, velocity:3.5, avgJob:15500, reliability:1.0 },
+  { id:'R-W04', name:'Davis Crew', sl:'Roofing', type:'W2', brand:'Overhead Solutions', size:3, velocity:2.9, avgJob:14200, reliability:1.0 },
+  { id:'R-W05', name:'Thompson Crew', sl:'Roofing', type:'W2', brand:'Cochran Exteriors', size:4, velocity:3.3, avgJob:15000, reliability:1.0 },
+  { id:'R-W06', name:'Garcia Crew', sl:'Roofing', type:'W2', brand:'Exterior Heroes', size:3, velocity:3.0, avgJob:14600, reliability:1.0 },
+  { id:'R-W07', name:'Anderson Crew', sl:'Roofing', type:'W2', brand:'Parkhill Roofing', size:4, velocity:3.6, avgJob:15800, reliability:1.0 },
+  { id:'R-W08', name:'Taylor Crew', sl:'Roofing', type:'W2', brand:'Werner Roofing', size:3, velocity:3.2, avgJob:14500, reliability:1.0 },
+  { id:'R-W09', name:'Brown Crew', sl:'Roofing', type:'W2', brand:'Premier Roofing', size:4, velocity:3.4, avgJob:15100, reliability:1.0 },
+  { id:'R-W10', name:'Wilson Crew', sl:'Roofing', type:'W2', brand:'Henderson Roofing', size:3, velocity:2.8, avgJob:14000, reliability:1.0 },
+  { id:'R-W11', name:'Miller Crew', sl:'Roofing', type:'W2', brand:'GF Sprague', size:4, velocity:3.1, avgJob:15300, reliability:1.0 },
+  { id:'R-W12', name:'Moore Crew', sl:'Roofing', type:'W2', brand:'Resnick Roofing', size:3, velocity:3.3, avgJob:14700, reliability:1.0 },
+  { id:'R-W13', name:'Clark Crew', sl:'Roofing', type:'W2', brand:'High Point Roofing', size:4, velocity:3.5, avgJob:15600, reliability:1.0 },
+  { id:'R-W14', name:'Harris Crew', sl:'Roofing', type:'W2', brand:'Couto Construction', size:3, velocity:3.0, avgJob:14400, reliability:1.0 },
+  { id:'R-W15', name:'Lewis Crew', sl:'Roofing', type:'W2', brand:'G. Fedale', size:4, velocity:3.2, avgJob:15000, reliability:1.0 },
+  { id:'R-W16', name:'Walker Crew', sl:'Roofing', type:'W2', brand:'Franzoso', size:3, velocity:2.9, avgJob:14100, reliability:1.0 },
+  { id:'R-W17', name:'Hall Crew', sl:'Roofing', type:'W2', brand:'American Home Contractors', size:4, velocity:3.4, avgJob:15400, reliability:1.0 },
+  { id:'R-W18', name:'Young Crew', sl:'Roofing', type:'W2', brand:'Exterior Medics', size:3, velocity:3.1, avgJob:14900, reliability:1.0 },
+  { id:'R-W19', name:'Allen Crew', sl:'Roofing', type:'W2', brand:'Skywalker Roofing', size:4, velocity:3.6, avgJob:15700, reliability:1.0 },
+  { id:'R-W20', name:'King Crew', sl:'Roofing', type:'W2', brand:'Valentine Roofing', size:3, velocity:3.0, avgJob:14300, reliability:1.0 },
+  { id:'R-W21', name:'Wright Crew', sl:'Roofing', type:'W2', brand:'Interstate Roofing', size:4, velocity:3.3, avgJob:15200, reliability:1.0 },
+  { id:'R-W22', name:'Scott Crew', sl:'Roofing', type:'W2', brand:'Specialty Exteriors', size:3, velocity:3.2, avgJob:14800, reliability:1.0 },
+  { id:'R-W23', name:'Adams Crew', sl:'Roofing', type:'W2', brand:'Altec Roofing', size:4, velocity:3.5, avgJob:15500, reliability:1.0 },
+  { id:'R-W24', name:'Baker Crew', sl:'Roofing', type:'W2', brand:'Carpenter\'s', size:3, velocity:2.8, avgJob:14000, reliability:1.0 },
+  { id:'R-W25', name:'Nelson Crew', sl:'Roofing', type:'W2', brand:'Watkins Construction', size:4, velocity:3.4, avgJob:15100, reliability:1.0 },
+  { id:'R-W26', name:'Hill Crew', sl:'Roofing', type:'W2', brand:'D\'Angelo & Sons', size:3, velocity:3.1, avgJob:14600, reliability:1.0 },
+  { id:'R-W27', name:'Ramirez Crew', sl:'Roofing', type:'W2', brand:'Wheatland Roofing', size:4, velocity:3.0, avgJob:14200, reliability:1.0 },
+  // Roofing subs
+  { id:'R-S01', name:'Peak Contractors', sl:'Roofing', type:'1099', brand:'Infinity Exteriors', size:3, velocity:2.8, avgJob:13200, reliability:0.70 },
+  { id:'R-S02', name:'Summit Roofing Subs', sl:'Roofing', type:'1099', brand:'Overhead Solutions', size:4, velocity:2.5, avgJob:12800, reliability:0.60 },
+  { id:'R-S03', name:'Apex Install Co', sl:'Roofing', type:'1099', brand:'Cochran Exteriors', size:3, velocity:2.6, avgJob:13000, reliability:0.65 },
+  { id:'R-S04', name:'Ridge Line Subs', sl:'Roofing', type:'1099', brand:'Exterior Heroes', size:4, velocity:2.4, avgJob:12500, reliability:0.55 },
+  { id:'R-S05', name:'Crown Roofing LLC', sl:'Roofing', type:'1099', brand:'Henderson Roofing', size:3, velocity:2.7, avgJob:13100, reliability:0.68 },
+  { id:'R-S06', name:'Skyline Subs', sl:'Roofing', type:'1099', brand:'GF Sprague', size:4, velocity:2.3, avgJob:12600, reliability:0.58 },
+  { id:'R-S07', name:'Elite Roof Co', sl:'Roofing', type:'1099', brand:'American Home Contractors', size:3, velocity:2.9, avgJob:13400, reliability:0.72 },
+  { id:'R-S08', name:'Northstar Subs', sl:'Roofing', type:'1099', brand:'D\'Angelo & Sons', size:3, velocity:2.5, avgJob:12900, reliability:0.62 },
+
+  // Siding — majority W2
+  { id:'S-W01', name:'Lopez Siding #1', sl:'Siding', type:'W2', brand:'Infinity Exteriors', size:3, velocity:2.9, avgJob:11800, reliability:1.0 },
+  { id:'S-W02', name:'Perez Siding #2', sl:'Siding', type:'W2', brand:'Infinity Exteriors', size:3, velocity:2.7, avgJob:11200, reliability:1.0 },
+  { id:'S-W03', name:'Rivera Siding', sl:'Siding', type:'W2', brand:'Overhead Solutions', size:4, velocity:3.0, avgJob:12000, reliability:1.0 },
+  { id:'S-W04', name:'Cooper Siding', sl:'Siding', type:'W2', brand:'Cochran Exteriors', size:3, velocity:2.8, avgJob:11500, reliability:1.0 },
+  { id:'S-W05', name:'Reed Siding', sl:'Siding', type:'W2', brand:'Exterior Heroes', size:3, velocity:2.6, avgJob:11000, reliability:1.0 },
+  { id:'S-W06', name:'Torres Siding', sl:'Siding', type:'W2', brand:'Werner Roofing', size:4, velocity:2.9, avgJob:11700, reliability:1.0 },
+  { id:'S-W07', name:'Morgan Siding', sl:'Siding', type:'W2', brand:'Premier Roofing', size:3, velocity:2.7, avgJob:11300, reliability:1.0 },
+  { id:'S-W08', name:'Bell Siding', sl:'Siding', type:'W2', brand:'Henderson Roofing', size:3, velocity:2.8, avgJob:11600, reliability:1.0 },
+  { id:'S-W09', name:'Murphy Siding', sl:'Siding', type:'W2', brand:'Couto Construction', size:4, velocity:3.1, avgJob:12200, reliability:1.0 },
+  { id:'S-W10', name:'Bailey Siding', sl:'Siding', type:'W2', brand:'Exterior Medics', size:3, velocity:2.6, avgJob:11100, reliability:1.0 },
+  { id:'S-W11', name:'Price Siding', sl:'Siding', type:'W2', brand:'Valentine Roofing', size:3, velocity:2.9, avgJob:11800, reliability:1.0 },
+  { id:'S-W12', name:'Gray Siding', sl:'Siding', type:'W2', brand:'D\'Angelo & Sons', size:4, velocity:2.7, avgJob:11400, reliability:1.0 },
+  { id:'S-S01', name:'All-Side Contractors', sl:'Siding', type:'1099', brand:'Infinity Exteriors', size:3, velocity:2.2, avgJob:10800, reliability:0.62 },
+  { id:'S-S02', name:'Fascia Pros LLC', sl:'Siding', type:'1099', brand:'Overhead Solutions', size:3, velocity:2.0, avgJob:10500, reliability:0.58 },
+  { id:'S-S03', name:'Panel Masters', sl:'Siding', type:'1099', brand:'GF Sprague', size:4, velocity:2.3, avgJob:10900, reliability:0.60 },
+
+  // Windows — mostly W2 (in-house)
+  { id:'W-W01', name:'Chen Windows #1', sl:'Windows', type:'W2', brand:'Infinity Exteriors', size:2, velocity:3.6, avgJob:9400, reliability:1.0 },
+  { id:'W-W02', name:'Kim Windows #2', sl:'Windows', type:'W2', brand:'Infinity Exteriors', size:2, velocity:3.4, avgJob:9100, reliability:1.0 },
+  { id:'W-W03', name:'Park Windows', sl:'Windows', type:'W2', brand:'Overhead Solutions', size:3, velocity:3.7, avgJob:9600, reliability:1.0 },
+  { id:'W-W04', name:'Lee Windows', sl:'Windows', type:'W2', brand:'Cochran Exteriors', size:2, velocity:3.3, avgJob:9000, reliability:1.0 },
+  { id:'W-W05', name:'Nguyen Windows', sl:'Windows', type:'W2', brand:'Exterior Heroes', size:2, velocity:3.5, avgJob:9300, reliability:1.0 },
+  { id:'W-W06', name:'Patel Windows', sl:'Windows', type:'W2', brand:'Henderson Roofing', size:3, velocity:3.8, avgJob:9700, reliability:1.0 },
+  { id:'W-W07', name:'Singh Windows', sl:'Windows', type:'W2', brand:'GF Sprague', size:2, velocity:3.2, avgJob:8900, reliability:1.0 },
+  { id:'W-W08', name:'Shah Windows', sl:'Windows', type:'W2', brand:'American Home Contractors', size:2, velocity:3.6, avgJob:9500, reliability:1.0 },
+  { id:'W-W09', name:'Cruz Windows', sl:'Windows', type:'W2', brand:'Exterior Medics', size:3, velocity:3.4, avgJob:9200, reliability:1.0 },
+  { id:'W-W10', name:'Reyes Windows', sl:'Windows', type:'W2', brand:'Valentine Roofing', size:2, velocity:3.5, avgJob:9400, reliability:1.0 },
+  { id:'W-S01', name:'ClearView Install', sl:'Windows', type:'1099', brand:'Infinity Exteriors', size:2, velocity:2.9, avgJob:8600, reliability:0.72 },
+  { id:'W-S02', name:'PaneRight Subs', sl:'Windows', type:'1099', brand:'Overhead Solutions', size:3, velocity:2.7, avgJob:8300, reliability:0.68 },
+
+  // Gutters — mixed
+  { id:'G-W01', name:'Fox Gutters', sl:'Gutters', type:'W2', brand:'Infinity Exteriors', size:2, velocity:5.2, avgJob:4400, reliability:1.0 },
+  { id:'G-W02', name:'Russell Gutters', sl:'Gutters', type:'W2', brand:'Overhead Solutions', size:2, velocity:5.0, avgJob:4200, reliability:1.0 },
+  { id:'G-W03', name:'James Gutters', sl:'Gutters', type:'W2', brand:'Cochran Exteriors', size:2, velocity:5.3, avgJob:4500, reliability:1.0 },
+  { id:'G-W04', name:'Watson Gutters', sl:'Gutters', type:'W2', brand:'Henderson Roofing', size:2, velocity:4.9, avgJob:4100, reliability:1.0 },
+  { id:'G-W05', name:'Brooks Gutters', sl:'Gutters', type:'W2', brand:'Valentine Roofing', size:2, velocity:5.1, avgJob:4300, reliability:1.0 },
+  { id:'G-S01', name:'FlowRight LLC', sl:'Gutters', type:'1099', brand:'Infinity Exteriors', size:2, velocity:4.3, avgJob:3900, reliability:0.55 },
+  { id:'G-S02', name:'DrainPro Subs', sl:'Gutters', type:'1099', brand:'Exterior Heroes', size:2, velocity:4.1, avgJob:3800, reliability:0.52 },
+  { id:'G-S03', name:'SeamlessCo', sl:'Gutters', type:'1099', brand:'GF Sprague', size:2, velocity:4.4, avgJob:4000, reliability:0.58 },
+
+  // Insulation
+  { id:'I-W01', name:'Frost Insulation #1', sl:'Insulation', type:'W2', brand:'Infinity Exteriors', size:3, velocity:4.1, avgJob:7000, reliability:1.0 },
+  { id:'I-W02', name:'Frost Insulation #2', sl:'Insulation', type:'W2', brand:'Overhead Solutions', size:3, velocity:3.9, avgJob:6700, reliability:1.0 },
+  { id:'I-W03', name:'Thermal Crew', sl:'Insulation', type:'W2', brand:'Cochran Exteriors', size:3, velocity:4.0, avgJob:6800, reliability:1.0 },
+  { id:'I-W04', name:'Barrier Crew', sl:'Insulation', type:'W2', brand:'Henderson Roofing', size:3, velocity:3.8, avgJob:6500, reliability:1.0 },
+  { id:'I-S01', name:'SprayTech Subs', sl:'Insulation', type:'1099', brand:'Infinity Exteriors', size:3, velocity:3.3, avgJob:6200, reliability:0.62 },
+  { id:'I-S02', name:'CellPack LLC', sl:'Insulation', type:'1099', brand:'Exterior Heroes', size:3, velocity:3.1, avgJob:6000, reliability:0.58 },
+
+  // Bath
+  { id:'B-W01', name:'Stone Bath #1', sl:'Bath', type:'W2', brand:'Infinity Exteriors', size:2, velocity:2.3, avgJob:12800, reliability:1.0 },
+  { id:'B-W02', name:'Stone Bath #2', sl:'Bath', type:'W2', brand:'Overhead Solutions', size:2, velocity:2.1, avgJob:12200, reliability:1.0 },
+  { id:'B-W03', name:'Marble Crew', sl:'Bath', type:'W2', brand:'Cochran Exteriors', size:2, velocity:2.2, avgJob:12500, reliability:1.0 },
+  { id:'B-W04', name:'Tile Masters', sl:'Bath', type:'W2', brand:'Henderson Roofing', size:2, velocity:2.0, avgJob:11800, reliability:1.0 },
+  { id:'B-S01', name:'LuxBath Subs', sl:'Bath', type:'1099', brand:'Infinity Exteriors', size:2, velocity:1.9, avgJob:11200, reliability:0.66 },
+  { id:'B-S02', name:'QuickReno LLC', sl:'Bath', type:'1099', brand:'Exterior Heroes', size:2, velocity:1.7, avgJob:10600, reliability:0.62 }
+];
+
+// ── Revenue by service line × brand (simulated booked pipeline from DST + Zoho) ──
+const capRevenueData = {
+  Roofing:    { 'Infinity Exteriors': 3200000, 'Overhead Solutions': 2100000, 'Cochran Exteriors': 1500000, 'Exterior Heroes': 1400000, 'Parkhill Roofing': 800000, 'Werner Roofing': 750000, 'Premier Roofing': 700000, 'Henderson Roofing': 1100000, 'GF Sprague': 950000, 'Resnick Roofing': 600000, 'High Point Roofing': 500000, 'Couto Construction': 480000, 'G. Fedale': 420000, 'Franzoso': 380000, 'American Home Contractors': 900000, 'Exterior Medics': 650000, 'Skywalker Roofing': 550000, 'Valentine Roofing': 480000, 'Interstate Roofing': 400000, 'Specialty Exteriors': 350000, 'Altec Roofing': 300000, 'Carpenter\'s': 280000, 'Watkins Construction': 250000, 'D\'Angelo & Sons': 420000, 'Wheatland Roofing': 340000 },
+  Siding:     { 'Infinity Exteriors': 2800000, 'Overhead Solutions': 1600000, 'Cochran Exteriors': 1200000, 'Exterior Heroes': 900000, 'Werner Roofing': 700000, 'Premier Roofing': 650000, 'Henderson Roofing': 800000, 'Couto Construction': 750000, 'GF Sprague': 600000, 'Exterior Medics': 550000, 'Valentine Roofing': 500000, 'D\'Angelo & Sons': 450000, _other: 900000 },
+  Windows:    { 'Infinity Exteriors': 2200000, 'Overhead Solutions': 1400000, 'Cochran Exteriors': 1000000, 'Exterior Heroes': 800000, 'Henderson Roofing': 900000, 'GF Sprague': 750000, 'American Home Contractors': 850000, 'Exterior Medics': 600000, 'Valentine Roofing': 500000, _other: 800000 },
+  Gutters:    { 'Infinity Exteriors': 1200000, 'Overhead Solutions': 800000, 'Cochran Exteriors': 650000, 'Exterior Heroes': 550000, 'Henderson Roofing': 500000, 'GF Sprague': 400000, 'Valentine Roofing': 350000, _other: 650000 },
+  Insulation: { 'Infinity Exteriors': 1400000, 'Overhead Solutions': 900000, 'Cochran Exteriors': 700000, 'Exterior Heroes': 550000, 'Henderson Roofing': 500000, _other: 850000 },
+  Bath:       { 'Infinity Exteriors': 1300000, 'Overhead Solutions': 800000, 'Cochran Exteriors': 650000, 'Henderson Roofing': 600000, 'Exterior Heroes': 500000, _other: 750000 }
+};
+
+const capColors = { Roofing:'#3b82f6', Siding:'#8b5cf6', Windows:'#06b6d4', Gutters:'#10b981', Insulation:'#f59e0b', Bath:'#ef4444' };
+
+function toggleReliability() {
+  const row = document.getElementById('crew-reliability-row');
+  const sel = document.getElementById('crew-classification');
+  if (row) row.style.display = sel && sel.value === '1099' ? 'block' : 'none';
+}
+
+function openCrewWizard(editId) {
+  const modal = document.getElementById('crew-wizard-modal');
+  if (!modal) return;
+  // Populate brand dropdown
+  const brandSel = document.getElementById('crew-brand');
+  if (brandSel) {
+    brandSel.innerHTML = '<option value="">Select...</option>' + state.brands.map(b => '<option value="' + b + '">' + b + '</option>').join('');
+  }
+  if (editId) {
+    const crew = capCrewData.find(c => c.id === editId);
+    if (crew) {
+      document.getElementById('crew-wizard-title').textContent = 'Edit Crew';
+      document.getElementById('crew-name').value = crew.name;
+      document.getElementById('crew-service-line').value = crew.sl;
+      document.getElementById('crew-classification').value = crew.type;
+      document.getElementById('crew-brand').value = crew.brand;
+      document.getElementById('crew-size').value = crew.size;
+      document.getElementById('crew-velocity').value = crew.velocity;
+      document.getElementById('crew-avg-ticket').value = crew.avgJob;
+      if (crew.type === '1099') {
+        document.getElementById('crew-reliability-row').style.display = 'block';
+        document.getElementById('crew-reliability').value = Math.round(crew.reliability * 100);
+        document.getElementById('crew-rel-val').textContent = Math.round(crew.reliability * 100) + '%';
+      }
+    }
+  } else {
+    document.getElementById('crew-wizard-title').textContent = 'Add Crew';
+    document.getElementById('crew-name').value = '';
+    document.getElementById('crew-service-line').value = '';
+    document.getElementById('crew-classification').value = 'W2';
+    document.getElementById('crew-brand').value = '';
+    document.getElementById('crew-size').value = '3';
+    document.getElementById('crew-velocity').value = '3.0';
+    document.getElementById('crew-avg-ticket').value = '12000';
+    document.getElementById('crew-reliability-row').style.display = 'none';
+    document.getElementById('crew-reliability').value = 65;
+    document.getElementById('crew-rel-val').textContent = '65%';
+  }
+  modal.classList.add('open');
+}
+
+function saveCrew() {
+  const name = document.getElementById('crew-name').value.trim();
+  const sl = document.getElementById('crew-service-line').value;
+  const type = document.getElementById('crew-classification').value;
+  const brand = document.getElementById('crew-brand').value;
+  if (!name || !sl || !brand) { showToast('Please fill all required fields', 'error'); return; }
+  const newCrew = {
+    id: type.charAt(0) + '-' + (type === 'W2' ? 'W' : 'S') + String(Date.now()).slice(-4),
+    name, sl, type, brand,
+    size: parseInt(document.getElementById('crew-size').value) || 3,
+    velocity: parseFloat(document.getElementById('crew-velocity').value) || 3.0,
+    avgJob: parseInt(document.getElementById('crew-avg-ticket').value) || 12000,
+    reliability: type === '1099' ? parseInt(document.getElementById('crew-reliability').value) / 100 : 1.0
+  };
+  capCrewData.push(newCrew);
+  closeModal('crew-wizard-modal');
+  showToast('Crew "' + name + '" added to ' + sl, 'success');
+  logAudit('ADD', name, 'Crew Roster', '—', 'Active');
+  renderCapacityPlanner();
+}
+
+function capSetServiceFilter(sl) {
+  capacityServiceFilter = capacityServiceFilter === sl ? null : sl;
+  renderCapacityPlanner();
+}
 
 function renderCapacityPlanner() {
-  // ── Horizon config ──
   const horizons = {
-    april:  { label: 'April 2026', weeks: 4, revenueTarget: 55000000 },
-    q2:     { label: 'Q2 2026',    weeks: 13, revenueTarget: 145000000 },
-    next90: { label: 'Next 90 Days', weeks: 13, revenueTarget: 138000000 }
+    april:  { label: 'April 2026', weeks: 4 },
+    q2:     { label: 'Q2 2026',    weeks: 13 },
+    next90: { label: 'Next 90 Days', weeks: 13 }
   };
   const hz = horizons[capacityHorizon];
 
-  // ── Service-line capacity data (simulated — would come from Acumatica + DST + Zoho) ──
-  const serviceLines = [
-    { name: 'Roofing',    bookedRevenue: 18200000, w2Crews: 42, w2Velocity: 3.2, w2AvgJob: 14800, sub1099: 28, subVelocity: 2.6, subAvgJob: 13200, subReliability: 0.65, color: '#3b82f6' },
-    { name: 'Siding',     bookedRevenue: 12400000, w2Crews: 31, w2Velocity: 2.8, w2AvgJob: 11500, sub1099: 12, subVelocity: 2.1, subAvgJob: 10800, subReliability: 0.60, color: '#8b5cf6' },
-    { name: 'Windows',    bookedRevenue: 9800000,  w2Crews: 24, w2Velocity: 3.5, w2AvgJob: 9200,  sub1099: 8,  subVelocity: 2.8, subAvgJob: 8500,  subReliability: 0.70, color: '#06b6d4' },
-    { name: 'Gutters',    bookedRevenue: 5100000,  w2Crews: 15, w2Velocity: 5.1, w2AvgJob: 4200,  sub1099: 10, subVelocity: 4.2, subAvgJob: 3900,  subReliability: 0.55, color: '#10b981' },
-    { name: 'Insulation', bookedRevenue: 4900000,  w2Crews: 12, w2Velocity: 4.0, w2AvgJob: 6800,  sub1099: 6,  subVelocity: 3.2, subAvgJob: 6100,  subReliability: 0.60, color: '#f59e0b' },
-    { name: 'Bath',       bookedRevenue: 4600000,  w2Crews: 10, w2Velocity: 2.2, w2AvgJob: 12400, sub1099: 5,  subVelocity: 1.8, subAvgJob: 11000, subReliability: 0.65, color: '#ef4444' }
-  ];
+  // ── Filter by org level ──
+  const orgLevel = (document.getElementById('cap-org-level') || {}).value || 'enterprise';
+  const orgNode = capOrgTree[orgLevel];
+  const orgBrands = orgNode.brands; // null = all
 
-  // ── Compute capacity per service line ──
+  // ── Filter by specific brand ──
+  const brandFilter = (document.getElementById('cap-brand-filter') || {}).value || '';
+
+  // Populate brand dropdown based on org level
+  const brandSel = document.getElementById('cap-brand-filter');
+  if (brandSel) {
+    const prev = brandSel.value;
+    const availBrands = orgBrands ? orgBrands : state.brands;
+    brandSel.innerHTML = '<option value="">All Brands</option>' + availBrands.map(b => '<option value="' + b + '">' + b + '</option>').join('');
+    if (availBrands.includes(prev)) brandSel.value = prev;
+  }
+
+  // ── Filter crews ──
+  let crews = capCrewData.filter(c => {
+    if (orgBrands && !orgBrands.includes(c.brand)) return false;
+    if (brandFilter && c.brand !== brandFilter) return false;
+    return true;
+  });
+
+  // ── Aggregate by service line ──
+  const slNames = ['Roofing','Siding','Windows','Gutters','Insulation','Bath'];
+  const serviceLines = slNames.map(name => {
+    const slCrews = crews.filter(c => c.sl === name);
+    const w2 = slCrews.filter(c => c.type === 'W2');
+    const sub = slCrews.filter(c => c.type === '1099');
+    const w2Velocity = w2.length ? w2.reduce((s,c) => s + c.velocity, 0) / w2.length : 0;
+    const w2AvgJob = w2.length ? w2.reduce((s,c) => s + c.avgJob, 0) / w2.length : 0;
+    const subVelocity = sub.length ? sub.reduce((s,c) => s + c.velocity, 0) / sub.length : 0;
+    const subAvgJob = sub.length ? sub.reduce((s,c) => s + c.avgJob, 0) / sub.length : 0;
+    const subReliability = sub.length ? sub.reduce((s,c) => s + c.reliability, 0) / sub.length : 0.6;
+
+    // Revenue: sum matching brands
+    const revMap = capRevenueData[name] || {};
+    let bookedRevenue = 0;
+    if (brandFilter) {
+      bookedRevenue = revMap[brandFilter] || 0;
+    } else if (orgBrands) {
+      orgBrands.forEach(b => { bookedRevenue += revMap[b] || 0; });
+    } else {
+      Object.values(revMap).forEach(v => { bookedRevenue += v; });
+    }
+
+    return { name, bookedRevenue, w2Crews: w2.length, w2Velocity, w2AvgJob, sub1099: sub.length, subVelocity, subAvgJob, subReliability, color: capColors[name], crewDetails: slCrews };
+  }).filter(sl => sl.w2Crews + sl.sub1099 > 0 || sl.bookedRevenue > 0);
+
+  // ── Compute capacity ──
   serviceLines.forEach(sl => {
     sl.w2Capacity    = sl.w2Crews * sl.w2Velocity * sl.w2AvgJob * hz.weeks;
     sl.subCapRaw     = sl.sub1099 * sl.subVelocity * sl.subAvgJob * hz.weeks;
@@ -6561,14 +6887,18 @@ function renderCapacityPlanner() {
     sl.utilization   = sl.totalCapacity > 0 ? (sl.bookedRevenue / sl.totalCapacity * 100) : 0;
   });
 
-  const totalBooked   = serviceLines.reduce((s, l) => s + l.bookedRevenue, 0);
-  const totalCapacity  = serviceLines.reduce((s, l) => s + l.totalCapacity, 0);
-  const totalW2Cap     = serviceLines.reduce((s, l) => s + l.w2Capacity, 0);
-  const totalSubCap    = serviceLines.reduce((s, l) => s + l.subCapAdj, 0);
+  // ── Apply service line filter ──
+  const filteredSLs = capacityServiceFilter ? serviceLines.filter(sl => sl.name === capacityServiceFilter) : serviceLines;
+  const displaySLs = filteredSLs.length > 0 ? filteredSLs : serviceLines;
+
+  const totalBooked   = displaySLs.reduce((s, l) => s + l.bookedRevenue, 0);
+  const totalCapacity  = displaySLs.reduce((s, l) => s + l.totalCapacity, 0);
+  const totalW2Cap     = displaySLs.reduce((s, l) => s + l.w2Capacity, 0);
+  const totalSubCap    = displaySLs.reduce((s, l) => s + l.subCapAdj, 0);
   const totalGap       = totalBooked - totalCapacity;
-  const totalW2Crews   = serviceLines.reduce((s, l) => s + l.w2Crews, 0);
-  const totalSubCrews  = serviceLines.reduce((s, l) => s + l.sub1099, 0);
-  const overCommitted  = serviceLines.filter(sl => sl.gap > 0).length;
+  const totalW2Crews   = displaySLs.reduce((s, l) => s + l.w2Crews, 0);
+  const totalSubCrews  = displaySLs.reduce((s, l) => s + l.sub1099, 0);
+  const overCommitted  = displaySLs.filter(sl => sl.gap > 0).length;
 
   function fmtM(v) { return '$' + (Math.abs(v) / 1e6).toFixed(1) + 'M'; }
   function fmtK(v) { return '$' + (Math.abs(v) / 1e3).toFixed(0) + 'K'; }
@@ -6582,15 +6912,22 @@ function renderCapacityPlanner() {
     ).join('');
   }
 
+  // ── Service line pills (in the existing service-line-selector bar) ──
+  // We'll render into the tab's own pill area via the main service line selector
+  // Actually, let's use the existing service-line-selector. We hook into its pills via the switchTab.
+  // For now, update the active state of the service-line pills
+  document.querySelectorAll('.service-line-pill[data-sl]').forEach(p => p.remove());
+
   // ── KPI Cards ──
   const kpiGrid = document.getElementById('capacity-kpis');
   if (kpiGrid) {
     const gapIsPositive = totalGap > 0;
+    const scopeLabel = capacityServiceFilter || orgNode.label;
     kpiGrid.innerHTML = [
-      { label: 'Booked Revenue', value: fmtM(totalBooked), sub: hz.label, accent: '' },
-      { label: 'Total Capacity', value: fmtM(totalCapacity), sub: pct(totalW2Cap / totalCapacity * 100) + ' W2 · ' + pct(totalSubCap / totalCapacity * 100) + ' 1099', accent: '' },
-      { label: 'Revenue-at-Risk', value: gapIsPositive ? fmtM(totalGap) : '$0', sub: gapIsPositive ? overCommitted + ' service lines over-committed' : 'All lines within capacity', accent: gapIsPositive ? 'color:var(--accent-red)' : 'color:var(--accent-green)' },
-      { label: 'Utilization', value: pct(totalBooked / totalCapacity * 100), sub: totalBooked > totalCapacity ? 'OVER-COMMITTED' : 'Healthy', accent: totalBooked > totalCapacity ? 'color:var(--accent-red)' : 'color:var(--accent-green)' },
+      { label: 'Booked Revenue', value: fmtM(totalBooked), sub: hz.label + ' · ' + scopeLabel, accent: '' },
+      { label: 'Total Capacity', value: totalCapacity > 0 ? fmtM(totalCapacity) : '$0', sub: totalCapacity > 0 ? (pct(totalW2Cap / totalCapacity * 100) + ' W2 · ' + pct(totalSubCap / totalCapacity * 100) + ' 1099') : 'No crews assigned', accent: '' },
+      { label: 'Revenue-at-Risk', value: gapIsPositive ? fmtM(totalGap) : '$0', sub: gapIsPositive ? overCommitted + ' line' + (overCommitted > 1 ? 's' : '') + ' over-committed' : 'Within capacity', accent: gapIsPositive ? 'color:var(--accent-red)' : 'color:var(--accent-green)' },
+      { label: 'Utilization', value: totalCapacity > 0 ? pct(totalBooked / totalCapacity * 100) : '—', sub: totalBooked > totalCapacity ? 'OVER-COMMITTED' : 'Healthy', accent: totalBooked > totalCapacity ? 'color:var(--accent-red)' : 'color:var(--accent-green)' },
       { label: 'Active Crews', value: (totalW2Crews + totalSubCrews).toString(), sub: totalW2Crews + ' W2 · ' + totalSubCrews + ' 1099', accent: '' }
     ].map(k => '<div class="kpi-card"><div class="kpi-label">' + k.label + '</div><div class="kpi-value" style="' + k.accent + '">' + k.value + '</div><div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">' + k.sub + '</div></div>').join('');
   }
@@ -6598,24 +6935,22 @@ function renderCapacityPlanner() {
   // ── Demand vs Capacity Gauges ──
   const gaugeBox = document.getElementById('capacity-gauges');
   if (gaugeBox) {
-    gaugeBox.innerHTML = serviceLines.map(sl => {
-      const maxVal = Math.max(sl.bookedRevenue, sl.totalCapacity) * 1.1;
+    gaugeBox.innerHTML = displaySLs.map(sl => {
+      const maxVal = Math.max(sl.bookedRevenue, sl.totalCapacity, 1) * 1.1;
       const w2Pct  = (sl.w2Capacity / maxVal * 100).toFixed(1);
       const subPct = (sl.subCapAdj / maxVal * 100).toFixed(1);
       const demandPct = (sl.bookedRevenue / maxVal * 100).toFixed(1);
       const overCap = sl.gap > 0;
-      return '<div style="margin-bottom:14px;">' +
+      const isActive = capacityServiceFilter === sl.name;
+      return '<div style="margin-bottom:14px; cursor:pointer; padding:6px 8px; border-radius:var(--radius); border:2px solid ' + (isActive ? sl.color : 'transparent') + '; background:' + (isActive ? sl.color + '0a' : 'transparent') + ';" onclick="capSetServiceFilter(\'' + sl.name + '\')">' +
         '<div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">' +
-          '<span style="font-weight:600; font-size:13px; color:var(--text-primary);">' + sl.name + '</span>' +
+          '<span style="font-weight:600; font-size:13px; color:var(--text-primary);">' + sl.name + ' <span style="font-size:11px; font-weight:400; color:var(--text-tertiary);">(' + sl.w2Crews + ' W2 + ' + sl.sub1099 + ' 1099)</span></span>' +
           '<span style="font-size:11px; color:var(--text-tertiary);">Booked ' + fmtM(sl.bookedRevenue) + ' / Capacity ' + fmtM(sl.totalCapacity) + '&ensp;' +
             '<span style="font-weight:600; color:' + (overCap ? 'var(--accent-red)' : 'var(--accent-green)') + ';">' + pct(sl.utilization) + '</span></span>' +
         '</div>' +
         '<div style="position:relative; height:28px; background:var(--bg-tertiary); border-radius:6px; overflow:hidden;">' +
-          '<!-- W2 capacity -->' +
           '<div style="position:absolute; left:0; top:0; height:100%; width:' + w2Pct + '%; background:' + sl.color + '; opacity:0.85; border-radius:6px 0 0 6px;" title="W2: ' + fmtM(sl.w2Capacity) + '"></div>' +
-          '<!-- 1099 capacity (hatched) -->' +
-          '<div style="position:absolute; left:' + w2Pct + '%; top:0; height:100%; width:' + subPct + '%; background:repeating-linear-gradient(45deg, ' + sl.color + '33, ' + sl.color + '33 4px, ' + sl.color + '66 4px, ' + sl.color + '66 8px); border-radius:0;" title="1099 (adj): ' + fmtM(sl.subCapAdj) + '"></div>' +
-          '<!-- Demand marker -->' +
+          '<div style="position:absolute; left:' + w2Pct + '%; top:0; height:100%; width:' + subPct + '%; background:repeating-linear-gradient(45deg, ' + sl.color + '33, ' + sl.color + '33 4px, ' + sl.color + '66 4px, ' + sl.color + '66 8px);" title="1099 (adj): ' + fmtM(sl.subCapAdj) + '"></div>' +
           '<div style="position:absolute; left:' + demandPct + '%; top:-2px; width:3px; height:32px; background:' + (overCap ? 'var(--accent-red)' : 'var(--text-primary)') + '; border-radius:2px;" title="Demand: ' + fmtM(sl.bookedRevenue) + '"></div>' +
           (overCap ? '<div style="position:absolute; right:4px; top:50%; transform:translateY(-50%); font-size:10px; font-weight:700; color:var(--accent-red);">GAP ' + fmtM(sl.gap) + '</div>' : '') +
         '</div>' +
@@ -6626,80 +6961,84 @@ function renderCapacityPlanner() {
   // ── W2 vs 1099 Labor Mix ──
   const mixBox = document.getElementById('capacity-labor-mix');
   if (mixBox) {
-    mixBox.innerHTML = serviceLines.map(sl => {
+    mixBox.innerHTML = displaySLs.map(sl => {
       const total = sl.w2Crews + sl.sub1099;
+      if (total === 0) return '';
       const w2Frac = (sl.w2Crews / total * 100).toFixed(0);
       const subFrac = (sl.sub1099 / total * 100).toFixed(0);
       return '<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">' +
         '<span style="width:80px; font-size:12px; font-weight:600; color:var(--text-primary);">' + sl.name + '</span>' +
         '<div style="flex:1; display:flex; height:22px; border-radius:4px; overflow:hidden;">' +
-          '<div style="width:' + w2Frac + '%; background:' + sl.color + '; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:#fff;" title="W2: ' + sl.w2Crews + ' crews">' + (parseInt(w2Frac) > 15 ? sl.w2Crews + ' W2' : '') + '</div>' +
-          '<div style="width:' + subFrac + '%; background:repeating-linear-gradient(45deg, ' + sl.color + '55, ' + sl.color + '55 3px, ' + sl.color + '88 3px, ' + sl.color + '88 6px); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:#fff;" title="1099: ' + sl.sub1099 + ' crews (' + (sl.subReliability * 100).toFixed(0) + '% reliability)">' + (parseInt(subFrac) > 15 ? sl.sub1099 + ' 1099' : '') + '</div>' +
+          '<div style="width:' + w2Frac + '%; background:' + sl.color + '; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:#fff;">' + (parseInt(w2Frac) > 15 ? sl.w2Crews + ' W2' : '') + '</div>' +
+          '<div style="width:' + subFrac + '%; background:repeating-linear-gradient(45deg, ' + sl.color + '55, ' + sl.color + '55 3px, ' + sl.color + '88 3px, ' + sl.color + '88 6px); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:#fff;">' + (parseInt(subFrac) > 15 ? sl.sub1099 + ' 1099' : '') + '</div>' +
         '</div>' +
         '<span style="font-size:11px; color:var(--text-tertiary); width:40px; text-align:right;">' + total + '</span>' +
       '</div>';
     }).join('') +
     '<div style="display:flex; gap:16px; margin-top:8px; font-size:11px; color:var(--text-tertiary);">' +
-      '<span style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:var(--accent-blue); border-radius:2px;"></span> W2 (deterministic)</span>' +
+      '<span style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:var(--accent-blue); border-radius:2px;"></span> W2</span>' +
       '<span style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:repeating-linear-gradient(45deg, var(--accent-blue)55, var(--accent-blue)55 2px, var(--accent-blue)88 2px, var(--accent-blue)88 4px); border-radius:2px;"></span> 1099 (reliability-discounted)</span>' +
     '</div>';
   }
 
-  // ── Crew Roster Summary ──
+  // ── Crew Roster (individual crews, not just summary) ──
   const rosterBox = document.getElementById('capacity-crew-roster');
   if (rosterBox) {
-    rosterBox.innerHTML = '<div class="table-wrapper"><table style="font-size:12px; width:100%;">' +
-      '<thead><tr style="background:var(--bg-tertiary);"><th style="padding:6px 10px; text-align:left;">Service Line</th><th style="padding:6px 10px; text-align:center;">W2</th><th style="padding:6px 10px; text-align:center;">1099</th><th style="padding:6px 10px; text-align:center;">Reliability</th><th style="padding:6px 10px; text-align:right;">Eff. Capacity</th></tr></thead>' +
-      '<tbody>' + serviceLines.map(sl =>
-        '<tr><td style="padding:6px 10px; font-weight:500;">' + sl.name + '</td>' +
-        '<td style="padding:6px 10px; text-align:center;">' + sl.w2Crews + '</td>' +
-        '<td style="padding:6px 10px; text-align:center;">' + sl.sub1099 + '</td>' +
-        '<td style="padding:6px 10px; text-align:center;">' + (sl.subReliability * 100).toFixed(0) + '%</td>' +
-        '<td style="padding:6px 10px; text-align:right; font-weight:600; color:' + (sl.gap > 0 ? 'var(--accent-red)' : 'var(--accent-green)') + ';">' + fmtM(sl.totalCapacity) + '</td></tr>'
+    // Show individual crews for the filtered view
+    const rosterCrews = crews.filter(c => !capacityServiceFilter || c.sl === capacityServiceFilter).slice(0, 15);
+    rosterBox.innerHTML = '<div class="table-wrapper" style="max-height:260px; overflow-y:auto;"><table style="font-size:11px; width:100%;">' +
+      '<thead><tr style="background:var(--bg-tertiary);"><th style="padding:5px 8px; text-align:left;">Crew</th><th style="padding:5px 8px;">Line</th><th style="padding:5px 8px;">Type</th><th style="padding:5px 8px;">Brand</th><th style="padding:5px 8px; text-align:center;">Vel.</th><th style="padding:5px 8px; text-align:right;">Ticket</th><th style="padding:5px 8px; text-align:center;"></th></tr></thead>' +
+      '<tbody>' + rosterCrews.map(c =>
+        '<tr>' +
+        '<td style="padding:5px 8px; font-weight:500;">' + c.name + '</td>' +
+        '<td style="padding:5px 8px;"><span style="font-size:10px; padding:2px 6px; border-radius:10px; background:' + capColors[c.sl] + '22; color:' + capColors[c.sl] + ';">' + c.sl + '</span></td>' +
+        '<td style="padding:5px 8px;">' + (c.type === 'W2' ? '<span style="color:var(--accent-green); font-weight:600;">W2</span>' : '<span style="color:var(--accent-amber); font-weight:600;">1099 <span style="font-weight:400; font-size:10px;">(' + Math.round(c.reliability * 100) + '%)</span></span>') + '</td>' +
+        '<td style="padding:5px 8px; font-size:10px; max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + c.brand + '">' + c.brand + '</td>' +
+        '<td style="padding:5px 8px; text-align:center;">' + c.velocity.toFixed(1) + '/wk</td>' +
+        '<td style="padding:5px 8px; text-align:right;">' + fmtK(c.avgJob) + '</td>' +
+        '<td style="padding:5px 8px; text-align:center;"><button style="font-size:10px; color:var(--accent-blue); background:none; border:none; cursor:pointer;" onclick="openCrewWizard(\'' + c.id + '\')">Edit</button></td>' +
+        '</tr>'
       ).join('') +
-      '<tr style="font-weight:700; border-top:2px solid var(--border-primary);"><td style="padding:6px 10px;">TOTAL</td><td style="padding:6px 10px; text-align:center;">' + totalW2Crews + '</td><td style="padding:6px 10px; text-align:center;">' + totalSubCrews + '</td><td style="padding:6px 10px; text-align:center;">—</td><td style="padding:6px 10px; text-align:right;">' + fmtM(totalCapacity) + '</td></tr>' +
-      '</tbody></table></div>';
+      '</tbody></table></div>' +
+      (crews.length > 15 ? '<div style="font-size:10px; color:var(--text-tertiary); margin-top:6px; text-align:center;">Showing 15 of ' + crews.filter(c => !capacityServiceFilter || c.sl === capacityServiceFilter).length + ' crews</div>' : '');
   }
 
   // ── Crew Velocity & Throughput ──
   const velBox = document.getElementById('capacity-velocity');
   if (velBox) {
     velBox.innerHTML = '<div class="table-wrapper"><table style="font-size:12px; width:100%;">' +
-      '<thead><tr style="background:var(--bg-tertiary);"><th style="padding:6px 10px; text-align:left;">Service Line</th><th style="padding:6px 10px; text-align:center;">W2 Jobs/Crew/Wk</th><th style="padding:6px 10px; text-align:center;">1099 Jobs/Crew/Wk</th><th style="padding:6px 10px; text-align:center;">Avg Ticket (W2)</th><th style="padding:6px 10px; text-align:center;">Avg Ticket (1099)</th><th style="padding:6px 10px; text-align:right;">Weekly Throughput</th></tr></thead>' +
-      '<tbody>' + serviceLines.map(sl => {
+      '<thead><tr style="background:var(--bg-tertiary);"><th style="padding:6px 10px; text-align:left;">Service Line</th><th style="padding:6px 10px; text-align:center;">W2 Jobs/Wk</th><th style="padding:6px 10px; text-align:center;">1099 Jobs/Wk</th><th style="padding:6px 10px; text-align:center;">Avg Ticket</th><th style="padding:6px 10px; text-align:right;">Weekly $</th></tr></thead>' +
+      '<tbody>' + displaySLs.map(sl => {
         const weeklyThru = (sl.w2Crews * sl.w2Velocity * sl.w2AvgJob) + (sl.sub1099 * sl.subVelocity * sl.subAvgJob * sl.subReliability);
         return '<tr><td style="padding:6px 10px; font-weight:500;">' + sl.name + '</td>' +
         '<td style="padding:6px 10px; text-align:center;">' + sl.w2Velocity.toFixed(1) + '</td>' +
         '<td style="padding:6px 10px; text-align:center;">' + sl.subVelocity.toFixed(1) + '</td>' +
         '<td style="padding:6px 10px; text-align:center;">' + fmtK(sl.w2AvgJob) + '</td>' +
-        '<td style="padding:6px 10px; text-align:center;">' + fmtK(sl.subAvgJob) + '</td>' +
         '<td style="padding:6px 10px; text-align:right; font-weight:600;">' + fmtK(weeklyThru) + '/wk</td></tr>';
       }).join('') +
       '</tbody></table></div>' +
-      '<div style="margin-top:8px; font-size:11px; color:var(--text-tertiary);">Velocity metrics derived from last 90 days of job completion data (DST + Zoho). 1099 throughput adjusted by reliability factor.</div>';
+      '<div style="margin-top:8px; font-size:11px; color:var(--text-tertiary);">Velocity from last 90 days (DST + Zoho). 1099 throughput adjusted by reliability.</div>';
   }
 
   // ── Revenue at Risk Detail ──
   const riskBox = document.getElementById('capacity-risk-detail');
   if (riskBox) {
-    const atRisk = serviceLines.filter(sl => sl.gap > 0).sort((a, b) => b.gap - a.gap);
+    const atRisk = displaySLs.filter(sl => sl.gap > 0).sort((a, b) => b.gap - a.gap);
     if (atRisk.length === 0) {
-      riskBox.innerHTML = '<div style="text-align:center; padding:20px; color:var(--accent-green);"><svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom:8px;"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><div style="font-weight:600;">All Clear</div><div style="font-size:11px; color:var(--text-tertiary); margin-top:4px;">All service lines within capacity for ' + hz.label + '</div></div>';
+      riskBox.innerHTML = '<div style="text-align:center; padding:20px; color:var(--accent-green);"><svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom:8px;"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><div style="font-weight:600;">All Clear</div><div style="font-size:11px; color:var(--text-tertiary); margin-top:4px;">Capacity covers demand for ' + hz.label + '</div></div>';
     } else {
       riskBox.innerHTML = atRisk.map(sl => {
-        const crewsNeeded = Math.ceil(sl.gap / (sl.w2Velocity * sl.w2AvgJob * hz.weeks));
+        const crewsNeeded = sl.w2Velocity > 0 && sl.w2AvgJob > 0 ? Math.ceil(sl.gap / (sl.w2Velocity * sl.w2AvgJob * hz.weeks)) : '?';
         return '<div style="padding:8px 0; border-bottom:1px solid var(--border-primary);">' +
           '<div style="display:flex; justify-content:space-between; align-items:center;">' +
             '<span style="font-weight:600; color:var(--text-primary);">' + sl.name + '</span>' +
             '<span class="badge badge-red" style="font-size:10px;">' + fmtM(sl.gap) + ' at risk</span>' +
           '</div>' +
-          '<div style="font-size:11px; color:var(--text-tertiary); margin-top:4px;">' +
-            'Need ~' + crewsNeeded + ' additional W2-equivalent crews &bull; Utilization: ' + pct(sl.utilization) +
-          '</div>' +
+          '<div style="font-size:11px; color:var(--text-tertiary); margin-top:4px;">Need ~' + crewsNeeded + ' more W2-equiv crews &bull; ' + pct(sl.utilization) + ' util</div>' +
         '</div>';
       }).join('') +
-      '<div style="margin-top:10px; padding:8px 12px; background:var(--accent-red-light, rgba(239,68,68,0.08)); border-radius:var(--radius); font-size:11px; color:var(--accent-red);">' +
-        '<strong>Total revenue at risk:</strong> ' + fmtM(totalGap) + ' across ' + atRisk.length + ' service line' + (atRisk.length > 1 ? 's' : '') + ' for ' + hz.label +
+      '<div style="margin-top:10px; padding:8px 12px; background:rgba(239,68,68,0.08); border-radius:var(--radius); font-size:11px; color:var(--accent-red);">' +
+        '<strong>Total at risk:</strong> ' + fmtM(totalGap) + ' across ' + atRisk.length + ' line' + (atRisk.length > 1 ? 's' : '') +
       '</div>';
     }
   }
