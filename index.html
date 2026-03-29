@@ -1111,7 +1111,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   flex-wrap: wrap;
   position: sticky;
   top: 60px;
-  z-index: 95;
+  z-index: 90;
 }
 
 .service-pill {
@@ -1142,7 +1142,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
 }
 
 /* ── UTILITIES ── */
-.tab-panel { display: none; animation: fadeUp 0.18s ease; position: relative; z-index: 91; }
+.tab-panel { display: none; animation: fadeUp 0.18s ease; }
 .tab-panel.active { display: block; }
 
 @keyframes fadeUp {
@@ -2105,7 +2105,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   <!-- TAB 1: DASHBOARD -->
   <div id="tab-dashboard" class="tab-panel active">
     <!-- Row 1: Governance Health KPIs -->
-    <div class="kpi-grid" id="kpi-grid" style="grid-template-columns:repeat(5,1fr); margin-bottom:20px; margin-top:8px;"></div>
+    <div class="kpi-grid" id="kpi-grid" style="grid-template-columns:repeat(5,1fr); margin-bottom:20px;"></div>
     <!-- Row 2: Brand Health Heatmap + Anomalies Requiring Action -->
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
       <div class="dash-card">
