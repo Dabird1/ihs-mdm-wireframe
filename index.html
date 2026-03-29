@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Infinity Home Services — Master Data Management wireframe. Pricing governance, capacity planning, and operational intelligence for 25+ brands.">
+<meta name="theme-color" content="#0f172a">
 <title>IHS Data Hub — Master Data Management</title>
 <style>
-/* ── COMMISSION ENGINE DESIGN SYSTEM ── */
+/* ── IHS DATA HUB DESIGN SYSTEM ── */
 :root {
   --bg-primary: #ffffff;
   --bg-secondary: #f8f9fb;
@@ -2055,6 +2057,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
     <div class="quote">"Saving our communities from unscrupulous contractors"</div>
   </div>
 
+  <div style="text-align:center; padding:4px 12px; font-size:9px; color:rgba(255,255,255,0.2);">IHS Data Hub v1.0 — Wireframe</div>
   <div class="sidebar-bottom">
     <button class="dark-toggle" onclick="toggleDark()">
       <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3317,7 +3320,7 @@ function updatePageHeader(tabName) {
     'item-master': 'Single source of truth for every governed SKU. The "Governed Price" is the benchmark rate across all brands. Click any row to see per-brand pricing, margins, and audit trail. Changes here flow to the Price Sheet.',
     systems: 'Each assembly is a job-ready package linking Item Master SKUs into a complete BOM. Click any component to view it in the Item Master. Filter by brand to see which assemblies each brand offers.',
     labor: 'The matrix shows base rates by brand × market, color-coded by variance from the market median (green = within 10%, amber = 10–20%, red = >20%). Hover any cell for burdened rate and detail. Action items below flag gaps and outliers.',
-    capacity: 'Capacity Cockpit — see at a glance whether you have the labor to deliver booked revenue. W2 crews are deterministic; 1099 subs are discounted by a reliability factor. The demand marker (vertical line) shows booked revenue against total capacity bars. Red = revenue at risk.',
+    capacity: 'Can we deliver what we sold? W2 crews are deterministic; 1099 subs are discounted by reliability. Click any service line bar to drill in. Use the org dropdown to scope by division, region, or brand. Red = revenue at risk.',
     'price-sheet': 'Governed view of pricing derived from the Item Master. Select a brand to drill into SKU-level pricing, margins, and distributor comparisons. Changes originate in the Item Master.',
     'brand-dashboard': 'Start on Enterprise view to see portfolio health at a glance, then select any brand to see its SKUs, margins, anomalies, and distributor scorecard.',
     anomaly: 'Anomalies surface pricing, margin, and sync problems automatically. High severity = immediate revenue impact. Click any anomaly to see root cause and action.',
@@ -3344,8 +3347,6 @@ function updatePageHeader(tabName) {
   }
 }
 
-// Page context is now rendered persistently in the page header via updatePageHeader()
-// Old renderTutorial/dismissTutorial removed — instructions are always visible
 
 function loadBrandDashboard(brandName) {
   const selector = document.getElementById('brand-dash-selector');
@@ -6566,7 +6567,6 @@ function renderLabor() {
   }
 }
 
-// toggleLaborSection removed — labor now uses flat data table
 
 function openAddLaborRateModal() {
   const modal = document.getElementById('labor-rate-modal');
@@ -6911,12 +6911,6 @@ function renderCapacityPlanner() {
       '<button class="service-line-pill' + (key === capacityHorizon ? ' active' : '') + '" onclick="capacityHorizon=\'' + key + '\'; renderCapacityPlanner();">' + h.label + '</button>'
     ).join('');
   }
-
-  // ── Service line pills (in the existing service-line-selector bar) ──
-  // We'll render into the tab's own pill area via the main service line selector
-  // Actually, let's use the existing service-line-selector. We hook into its pills via the switchTab.
-  // For now, update the active state of the service-line pills
-  document.querySelectorAll('.service-line-pill[data-sl]').forEach(p => p.remove());
 
   // ── KPI Cards ──
   const kpiGrid = document.getElementById('capacity-kpis');
