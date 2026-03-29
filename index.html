@@ -1111,7 +1111,7 @@ tbody td { padding: 11px 14px; vertical-align: middle; }
   flex-wrap: wrap;
   position: sticky;
   top: 60px;
-  z-index: 90;
+  z-index: 95;
 }
 
 .service-pill {
@@ -3266,7 +3266,7 @@ function renderDashboard() {
   // ── Row 2a: Brand Health Heatmap ──
   const heatmapDiv = document.getElementById('dash-brand-heatmap');
   if (heatmapDiv) {
-    let heatHtml = '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:8px;">';
+    let heatHtml = '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:8px;">';
     state.brands.forEach(b => {
       const bProducts = filteredProducts.filter(p => p.brand === b);
       const bAnoms = activeAnomalies.filter(a => a.brand === b).length;
@@ -3274,11 +3274,11 @@ function renderDashboard() {
       const severity = bAnoms === 0 ? 'green' : bAnoms < 4 ? 'amber' : 'red';
       const bgColor = severity === 'green' ? 'var(--tint-green)' : severity === 'amber' ? 'var(--tint-amber)' : 'var(--tint-red)';
       const borderColor = severity === 'green' ? 'var(--accent-green)' : severity === 'amber' ? 'var(--accent-amber)' : 'var(--accent-red)';
-      const shortName = b.length > 14 ? b.substring(0, 13) + '…' : b;
-      heatHtml += '<div onclick="loadBrandDashboard(\'' + b + '\')" title="' + b + '" style="cursor:pointer; padding:8px 10px; border-radius:var(--radius); background:' + bgColor + '; border-left:3px solid ' + borderColor + '; transition:transform 0.15s ease; min-height:68px;" onmouseenter="this.style.transform=\'scale(1.03)\'" onmouseleave="this.style.transform=\'scale(1)\'">' +
-        '<div style="font-size:11px; font-weight:700; color:var(--text-primary); margin-bottom:3px;">' + shortName + '</div>' +
-        '<div style="font-size:10px; color:var(--text-secondary);">' + bProducts.length + ' SKUs · ' + bGM + '% GM</div>' +
-        '<div style="font-size:10px; color:' + borderColor + '; font-weight:600; margin-top:2px;">' + (bAnoms === 0 ? '✓ Clean' : bAnoms + ' anomal' + (bAnoms === 1 ? 'y' : 'ies')) + '</div>' +
+      const shortName = b.length > 16 ? b.substring(0, 15) + '…' : b;
+      heatHtml += '<div onclick="loadBrandDashboard(\'' + b + '\')" title="' + b + '" style="cursor:pointer; padding:10px 12px; border-radius:var(--radius); background:' + bgColor + '; border-left:3px solid ' + borderColor + '; transition:transform 0.15s ease;" onmouseenter="this.style.transform=\'scale(1.03)\'" onmouseleave="this.style.transform=\'scale(1)\'">' +
+        '<div style="font-size:12px; font-weight:700; color:#1e293b; margin-bottom:4px; line-height:1.2;">' + shortName + '</div>' +
+        '<div style="font-size:10px; color:#475569;">' + bProducts.length + ' SKUs · ' + bGM + '% GM</div>' +
+        '<div style="font-size:10px; color:' + borderColor + '; font-weight:600; margin-top:3px;">' + (bAnoms === 0 ? '✓ Clean' : bAnoms + ' anomal' + (bAnoms === 1 ? 'y' : 'ies')) + '</div>' +
       '</div>';
     });
     heatHtml += '</div>';
